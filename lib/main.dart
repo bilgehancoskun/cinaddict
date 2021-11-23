@@ -1,21 +1,17 @@
 import 'package:flutter/material.dart';
+import 'routes/login_view.dart';
+import 'routes/signup_view.dart';
+import 'routes/walkthrough_view.dart';
+import 'routes/welcome_view.dart';
 
 void main() {
-  runApp(const MaterialApp(
-    home: Welcome(),
+  runApp(MaterialApp(
+    initialRoute: '/walkthrough',
+    routes: {
+      '/walkthrough': (context) => WalkthroughView(),
+      '/welcome': (context) => WelcomeView(),
+      '/login': (context) => LoginView(),
+      '/signup': (context) => SignUpView(),
+    },
   ));
-}
-
-class Welcome extends StatelessWidget {
-  const Welcome({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Hello"),
-        centerTitle: false,
-      ),
-    );
-  }
 }
