@@ -8,5 +8,4 @@ with people that share common interests in movies/movie genres.
 
 ## Our Team
 
-[@bilgehancoskun](https://github.com/bilgehancoskun) - [@imp7](https://github.com/imp7) - [@dodo146](https://github.com/dodo146) - [@meliskudat](https://github.com/meliskudat)
-
+[@bilgehancoskun](https://github.com/bilgehancoskun) - [@imp7](https://github.com/imp7) - [@dodo146](https://github.com/dodo146) - [@meliskudat](https://github.com/meliskudat) - [@ruyadinmezel](https://github.com/ruyadinmezel)
