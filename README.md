@@ -10,4 +10,3 @@ with people that share common interests in movies/ movie genres.
 
 @bilgehancoskun - @imp7
 
-  
