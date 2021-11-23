@@ -1,16 +1,13 @@
-# cinaddict
+# Cinaddict
 
-Cinaddict Project (CS310)
+Our aim for this project is to make a movie application that lets users post about their opinions about
+the movies they have watched and  experiences about the movie theater that they have seen the movie
+in. In our application, users  will be able to add locations of those movie theaters to their post using
+geotagging technologies like Google Maps. Our application will provide users to have a chance to meet
+with people that share common interests in movies/ movie genres.
 
-## Getting Started
+## Our Team
 
-This project is a starting point for a Flutter application.
+@bilgehancoskun - @imp7
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+  
