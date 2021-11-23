@@ -14,7 +14,7 @@ class Welcome extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Hello"),
-        centerTitle: true,
+        centerTitle: false,
       ),
     );
   }
