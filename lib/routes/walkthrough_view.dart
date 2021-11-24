@@ -15,19 +15,67 @@ class WalkthroughView extends StatelessWidget {
             PageViewModel(
               title: 'We Love Movies',
               body: 'Connect and meet with all movie lovers around the world.',
-              image: Icon(Icons.local_movies_outlined, size: 240, color: AppColors.softRed,),
+              image: Icon(
+                Icons.local_movies_outlined,
+                size: 240,
+                color: AppColors.softRed,
+              ),
               decoration: getCardDecoration(),
             ),
             PageViewModel(
               title: 'Share Posts',
               body: 'Share photos or videos about movies or movie theaters.',
-              image: Icon(Icons.image_outlined, size: 240, color: AppColors.softRed,),
+              image: Icon(
+                Icons.image_outlined,
+                size: 240,
+                color: AppColors.softRed,
+              ),
               decoration: getCardDecoration(),
             ),
             PageViewModel(
-              title: 'Likes - Comments',
-              body: 'Like other people\'s posts. Comment on them.',
-              image: Icon(Icons.thumb_up_alt_rounded, size: 240, color: AppColors.softRed,),
+              title: 'Interact with People',
+              body: 'Like other people\'s posts, comment on them, share them.',
+              image: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 30),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.thumb_up_alt_rounded,
+                          size: 90,
+                          color: AppColors.softRed,
+                        ),
+                        SizedBox(width: 10,),
+                        Icon(
+                          Icons.comment,
+                          size: 90,
+                          color: AppColors.softRed,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.ios_share,
+                          size: 90,
+                          color: AppColors.softRed,
+                        ),
+                        SizedBox(width: 10,),
+                        Icon(
+                          Icons.location_on,
+                          size: 90,
+                          color: AppColors.softRed,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
               decoration: getCardDecoration(),
             ),
             PageViewModel(
@@ -40,8 +88,9 @@ class WalkthroughView extends StatelessWidget {
             PageViewModel(
               title: 'Checkout Upcoming Movies',
               body:
-              'Checkout current or upcoming movies in theatres. Discuss with other people about them.',
-              image: Icon(Icons.theater_comedy, size: 240, color: AppColors.softRed),
+                  'Checkout current or upcoming movies in theatres. Discuss with other people about them.',
+              image: Icon(Icons.theater_comedy,
+                  size: 240, color: AppColors.softRed),
               decoration: getCardDecoration(),
             ),
           ],
@@ -66,9 +115,13 @@ class WalkthroughView extends StatelessWidget {
               borderRadius: BorderRadius.circular(24),
             ),
           ),
-          onDone: () {},
+          onDone: () {
+            Navigator.pushReplacementNamed(context, '/welcome');
+          },
           showSkipButton: true,
-          onSkip: () {},
+          onSkip: () {
+            Navigator.pushReplacementNamed(context, '/welcome');
+          },
           skipFlex: 0,
           nextFlex: 0,
         ),
