@@ -3,42 +3,62 @@ import 'package:flutter/material.dart';
 class WelcomeView extends StatelessWidget {
   const WelcomeView({Key? key}) : super(key: key);
 
-  // TODO: Create a welcome view
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Testing Stack (Welcome View)'),
-        centerTitle: true,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Go Back button on appBar should not be shown and the "back" button in device navigator should close the app.',
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(
-              height: 60,
-            ),
-            OutlinedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/login');
-                },
-                child: Text('Go To Login View')),
-            SizedBox(
-              height: 20,
-            ),
-            Text(
-              'This button should work and lands you into Login View.',
-              textAlign: TextAlign.center,
-            ),
-
-          ],
+        appBar: AppBar(
+          title: Text(
+            "Welcome",
+            style: TextStyle(fontSize: 24.0),
+          ),
+          centerTitle: true,
         ),
-      ),
-    );
+        body: Center(
+            child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Image(
+                image: AssetImage("assets/cinaddict_logo.png"),
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              Text(
+                "Welcome to Cinaddict",
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(
+                height: 64,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  OutlinedButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, "/login");
+                      },
+                      child: Text(
+                        "Login",
+                        style: TextStyle(color: Colors.white),
+                      )),
+                  OutlinedButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, "/login");
+                      },
+                      child:
+                          Text("Signup", style: TextStyle(color: Colors.white)))
+                ],
+              )
+            ],
+          ),
+        )));
+
   }
 }
