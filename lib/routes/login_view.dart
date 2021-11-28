@@ -57,7 +57,7 @@ void initState() {
                           fillColor: AppColors.dark_grey,
                           filled: true,
                           hintText: 'username or email',
-                          hintStyle: lightTextStyle,
+                          hintStyle: AppTextStyle.lightTextStyle,
 
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
@@ -107,7 +107,7 @@ void initState() {
                           fillColor: AppColors.dark_grey,
                           filled: true,
                           hintText: 'password',
-                          hintStyle: lightTextStyle,
+                          hintStyle: AppTextStyle.lightTextStyle,
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
                               color: AppColors.mid_grey,
@@ -153,7 +153,7 @@ void initState() {
                   },
                   child: Text(
                     "Forgot password? Click here to get help.",
-                    style: lighterTextStyle,
+                    style: AppTextStyle.lighterTextStyle,
                   ),
                 ),
 
@@ -186,7 +186,7 @@ void initState() {
                             padding: const EdgeInsets.symmetric(vertical: 12.0),
                             child: Text(
                               'Login',
-                              style:darkTextStyle,
+                              style:AppTextStyle.darkTextStyle,
                             ),
                           ),
                           style: OutlinedButton.styleFrom(
@@ -206,7 +206,7 @@ void initState() {
                    },
                   child: Text(
                     "Sign Up",
-                  style:lighterTextStyle,
+                  style:AppTextStyle.lighterTextStyle,
                 ),
                 ),
               ],
