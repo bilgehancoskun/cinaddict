@@ -20,7 +20,7 @@ class WelcomeView extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Image(
-                image: AssetImage("assets/cinaddict_logo.png"),
+                image: AssetImage("lib/assets/cinaddict_logo.png"),
               ),
               SizedBox(
                 height: 8,
@@ -50,7 +50,7 @@ class WelcomeView extends StatelessWidget {
                       )),
                   OutlinedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, "/login");
+                        Navigator.pushNamed(context, "/signup");
                       },
                       child:
                           Text("Signup", style: TextStyle(color: Colors.white)))

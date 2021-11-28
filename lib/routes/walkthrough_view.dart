@@ -18,7 +18,7 @@ class WalkthroughView extends StatelessWidget {
               image: Icon(
                 Icons.local_movies_outlined,
                 size: 240,
-                color: AppColors.softRed,
+                color: AppColors.soft_red,
               ),
               decoration: getCardDecoration(),
             ),
@@ -28,7 +28,7 @@ class WalkthroughView extends StatelessWidget {
               image: Icon(
                 Icons.image_outlined,
                 size: 240,
-                color: AppColors.softRed,
+                color: AppColors.soft_red,
               ),
               decoration: getCardDecoration(),
             ),
@@ -46,13 +46,13 @@ class WalkthroughView extends StatelessWidget {
                         Icon(
                           Icons.thumb_up_alt_rounded,
                           size: 90,
-                          color: AppColors.softRed,
+                          color: AppColors.soft_red,
                         ),
                         SizedBox(width: 10,),
                         Icon(
                           Icons.comment,
                           size: 90,
-                          color: AppColors.softRed,
+                          color: AppColors.soft_red,
                         ),
                       ],
                     ),
@@ -63,13 +63,13 @@ class WalkthroughView extends StatelessWidget {
                         Icon(
                           Icons.ios_share,
                           size: 90,
-                          color: AppColors.softRed,
+                          color: AppColors.soft_red,
                         ),
                         SizedBox(width: 10,),
                         Icon(
                           Icons.location_on,
                           size: 90,
-                          color: AppColors.softRed,
+                          color: AppColors.soft_red,
                         ),
                       ],
                     ),
@@ -82,7 +82,7 @@ class WalkthroughView extends StatelessWidget {
               title: 'Discuss with People',
               body:
                   'Find out what people think about movies or movie theaters.',
-              image: Icon(Icons.tag, size: 240, color: AppColors.softRed),
+              image: Icon(Icons.tag, size: 240, color: AppColors.soft_red),
               decoration: getCardDecoration(),
             ),
             PageViewModel(
@@ -90,7 +90,7 @@ class WalkthroughView extends StatelessWidget {
               body:
                   'Checkout current or upcoming movies in theatres. Discuss with other people about them.',
               image: Icon(Icons.theater_comedy,
-                  size: 240, color: AppColors.softRed),
+                  size: 240, color: AppColors.soft_red),
               decoration: getCardDecoration(),
             ),
           ],
@@ -107,7 +107,7 @@ class WalkthroughView extends StatelessWidget {
             color: Colors.white,
           ),
           dotsDecorator: DotsDecorator(
-            activeColor: AppColors.softRed,
+            activeColor: AppColors.soft_red,
             color: Colors.white,
             size: Size(10, 10),
             activeSize: Size(22, 10),

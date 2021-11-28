@@ -17,7 +17,7 @@ class SignUpView extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                     child: Image.asset(
-                      'images/cinaddict_logo.png',
+                      'lib/assets/cinaddict_logo.png',
                       width: MediaQuery.of(context).size.width / 2.2,
                     ),
                   ),

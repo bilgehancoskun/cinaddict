@@ -30,7 +30,7 @@ void initState() {
     return Scaffold(
 
       body: Padding(
-        padding: EdgeInsets.all(50.0),//TODO DIMENSIONS
+        padding: EdgeInsets.all(30.0),//TODO DIMENSIONS
         child: SingleChildScrollView(
           child: Form(
             key: _formKey,
@@ -41,7 +41,7 @@ void initState() {
                 SizedBox(
                   height: 200,
                   child: Image(
-                      image:NetworkImage('https://www.linkpicture.com/q/cinaddict_logo-2.png'),
+                      image: AssetImage('lib/assets/cinaddict_logo.png'),
                   ),
                 ),
                 SizedBox(height: 10,),
