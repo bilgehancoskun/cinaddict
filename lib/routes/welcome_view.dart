@@ -1,71 +1,63 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 class WelcomeView extends StatelessWidget {
   const WelcomeView({Key? key}) : super(key: key);
 
-  // TODO: Create a welcome view
-  void buttonPressedLogin(){
-    Navigator.pushNamed(context, "/login");
-  }
-  void buttonPressedSignup(){
-    Navigator.pushNamed(context, "/login");
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:AppBar(
-        title:Text(
-          "Welcome",
-          style:TextStyle(
-            fontSize: 24.0
+        appBar: AppBar(
+          title: Text(
+            "Welcome",
+            style: TextStyle(fontSize: 24.0),
           ),
-
+          centerTitle: true,
         ),
-        centerTitle: true,
-      ),
-      body:Center(
-        child:Padding(
+        body: Center(
+            child: Padding(
           padding: EdgeInsets.all(16.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Image(
                 image: AssetImage("assets/cinaddict_logo.png"),
               ),
-              SizedBox(height: 8,),
+              SizedBox(
+                height: 8,
+              ),
               Text(
                 "Welcome to Cinaddict",
-                style:TextStyle(
+                style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height:16,),
+              SizedBox(
+                height: 64,
+              ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   OutlinedButton(
-                      onPressed: buttonPressedLogin,
+                      onPressed: () {
+                        Navigator.pushNamed(context, "/login");
+                      },
                       child: Text(
                         "Login",
-                      )
-                  ),
+                        style: TextStyle(color: Colors.white),
+                      )),
                   OutlinedButton(
-                      onPressed: buttonPressedSignup,
-                      child: Text(
-                        "Signup",
-                      )
-                  )
+                      onPressed: () {
+                        Navigator.pushNamed(context, "/login");
+                      },
+                      child:
+                          Text("Signup", style: TextStyle(color: Colors.white)))
                 ],
               )
             ],
           ),
-        )
-      )
-    );
+        )));
   }
 }

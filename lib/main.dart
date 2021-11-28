@@ -6,7 +6,7 @@ import 'routes/welcome_view.dart';
 
 void main() {
   runApp(MaterialApp(
-    initialRoute: 'welcome',
+    initialRoute: '/welcome',
     routes: {
       '/walkthrough': (context) => WalkthroughView(),
       '/welcome': (context) => WelcomeView(),
