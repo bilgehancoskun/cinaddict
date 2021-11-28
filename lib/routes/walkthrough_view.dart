@@ -1,4 +1,5 @@
 import 'package:cinaddict/utils/colors.dart';
+import 'package:cinaddict/utils/dimensions.dart';
 import 'package:cinaddict/utils/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
@@ -17,7 +18,7 @@ class WalkthroughView extends StatelessWidget {
               body: 'Connect and meet with all movie lovers around the world.',
               image: Icon(
                 Icons.local_movies_outlined,
-                size: 240,
+                size: AppDimensions.walkthroughDefaultIconSize,
                 color: AppColors.soft_red,
               ),
               decoration: getCardDecoration(),
@@ -27,7 +28,7 @@ class WalkthroughView extends StatelessWidget {
               body: 'Share photos or videos about movies or movie theaters.',
               image: Icon(
                 Icons.image_outlined,
-                size: 240,
+                size: AppDimensions.walkthroughDefaultIconSize,
                 color: AppColors.soft_red,
               ),
               decoration: getCardDecoration(),
@@ -45,13 +46,13 @@ class WalkthroughView extends StatelessWidget {
                       children: [
                         Icon(
                           Icons.thumb_up_alt_rounded,
-                          size: 90,
+                          size: AppDimensions.walkthroughMultipleIconSize,
                           color: AppColors.soft_red,
                         ),
                         SizedBox(width: 10,),
                         Icon(
                           Icons.comment,
-                          size: 90,
+                          size: AppDimensions.walkthroughMultipleIconSize,
                           color: AppColors.soft_red,
                         ),
                       ],
@@ -62,13 +63,13 @@ class WalkthroughView extends StatelessWidget {
                       children: [
                         Icon(
                           Icons.ios_share,
-                          size: 90,
+                          size: AppDimensions.walkthroughMultipleIconSize,
                           color: AppColors.soft_red,
                         ),
                         SizedBox(width: 10,),
                         Icon(
                           Icons.location_on,
-                          size: 90,
+                          size: AppDimensions.walkthroughMultipleIconSize,
                           color: AppColors.soft_red,
                         ),
                       ],
@@ -82,7 +83,7 @@ class WalkthroughView extends StatelessWidget {
               title: 'Discuss with People',
               body:
                   'Find out what people think about movies or movie theaters.',
-              image: Icon(Icons.tag, size: 240, color: AppColors.soft_red),
+              image: Icon(Icons.tag, size: AppDimensions.walkthroughDefaultIconSize, color: AppColors.soft_red),
               decoration: getCardDecoration(),
             ),
             PageViewModel(
@@ -90,7 +91,7 @@ class WalkthroughView extends StatelessWidget {
               body:
                   'Checkout current or upcoming movies in theatres. Discuss with other people about them.',
               image: Icon(Icons.theater_comedy,
-                  size: 240, color: AppColors.soft_red),
+                  size: AppDimensions.walkthroughDefaultIconSize, color: AppColors.soft_red),
               decoration: getCardDecoration(),
             ),
           ],
