@@ -57,13 +57,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.4"
-  email_validator:
-    dependency: "direct main"
+
+  dots_indicator:
+    dependency: transitive
     description:
-      name: email_validator
+      name: dots_indicator
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.0"
+
   fake_async:
     dependency: transitive
     description:
@@ -95,21 +97,16 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  google_fonts:
+
+  introduction_screen:
     dependency: "direct main"
     description:
-      name: google_fonts
+      name: introduction_screen
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0"
-  http:
-    dependency: "direct main"
-    description:
-      name: http
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.13.4"
-  http_parser:
+  lints:
+
     dependency: transitive
     description:
       name: http_parser
