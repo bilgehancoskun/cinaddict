@@ -13,5 +13,6 @@ void main() {
       '/login': (context) => LoginView(),
       '/signup': (context) => SignUpView(),
     },
+    theme: ThemeData.dark(),
   ));
 }
