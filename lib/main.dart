@@ -6,13 +6,13 @@ import 'routes/welcome_view.dart';
 
 void main() {
   runApp(MaterialApp(
-    initialRoute: '/welcome',
+    initialRoute: '/walkthrough',
     routes: {
       '/walkthrough': (context) => WalkthroughView(),
       '/welcome': (context) => WelcomeView(),
       '/login': (context) => LoginView(),
       '/signup': (context) => SignUpView(),
     },
-    theme:ThemeData.dark(),
+    theme: ThemeData.dark(),
   ));
 }

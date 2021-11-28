@@ -59,5 +59,6 @@ class WelcomeView extends StatelessWidget {
             ],
           ),
         )));
+
   }
 }
