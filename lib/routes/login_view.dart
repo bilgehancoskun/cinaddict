@@ -54,14 +54,14 @@ void initState() {
                         height:48.0,
                         child:TextFormField(
                         decoration: InputDecoration(
-                          fillColor: AppColors.dark_grey,
+                          fillColor: AppColors.darkGrey,
                           filled: true,
-                          hintText: 'username or email',
+                          hintText: 'Username or email',
                           hintStyle: AppTextStyle.lightTextStyle,
 
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: AppColors.mid_grey,
+                              color: AppColors.midGrey,
                               width: 2.0,
                             ),
                             borderRadius: BorderRadius.all(Radius.circular(0)),
@@ -104,13 +104,13 @@ void initState() {
                         height:48.0,
                       child: TextFormField(
                         decoration: InputDecoration(
-                          fillColor: AppColors.dark_grey,
+                          fillColor: AppColors.darkGrey,
                           filled: true,
-                          hintText: 'password',
+                          hintText: 'Password',
                           hintStyle: AppTextStyle.lightTextStyle,
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: AppColors.mid_grey,
+                              color: AppColors.midGrey,
                               width: 2.0,
                             ),
                             borderRadius: BorderRadius.all(Radius.circular(0)),
@@ -145,24 +145,15 @@ void initState() {
                     ),
                   ],
                 ),
-               // SizedBox(height: 5,),
-                TextButton(
-                  onPressed:() {
-                    Navigator.pushNamed(context, '/signup');//TODO change to go to  help?
+                SizedBox(height: 16,),
 
-                  },
-                  child: Text(
-                    "Forgot password? Click here to get help.",
-                    style: AppTextStyle.lighterTextStyle,
-                  ),
-                ),
 
               //  SizedBox(height: 0,),
                 SizedBox(
-                  width: 100.0,
+                  width: double.infinity,
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
+                    children: [
                       Expanded(
                         flex: 1,
                         child: OutlinedButton(
@@ -186,15 +177,23 @@ void initState() {
                             padding: const EdgeInsets.symmetric(vertical: 12.0),
                             child: Text(
                               'Login',
-                              style:AppTextStyle.darkTextStyle,
+                              style:AppTextStyle.whiteTextStyle,
                             ),
                           ),
-                          style: OutlinedButton.styleFrom(
-                            backgroundColor: AppColors.red_secondary,
-                          ),
+                          style: AppButtonStyle.primaryRedButton,
                         ),
                       ),
                     ],
+                  ),
+                ),
+                TextButton(
+                  onPressed:() {
+                    Navigator.pushNamed(context, '/signup');//TODO change to go to  help?
+
+                  },
+                  child: Text(
+                    "Forgot password? Click here to get help.",
+                    style: AppTextStyle.lighterTextStyle,
                   ),
                 ),
 
@@ -209,6 +208,7 @@ void initState() {
                   style:AppTextStyle.lighterTextStyle,
                 ),
                 ),
+
               ],
             ),
 
