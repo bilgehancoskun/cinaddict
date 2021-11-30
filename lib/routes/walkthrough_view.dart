@@ -1,3 +1,4 @@
+import 'package:cinaddict/utils/app_shared_preferences.dart';
 import 'package:cinaddict/utils/colors.dart';
 import 'package:cinaddict/utils/dimensions.dart';
 import 'package:cinaddict/utils/styles.dart';
@@ -49,7 +50,9 @@ class WalkthroughView extends StatelessWidget {
                           size: AppDimensions.walkthroughMultipleIconSize,
                           color: AppColors.primaryRed,
                         ),
-                        SizedBox(width: 10,),
+                        SizedBox(
+                          width: 10,
+                        ),
                         Icon(
                           Icons.comment,
                           size: AppDimensions.walkthroughMultipleIconSize,
@@ -57,7 +60,9 @@ class WalkthroughView extends StatelessWidget {
                         ),
                       ],
                     ),
-                    SizedBox(height: 10,),
+                    SizedBox(
+                      height: 10,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -66,7 +71,9 @@ class WalkthroughView extends StatelessWidget {
                           size: AppDimensions.walkthroughMultipleIconSize,
                           color: AppColors.primaryRed,
                         ),
-                        SizedBox(width: 10,),
+                        SizedBox(
+                          width: 10,
+                        ),
                         Icon(
                           Icons.location_on,
                           size: AppDimensions.walkthroughMultipleIconSize,
@@ -83,7 +90,9 @@ class WalkthroughView extends StatelessWidget {
               title: 'Discuss with People',
               body:
                   'Find out what people think about movies or movie theaters.',
-              image: Icon(Icons.tag, size: AppDimensions.walkthroughDefaultIconSize, color: AppColors.primaryRed),
+              image: Icon(Icons.tag,
+                  size: AppDimensions.walkthroughDefaultIconSize,
+                  color: AppColors.primaryRed),
               decoration: getCardDecoration(),
             ),
             PageViewModel(
@@ -91,7 +100,8 @@ class WalkthroughView extends StatelessWidget {
               body:
                   'Checkout current or upcoming movies in theatres. Discuss with other people about them.',
               image: Icon(Icons.theater_comedy,
-                  size: AppDimensions.walkthroughDefaultIconSize, color: AppColors.primaryRed),
+                  size: AppDimensions.walkthroughDefaultIconSize,
+                  color: AppColors.primaryRed),
               decoration: getCardDecoration(),
             ),
           ],
@@ -116,12 +126,14 @@ class WalkthroughView extends StatelessWidget {
               borderRadius: BorderRadius.circular(24),
             ),
           ),
-          onDone: () {
+          onDone: () async {
             Navigator.pushReplacementNamed(context, '/welcome');
+            await AppSharedPreferences.setFirstLaunch(false);
           },
           showSkipButton: true,
-          onSkip: () {
+          onSkip: () async {
             Navigator.pushReplacementNamed(context, '/welcome');
+            await AppSharedPreferences.setFirstLaunch(false);
           },
           skipFlex: 0,
           nextFlex: 0,
