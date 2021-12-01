@@ -1,5 +1,6 @@
 import 'package:cinaddict/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppTextStyle {
   static const cardTitle = TextStyle(fontWeight: FontWeight.bold, fontSize: 28);
@@ -26,10 +27,20 @@ class AppTextStyle {
     fontSize: 16.0,
     letterSpacing: 0.3,
   );
+
+  static TextStyle welcomeTextStyle = GoogleFonts.yanoneKaffeesatz(
+    fontSize: 36,
+    fontWeight: FontWeight.w300
+  );
+
 }
 
 class AppButtonStyle {
   static ButtonStyle primaryRedButton = OutlinedButton.styleFrom(
     backgroundColor: AppColors.primaryRed,
+  );
+
+  static ButtonStyle primaryYellowButton = OutlinedButton.styleFrom(
+    backgroundColor: AppColors.yellow,
   );
 }

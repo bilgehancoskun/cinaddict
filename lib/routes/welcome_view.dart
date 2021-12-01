@@ -1,3 +1,4 @@
+import 'package:cinaddict/utils/styles.dart';
 import 'package:flutter/material.dart';
 
 class WelcomeView extends StatelessWidget {
@@ -6,59 +7,70 @@ class WelcomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            "Welcome",
-            style: TextStyle(fontSize: 24.0),
-          ),
-          centerTitle: true,
-        ),
         body: Center(
             child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Image(
-                image: AssetImage("lib/assets/cinaddict_logo.png"),
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              Text(
-                "Welcome to Cinaddict",
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(
-                height: 64,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  OutlinedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, "/login");
-                      },
-                      child: Text(
-                        "Login",
-                        style: TextStyle(color: Colors.white),
-                      )),
-                  OutlinedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, "/signup");
-                      },
-                      child:
-                          Text("Signup", style: TextStyle(color: Colors.white)))
-                ],
-              )
-            ],
+      padding: EdgeInsets.all(30).copyWith(top: 80),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Image(
+            image: AssetImage("lib/assets/cinaddict_logo.png"),
           ),
-        )));
+          Padding(
+            padding: const EdgeInsets.only(top: 40),
+            child: Column(
 
+              children: [
+                Text('Welcome to cinaddict', style: AppTextStyle.welcomeTextStyle,),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Flex(
+                    direction: Axis.horizontal,
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, "/login");
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 12.0),
+                            child: Text(
+                              'Login',
+                              style: AppTextStyle.darkTextStyle,
+                            ),
+                          ),
+                          style: AppButtonStyle.primaryYellowButton,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 16,),
+                  Flex(
+                    direction: Axis.horizontal,
+                    children:[
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, "/signup");
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 12.0),
+                            child: Text(
+                              'Signup',
+                              style: AppTextStyle.whiteTextStyle,
+                            ),
+                          ),
+                          style: AppButtonStyle.primaryRedButton,
+                        ),
+                      ),
+                    ],
+                  ),
+              ],
+            ),
+          )
+        ],
+      ),
+    )));
   }
 }
