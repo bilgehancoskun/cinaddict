@@ -29,7 +29,7 @@ class AppBase extends StatelessWidget {
       navigatorObservers: [
         observer,
       ],
-      initialRoute: 'LUTFEN OLSUN',
+      initialRoute: '/signup',
       routes: {
         '/walkthrough': (context) => WalkthroughView(
               analytics: analytics,
