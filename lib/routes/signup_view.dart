@@ -1,9 +1,13 @@
 import 'package:cinaddict/utils/colors.dart';
 import 'package:cinaddict/utils/styles.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 
 class SignUpView extends StatelessWidget {
-  const SignUpView({Key? key}) : super(key: key);
+  const SignUpView({Key? key, required this.analytics, required this.observer}) : super(key: key);
+  final FirebaseAnalytics analytics;
+  final FirebaseAnalyticsObserver observer;
 
   @override
   Widget build(BuildContext context) {

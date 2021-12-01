@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "107383548493",
+    "project_id": "cinaddict-24cd8",
+    "storage_bucket": "cinaddict-24cd8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:107383548493:android:675dd07f0b0dccfcba4a04",
+        "android_client_info": {
+          "package_name": "com.example.cinaddict"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "107383548493-5d1gmkl0tfcj1j0qp3ivgsql1qnepe6m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9QiIs0yO-cspAZqq-rPMOnb53Bdnegv0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "107383548493-5d1gmkl0tfcj1j0qp3ivgsql1qnepe6m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

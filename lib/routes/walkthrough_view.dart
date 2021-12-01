@@ -1,4 +1,6 @@
 import 'package:cinaddict/utils/app_shared_preferences.dart';
+import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:cinaddict/utils/colors.dart';
 import 'package:cinaddict/utils/dimensions.dart';
 import 'package:cinaddict/utils/styles.dart';
@@ -6,7 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 
 class WalkthroughView extends StatelessWidget {
-  const WalkthroughView({Key? key}) : super(key: key);
+  const WalkthroughView({Key? key, required this.analytics, required this.observer}) : super(key: key);
+  final FirebaseAnalytics analytics;
+  final FirebaseAnalyticsObserver observer;
 
   @override
   Widget build(BuildContext context) {
