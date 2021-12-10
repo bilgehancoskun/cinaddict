@@ -14,6 +14,6 @@ jobs:
           channel: 'stable'
       #Build Flutter App
       - name: Build Cinaddict
-        run:
+        run: |
           flutter pub get
           flutter build apk
