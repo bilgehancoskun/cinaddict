@@ -12,7 +12,7 @@ class SignUpView extends StatelessWidget {
   String mail = "";
   String password = "";
   String passwordCheck="";
-
+  final validCharacters = RegExp(r'^[a-zA-Z0-9]+$');
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,6 +101,24 @@ class SignUpView extends StatelessWidget {
                                 ),
                               ),
                               keyboardType: TextInputType.text,
+                              validator: (value) {
+                                if (value == null) {
+                                  return 'Username field cannot be empty';
+                                } else {
+                                  String trimmedValue = value.trim();
+                                  if (trimmedValue.isEmpty) {
+                                    return 'Username field cannot be empty';
+                                  }
+                                  if (trimmedValue.length < 3) {
+                                    return 'Username must be at least 3 characters long';
+                                  }
+                                  if (!validCharacters.hasMatch(trimmedValue)){
+                                    return 'Username can only contains alphanumerical characters';
+                                  }
+                                  passwordCheck=trimmedValue;
+                                }
+                                return null;
+                              },
                             ),
                           ),
                         ],
