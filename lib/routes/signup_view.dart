@@ -3,6 +3,7 @@ import 'package:cinaddict/utils/styles.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
+import 'package:cinaddict/services/auth.dart';
 
 class SignUpView extends StatelessWidget {
   SignUpView({Key? key, required this.analytics, required this.observer}) : super(key: key);
@@ -13,6 +14,7 @@ class SignUpView extends StatelessWidget {
   String password = "";
   String passwordCheck="";
   final validCharacters = RegExp(r'^[a-zA-Z0-9]+$');
+  AuthService auth=AuthService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -115,7 +117,7 @@ class SignUpView extends StatelessWidget {
                                   if (!validCharacters.hasMatch(trimmedValue)){
                                     return 'Username can only contains alphanumerical characters';
                                   }
-                                  passwordCheck=trimmedValue;
+                                  //passwordCheck=trimmedValue;
                                 }
                                 return null;
                               },
@@ -222,11 +224,8 @@ class SignUpView extends StatelessWidget {
                             child: OutlinedButton(
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
-                                  print(
-                                      'Mail: ' + mail + "\nPassword: " + password);
                                   _formKey.currentState!.save();
-                                  print(
-                                      'Mail: ' + mail + "\nPassword: " + password);
+                                  auth.signupWithMailAndPass(mail, password);
 
                                   //TODO  getUser();
                                 }
