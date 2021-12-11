@@ -37,7 +37,44 @@ class _LoginState extends State<LoginView> {
     });
   }
 
-  AuthService auth = AuthService();
+ FirebaseAuth auth = FirebaseAuth.instance;
+
+  Future<void> signupUser() async {
+    try {
+      UserCredential userCredential = await auth.createUserWithEmailAndPassword(email: mail, password: password);
+      print(userCredential.toString());
+    } on FirebaseAuthException catch (e) {
+      print(e.toString());
+      if(e.code == 'email-already-in-use') {
+        setmessage('This email is already in use');
+      }
+      else if(e.code == 'weak-password') {
+        setmessage('Weak password, add uppercase, lowercase, digit, special character, emoji, etc.');
+      }
+    }
+  }
+
+  Future<void> loginUser() async {
+    try {
+      UserCredential userCredential = await auth.signInWithEmailAndPassword(
+          email: mail,
+          password: password
+      );
+      print(userCredential.toString());
+
+    } on FirebaseAuthException catch (e) {
+      print(e.toString());
+      if(e.code == 'user-not-found') {
+        signupUser();
+      }
+      else if (e.code == 'wrong-password') {
+        setmessage('Please check your password');
+      }
+    }
+  }
+
+
+//  AuthService auth = AuthService();
 
 
   @override
@@ -188,7 +225,10 @@ class _LoginState extends State<LoginView> {
                               print(
                                   'Mail: ' + mail + "\nPassword: " + password);
                               _formKey.currentState!.save();
-                              auth.loginWithMailAndPass(mail, password);
+                              loginUser();
+                             // ScaffoldMessenger.of(context)
+                                  //  .showSnackBar(SnackBar(content: Text('Logging in')));
+                             // auth.loginWithMailAndPass(mail, password);
                               print(
                                   'Mail: ' + mail + "\nPassword: " + password);
                               //TODO  getUser();
