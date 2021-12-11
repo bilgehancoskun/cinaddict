@@ -4,6 +4,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:cinaddict/services/auth.dart';
+import 'package:email_validator/email_validator.dart';
 
 class SignUpView extends StatelessWidget {
   SignUpView({Key? key, required this.analytics, required this.observer}) : super(key: key);
@@ -65,9 +66,9 @@ class SignUpView extends StatelessWidget {
                                   if (trimmedValue.isEmpty) {
                                     return 'E-mail field cannot be empty';
                                   }
-                                  // if(!EmailValidator.validate(trimmedValue)) {//TODO ADD email_validator 2.0.1 from pub.dev
-                                  //  return 'Please enter a valid email';
-                                  // }
+                                   if(!EmailValidator.validate(trimmedValue)) {
+                                    return 'Please enter a valid email';
+                                   }
                                 }
                                 return null;
                               },
