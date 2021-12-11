@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "107383548493-n3rrike6lf4frkpv9ol1f1tkgv2qagqq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.cinaddict",
+            "certificate_hash": "6eb47bc2fc0bd8bd3e5026f6e9c8ad5e7b3acdbe"
+          }
+        },
+        {
           "client_id": "107383548493-5d1gmkl0tfcj1j0qp3ivgsql1qnepe6m.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,6 +37,13 @@
             {
               "client_id": "107383548493-5d1gmkl0tfcj1j0qp3ivgsql1qnepe6m.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "107383548493-vf4m1d2qeorbd6aje8r2fme7mv3f0ps1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.cinaddict"
+              }
             }
           ]
         }
