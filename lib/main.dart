@@ -8,6 +8,7 @@ import 'routes/login_view.dart';
 import 'routes/signup_view.dart';
 import 'routes/walkthrough_view.dart';
 import 'routes/welcome_view.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,10 +28,12 @@ class App extends StatelessWidget {
   static FirebaseAnalyticsObserver observer =
       FirebaseAnalyticsObserver(analytics: analytics);
 
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorObservers: [
+
         observer,
       ],
       initialRoute: '/walkthrough',
