@@ -39,7 +39,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   firebase_analytics: ^8.3.4
-
+  firebase_auth: ^3.3.3
 
 
 flutter:
