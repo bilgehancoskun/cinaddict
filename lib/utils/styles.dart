@@ -15,7 +15,11 @@ class AppTextStyle {
     fontSize: 14.0,
     letterSpacing: -0.7,
   );
-
+  static const lighterbiggerTextStyle = TextStyle(
+    color: AppColors.lighterGrey,
+    fontSize: 16.0,
+    letterSpacing: -0.7,
+  );
   static const darkTextStyle = TextStyle(
     color: AppColors.black,
     fontSize: 16.0,
@@ -42,5 +46,11 @@ class AppButtonStyle {
 
   static ButtonStyle primaryYellowButton = OutlinedButton.styleFrom(
     backgroundColor: AppColors.yellow,
+  );
+  static ButtonStyle primaryWhiteButton = OutlinedButton.styleFrom(
+    backgroundColor: AppColors.white,
+  );
+  static ButtonStyle primaryGreyButton = OutlinedButton.styleFrom(
+    backgroundColor: AppColors.midGrey,
   );
 }
