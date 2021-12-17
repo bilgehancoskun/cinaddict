@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flare_flutter/flare_actor.dart';
 //TODO
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
@@ -88,25 +89,31 @@ class _LoginState extends State<LoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
+
         child: Padding(
           padding: EdgeInsets.all(30.0), //TODO DIMENSIONS
           child: Form(
             key: _formKey,
             child: Column(
+
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 SizedBox(
                   height: 100,
                 ),
+
                 SizedBox(
+
                   height: 200,
                   child: Image(
                     image: AssetImage('lib/assets/cinaddict_logo.png'),
                   ),
+
                 ),
                 SizedBox(
                   height: 10,
                 ),
+
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

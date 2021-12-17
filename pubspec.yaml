@@ -35,6 +35,7 @@ dependencies:
   google_sign_in: ^5.0.1
   firebase_core: ^1.10.5
   firebase_crashlytics: ^2.4.3
+  flare_flutter: ^3.0.2
 
 dev_dependencies:
   flutter_test:
@@ -48,6 +49,8 @@ flutter:
   uses-material-design: true
   assets:
     - lib/assets/
+    - ik_training.riv
+    - rm.flr
 
   fonts:
     - family: MPLUS1Code
