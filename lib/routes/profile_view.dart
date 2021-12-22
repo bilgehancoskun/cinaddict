@@ -1,4 +1,5 @@
 import 'package:cinaddict/models/user.dart';
+import 'package:cinaddict/routes/structure.dart';
 import 'package:cinaddict/services/firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -15,9 +16,11 @@ class ProfileView extends StatefulWidget {
 
 class _ProfileViewState extends State<ProfileView> {
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       appBar: AppBar(
         title: Text('Profile'),
       ),
@@ -35,15 +38,19 @@ class _ProfileViewState extends State<ProfileView> {
               );
             }
 
+
             User user = snapshot.data;
 
             return Column(
               children: [
                 Text("Username: ${user.username}"),
               ],
+
             );
 
+
           }
+
 
           return Center(
             child: SpinKitFadingCircle(
@@ -55,6 +62,8 @@ class _ProfileViewState extends State<ProfileView> {
         },
 
       )
+
+
     );
   }
 }

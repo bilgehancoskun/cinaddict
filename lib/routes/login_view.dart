@@ -1,5 +1,6 @@
 import 'package:cinaddict/routes/after_login.dart';
 import 'package:cinaddict/routes/profile_view.dart';
+import 'package:cinaddict/routes/structure.dart';
 import 'package:cinaddict/services/firestore.dart';
 import 'package:cinaddict/utils/colors.dart';
 import 'package:cinaddict/utils/styles.dart';
@@ -62,7 +63,7 @@ class _LoginState extends State<LoginView> {
 
   Future<UserCredential> loginUser() async {
     UserCredential userCredential =
-        await auth.signInWithEmailAndPassword(email: mail, password: password);
+    await auth.signInWithEmailAndPassword(email: mail, password: password);
 
     return userCredential;
   }
@@ -118,7 +119,7 @@ class _LoginState extends State<LoginView> {
                                 width: 2.0,
                               ),
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(0)),
+                              BorderRadius.all(Radius.circular(0)),
                             ),
                           ),
                           keyboardType: TextInputType.emailAddress,
@@ -169,7 +170,7 @@ class _LoginState extends State<LoginView> {
                                 width: 2.0,
                               ),
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(0)),
+                              BorderRadius.all(Radius.circular(0)),
                             ),
                           ),
                           keyboardType: TextInputType.text,
@@ -225,8 +226,7 @@ class _LoginState extends State<LoginView> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => ProfileView(
-                                              username: user.displayName!)));
+                                          builder: (context) => Structure(username: user.displayName!,)));
                                 }
                               } on FirebaseAuthException catch (e) {
                                 print(
@@ -270,11 +270,11 @@ class _LoginState extends State<LoginView> {
                             Future<UserCredential> signInWithGoogle() async {
                               // Trigger the authentication flow
                               final GoogleSignInAccount? googleUser =
-                                  await GoogleSignIn().signIn();
+                              await GoogleSignIn().signIn();
 
                               // Obtain the auth details from the request
                               final GoogleSignInAuthentication? googleAuth =
-                                  await googleUser?.authentication;
+                              await googleUser?.authentication;
 
                               // Create a new credential
                               final credential = GoogleAuthProvider.credential(
@@ -297,7 +297,7 @@ class _LoginState extends State<LoginView> {
                           },
                           child: Padding(
                               padding:
-                                  const EdgeInsets.symmetric(vertical: 12.0),
+                              const EdgeInsets.symmetric(vertical: 12.0),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -310,11 +310,11 @@ class _LoginState extends State<LoginView> {
                                   ),
                                   Padding(
                                     padding:
-                                        const EdgeInsets.fromLTRB(50, 0, 0, 0),
+                                    const EdgeInsets.fromLTRB(50, 0, 0, 0),
                                     child: Text(
                                       'Login / Sign Up with Google',
                                       style:
-                                          AppTextStyle.lighterbiggerTextStyle,
+                                      AppTextStyle.lighterbiggerTextStyle,
                                     ),
                                   ),
                                 ],
