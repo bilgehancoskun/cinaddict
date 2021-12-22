@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cinaddict/routes/feed_view.dart';
 import 'package:cinaddict/utils/app_shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -33,7 +34,6 @@ class App extends StatelessWidget {
   static FirebaseAnalyticsObserver observer =
       FirebaseAnalyticsObserver(analytics: analytics);
 
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -58,6 +58,10 @@ class App extends StatelessWidget {
               analytics: analytics,
               observer: observer,
             ),
+        '/feed': (context) => FeedView(
+              analytics: analytics,
+              observer: observer,
+            )
       },
       theme: ThemeData.dark(),
     );
@@ -68,4 +72,3 @@ String decideInitialRoute() {
   bool isFirstLaunched = AppSharedPreferences.getIsFirstLaunch();
   return isFirstLaunched ? '/walkthrough' : '/welcome';
 }
-

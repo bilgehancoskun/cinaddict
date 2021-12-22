@@ -1,0 +1,45 @@
+{
+  "username": "bilgehan",
+  "displayName": "Bilgehan Coşkun",
+  "isPrivate": false,
+  "followers": [
+    "melis", "rüya", "dogukan", "ibrahim", "aleynatilkiofficial"
+  ],
+  "following": [
+    "aleynatilkiofficial"
+  ],
+  "description": "CS GOD",
+  "posts": [
+    {
+      "image": "/path/to/file/img.png",
+      "description": "Merhaba",
+      "likeCount": 22,
+      "dislikeCount": 1,
+      "comments": [
+        {
+          "writtenBy": "melis",
+          "content": "Hey bilgehan bu çok zekice!",
+          "likeCount": 2,
+          "dislikeCount": 4,
+          "timestamp": 29392992199
+        }
+      ]
+    },
+
+    {
+      "image": "/path/to/file/img2.png",
+      "description": "Hey",
+      "likeCount": 3,
+      "dislikeCount": 1,
+      "comments": [
+        {
+          "writtenBy": "rüya",
+          "content": "İbrahim yine çok çalışmışsın teşekkürler!",
+          "likeCount": 0,
+          "dislikeCount": 45,
+          "timestamp": 2932311992199
+        }
+      ]
+    }
+  ]
+}

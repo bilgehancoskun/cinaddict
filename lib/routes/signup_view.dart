@@ -1,7 +1,9 @@
+import 'package:cinaddict/services/firestore.dart';
 import 'package:cinaddict/utils/colors.dart';
 import 'package:cinaddict/utils/styles.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cinaddict/services/auth.dart';
 import 'package:email_validator/email_validator.dart';
@@ -14,6 +16,7 @@ class SignUpView extends StatelessWidget {
   String mail = "";
   String password = "";
   String passwordCheck="";
+  String username = "";
   final validCharacters = RegExp(r'^[a-zA-Z0-9]+$');
   AuthService auth=AuthService();
   @override
@@ -71,6 +74,8 @@ class SignUpView extends StatelessWidget {
                                    }
                                 }
                                 return null;
+
+                                // TODO: Account already exists durumu için yine yukardan uyarı bildirimi (popup) gelecek (2)
                               },
                               onSaved: (value){
                                 if (value != null) {
@@ -121,6 +126,11 @@ class SignUpView extends StatelessWidget {
                                   //passwordCheck=trimmedValue;
                                 }
                                 return null;
+                              },
+                              onSaved: (value) {
+                                if (value != null) {
+                                  username = value;
+                                }
                               },
                             ),
                           ),
@@ -223,12 +233,16 @@ class SignUpView extends StatelessWidget {
                           Expanded(
                             flex: 1,
                             child: OutlinedButton(
-                              onPressed: () {
+                              onPressed: () async {
                                 if (_formKey.currentState!.validate()) {
                                   _formKey.currentState!.save();
-                                  auth.signupWithMailAndPass(mail, password);
-
-                                  //TODO  getUser();
+                                  User? result = await auth.signupWithMailAndPass(mail, password);
+                                  if (result != null) {
+                                    await result.updateDisplayName(username);
+                                    await AppFirestore.addUserToFirestore(username);
+                                    Navigator.pushNamed(context, '/login');
+                                  }
+                                  // TODO: If person cannot create the account then pop up a message. (1)
                                 }
                               },
                               child: Padding(

@@ -1,4 +1,6 @@
 import 'package:cinaddict/routes/after_login.dart';
+import 'package:cinaddict/routes/profile_view.dart';
+import 'package:cinaddict/services/firestore.dart';
 import 'package:cinaddict/utils/colors.dart';
 import 'package:cinaddict/utils/styles.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -219,13 +221,16 @@ class _LoginState extends State<LoginView> {
                               try {
                                 UserCredential result = await loginUser();
                                 User? user = result.user;
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            AfterLoginDummy(user: user)));
+                                if (user != null && user.displayName != null) {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ProfileView(
+                                              username: user.displayName!)));
+                                }
                               } on FirebaseAuthException catch (e) {
-                                print('Error Catched in Login: ${e.toString()}');
+                                print(
+                                    'Error Catched in Login: ${e.toString()}');
                                 if (e.code == 'user-not-found') {
                                   signupUser();
                                 } else if (e.code == 'wrong-password') {
