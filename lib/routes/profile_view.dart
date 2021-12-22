@@ -1,6 +1,7 @@
 
 import 'package:cinaddict/utils/colors.dart';
 import 'package:cinaddict/models/user.dart';
+import 'package:cinaddict/routes/structure.dart';
 import 'package:cinaddict/services/firestore.dart';
 import 'package:cinaddict/utils/styles.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -22,9 +23,11 @@ class ProfileView extends StatefulWidget {
 
 class _ProfileViewState extends State<ProfileView> {
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       appBar: AppBar(
         backgroundColor: AppColors.alternativeRed,
         automaticallyImplyLeading: false,
@@ -68,6 +71,7 @@ class _ProfileViewState extends State<ProfileView> {
                 ],
               );
             }
+
 
             User user = snapshot.data;
 
@@ -299,6 +303,7 @@ class _ProfileViewState extends State<ProfileView> {
 
           }
 
+
           return Center(
             child: SpinKitFadingCircle(
               color: Colors.white,
@@ -308,7 +313,6 @@ class _ProfileViewState extends State<ProfileView> {
           );
 
         },
-
 
     );
   }
