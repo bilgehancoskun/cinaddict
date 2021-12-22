@@ -1,5 +1,5 @@
-//import 'dart:html';
 
+import 'package:cinaddict/utils/colors.dart';
 import 'package:cinaddict/models/user.dart';
 import 'package:cinaddict/services/firestore.dart';
 import 'package:cinaddict/utils/styles.dart';
@@ -71,9 +71,115 @@ class _ProfileViewState extends State<ProfileView> {
 
             User user = snapshot.data;
 
-            return Column(
-
+            return  Column(
               children: [
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 12.0, 0, 12.0),
+                        child: CircleAvatar(
+                          child: ClipOval(
+                              child: Image.asset("lib/assets/cinaddict_logo.png")
+                          ),
+                          radius: 50,
+                        ),
+                      ),
+                      Column(
+                        children: [
+                          SizedBox(height:24.0,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      "${user.posts.length}",
+                                      style: AppTextStyle.whiteTextStyle,
+                                    ),
+                                    Padding(
+                                        padding: const EdgeInsets.fromLTRB(0, 8.0, 0,0)
+                                    ),
+                                    Text(
+                                      "Posts",
+                                      style: AppTextStyle.lighterbiggerTextStyle,
+                                    ),
+
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      "${user.followers.length}",
+                                      style: AppTextStyle.whiteTextStyle,
+                                    ),
+                                    Padding(
+                                        padding: const EdgeInsets.fromLTRB(0, 8.0, 0,0)
+                                    ),
+                                    Text(
+                                      "Followers",
+                                      style: AppTextStyle.lighterbiggerTextStyle,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      "${user.following.length}",
+                                      style: AppTextStyle.whiteTextStyle,
+                                    ),
+                                    Padding(
+                                        padding: const EdgeInsets.fromLTRB(0, 8.0, 0,0)
+                                    ),
+                                    Text(
+                                      "Following",
+                                      style: AppTextStyle.lighterbiggerTextStyle,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              OutlinedButton(
+                                onPressed: (){},
+                                child: Text(
+                                  "Follow",
+                                  style: AppTextStyle.darkTextStyle,
+                                ),
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(AppColors.white),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                              ),
+                              OutlinedButton(
+                                onPressed: (){},
+                                child: Text(
+                                  "Message",
+                                  style: AppTextStyle.darkTextStyle,
+                                ),
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(AppColors.white),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+
+                    ],
+                  ),
                // Text("Username: ${user.username}"),
                 SizedBox(
                   height: 120,
@@ -190,10 +296,6 @@ class _ProfileViewState extends State<ProfileView> {
                   ],
 
                 )
-              ],
-
-            );
-
 
           }
 
