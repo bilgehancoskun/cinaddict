@@ -57,7 +57,6 @@ class _ProfileViewState extends State<ProfileView> {
         ),
 
 
-      );
       body: FutureBuilder(
         future: AppFirestore.getUser(widget.username),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -185,9 +184,6 @@ class _ProfileViewState extends State<ProfileView> {
                     ],
                   ),
                // Text("Username: ${user.username}"),
-                SizedBox(
-                  height: 120,
-                ),
                 Container(
                 // width: 200.0,
                 height: 30.0,
@@ -299,7 +295,7 @@ class _ProfileViewState extends State<ProfileView> {
                     ),
                   ],
 
-                )
+                )]);
 
           }
 
@@ -314,6 +310,6 @@ class _ProfileViewState extends State<ProfileView> {
 
         },
 
-    );
+    ));
   }
 }

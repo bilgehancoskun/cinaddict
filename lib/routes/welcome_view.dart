@@ -1,3 +1,4 @@
+import 'package:cinaddict/utils/colors.dart';
 import 'package:cinaddict/utils/styles.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
@@ -13,15 +14,22 @@ class WelcomeView extends StatefulWidget {
 
 class WelcomeView1 extends State<WelcomeView> {
   List<Color> colorList = [
+    /*
     Colors.blueGrey,
     Colors.deepOrange,
     Colors.deepPurpleAccent,
     Colors.black38,
     const Color(0xffacc271)
+     */
+    AppColors.primaryRed,
+    AppColors.white,
+    AppColors.alternativeRed,
+    AppColors.yellow,
+    AppColors.secondaryRed
   ];
   int index = 0;
   Color bottomColor = Colors.deepOrange;
-  Color topColor = Colors.black;
+  Color topColor = AppColors.yellow;
   Alignment begin = Alignment.bottomLeft;
   Alignment end = Alignment.topRight;
   void initState(){
