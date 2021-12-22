@@ -1,4 +1,5 @@
 import 'package:cinaddict/models/user.dart';
+import 'package:cinaddict/routes/new_post.dart';
 import 'package:cinaddict/services/firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +41,12 @@ class _ProfileViewState extends State<ProfileView> {
             return Column(
               children: [
                 Text("Username: ${user.username}"),
+                TextButton(
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => NewPost(username: user.username,)));
+                    },
+                    child: Text('Add Post')
+                )
               ],
             );
 

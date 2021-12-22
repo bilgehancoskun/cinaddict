@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'comment.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class Comment {
   Comment(
       this.dislikeCount,
