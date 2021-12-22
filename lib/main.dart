@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:cinaddict/routes/feed_view.dart';
 import 'package:cinaddict/utils/app_shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -9,15 +11,20 @@ import 'routes/signup_view.dart';
 import 'routes/walkthrough_view.dart';
 import 'routes/welcome_view.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:cinaddict/routes/structure.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await AppSharedPreferences.init();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  runZonedGuarded<Future<void>>(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await AppSharedPreferences.init();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
 
-  runApp(App());
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+
+    runApp(App());
+  }, (error, stack) => FirebaseCrashlytics.instance.recordError(error, stack));
 }
 
 class App extends StatelessWidget {
@@ -28,15 +35,13 @@ class App extends StatelessWidget {
   static FirebaseAnalyticsObserver observer =
       FirebaseAnalyticsObserver(analytics: analytics);
 
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorObservers: [
-
         observer,
       ],
-      initialRoute: '/walkthrough',
+      initialRoute: decideInitialRoute(),
       routes: {
         '/walkthrough': (context) => WalkthroughView(
               analytics: analytics,
@@ -54,6 +59,11 @@ class App extends StatelessWidget {
               analytics: analytics,
               observer: observer,
             ),
+        '/feed': (context) => FeedView(
+              analytics: analytics,
+              observer: observer,
+            )
+
       },
       theme: ThemeData.dark(),
     );
@@ -64,4 +74,3 @@ String decideInitialRoute() {
   bool isFirstLaunched = AppSharedPreferences.getIsFirstLaunch();
   return isFirstLaunched ? '/walkthrough' : '/welcome';
 }
-

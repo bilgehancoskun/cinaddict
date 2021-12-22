@@ -1,3 +1,7 @@
+import 'package:cinaddict/routes/after_login.dart';
+import 'package:cinaddict/routes/profile_view.dart';
+import 'package:cinaddict/routes/structure.dart';
+import 'package:cinaddict/services/firestore.dart';
 import 'package:cinaddict/utils/colors.dart';
 import 'package:cinaddict/utils/styles.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -9,7 +13,6 @@ import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flare_flutter/flare_actor.dart';
-//TODO
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:cinaddict/services/auth.dart';
@@ -17,7 +20,8 @@ import 'package:cinaddict/services/auth.dart';
 //login branch test
 
 class LoginView extends StatefulWidget {
-  const LoginView({Key? key, required this.analytics, required this.observer}) : super(key: key);
+  const LoginView({Key? key, required this.analytics, required this.observer})
+      : super(key: key);
   final FirebaseAnalytics analytics;
   final FirebaseAnalyticsObserver observer;
 
@@ -38,45 +42,32 @@ class _LoginState extends State<LoginView> {
     });
   }
 
- FirebaseAuth auth = FirebaseAuth.instance;
+  FirebaseAuth auth = FirebaseAuth.instance;
 
   Future<void> signupUser() async {
     try {
-      UserCredential userCredential = await auth.createUserWithEmailAndPassword(email: mail, password: password);
+      UserCredential userCredential = await auth.createUserWithEmailAndPassword(
+          email: mail, password: password);
       print(userCredential.toString());
     } on FirebaseAuthException catch (e) {
       print(e.toString());
-      if(e.code == 'email-already-in-use') {
+      if (e.code == 'email-already-in-use') {
         setmessage('This email is already in use');
-      }
-      else if(e.code == 'weak-password') {
-        setmessage('Weak password, add uppercase, lowercase, digit, special character, emoji, etc.');
-      }
-    }
-  }
-
-  Future<void> loginUser() async {
-    try {
-      UserCredential userCredential = await auth.signInWithEmailAndPassword(
-          email: mail,
-          password: password
-      );
-      print(userCredential.toString());
-
-    } on FirebaseAuthException catch (e) {
-      print(e.toString());
-      if(e.code == 'user-not-found') {
-        signupUser();
-      }
-      else if (e.code == 'wrong-password') {
-        setmessage('Please check your password');
+      } else if (e.code == 'weak-password') {
+        setmessage(
+            'Weak password, add uppercase, lowercase, digit, special character, emoji, etc.');
       }
     }
   }
 
+  Future<UserCredential> loginUser() async {
+    UserCredential userCredential =
+    await auth.signInWithEmailAndPassword(email: mail, password: password);
+
+    return userCredential;
+  }
 
 //  AuthService auth = AuthService();
-
 
   @override
   void initState() {
@@ -133,7 +124,7 @@ class _LoginState extends State<LoginView> {
                                 width: 2.0,
                               ),
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(0)),
+                              BorderRadius.all(Radius.circular(0)),
                             ),
                           ),
                           keyboardType: TextInputType.emailAddress,
@@ -145,9 +136,10 @@ class _LoginState extends State<LoginView> {
                               if (trimmedValue.isEmpty) {
                                 return 'E-mail field cannot be empty';
                               }
-                              if(!EmailValidator.validate(trimmedValue)) {//TODO ADD email_validator 2.0.1 from pub.dev
+                              if (!EmailValidator.validate(trimmedValue)) {
+                                //TODO ADD email_validator 2.0.1 from pub.dev
                                 return 'Please enter a valid email';
-                               }
+                              }
                             }
                             return null;
                           },
@@ -183,7 +175,7 @@ class _LoginState extends State<LoginView> {
                                 width: 2.0,
                               ),
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(0)),
+                              BorderRadius.all(Radius.circular(0)),
                             ),
                           ),
                           keyboardType: TextInputType.text,
@@ -226,18 +218,31 @@ class _LoginState extends State<LoginView> {
                     children: [
                       Expanded(
                         child: OutlinedButton(
-                          onPressed: () {
+                          onPressed: () async {
                             //TODO
                             if (_formKey.currentState!.validate()) {
                               print(
                                   'Mail: ' + mail + "\nPassword: " + password);
                               _formKey.currentState!.save();
-                              loginUser();
-                             // ScaffoldMessenger.of(context)
-                                  //  .showSnackBar(SnackBar(content: Text('Logging in')));
-                             // auth.loginWithMailAndPass(mail, password);
-                              print(
-                                  'Mail: ' + mail + "\nPassword: " + password);
+                              try {
+                                UserCredential result = await loginUser();
+                                User? user = result.user;
+                                if (user != null && user.displayName != null) {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => Structure(username: user.displayName!,)));
+                                }
+                              } on FirebaseAuthException catch (e) {
+                                print(
+                                    'Error Catched in Login: ${e.toString()}');
+                                if (e.code == 'user-not-found') {
+                                  signupUser();
+                                } else if (e.code == 'wrong-password') {
+                                  setmessage('Please check your password');
+                                }
+                              }
+
                               //TODO  getUser();
                             } else {
                               setState(() {
@@ -266,14 +271,15 @@ class _LoginState extends State<LoginView> {
                     children: [
                       Expanded(
                         child: OutlinedButton(
-                          onPressed: () {
-
+                          onPressed: () async {
                             Future<UserCredential> signInWithGoogle() async {
                               // Trigger the authentication flow
-                              final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+                              final GoogleSignInAccount? googleUser =
+                              await GoogleSignIn().signIn();
 
                               // Obtain the auth details from the request
-                              final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+                              final GoogleSignInAuthentication? googleAuth =
+                              await googleUser?.authentication;
 
                               // Create a new credential
                               final credential = GoogleAuthProvider.credential(
@@ -282,36 +288,42 @@ class _LoginState extends State<LoginView> {
                               );
 
                               // Once signed in, return the UserCredential
-                              return await FirebaseAuth.instance.signInWithCredential(credential);
+                              return await FirebaseAuth.instance
+                                  .signInWithCredential(credential);
                             }
-                            signInWithGoogle();
 
-
+                            UserCredential result = await signInWithGoogle();
+                            User? user = result.user;
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        AfterLoginDummy(user: user)));
                           },
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 12.0),
-                            child:Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-
-                                SizedBox(
-                                  height: 18,
-                                  child: Image(
-                                    image: AssetImage('lib/assets/Google_Logo.png'),
+                              padding:
+                              const EdgeInsets.symmetric(vertical: 12.0),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    height: 18,
+                                    child: Image(
+                                      image: AssetImage(
+                                          'lib/assets/Google_Logo.png'),
+                                    ),
                                   ),
-
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(85, 0, 0, 0),
-                                  child: Text(
-                                    'Login with Google',
-                                    style: AppTextStyle.lighterbiggerTextStyle,
+                                  Padding(
+                                    padding:
+                                    const EdgeInsets.fromLTRB(50, 0, 0, 0),
+                                    child: Text(
+                                      'Login / Sign Up with Google',
+                                      style:
+                                      AppTextStyle.lighterbiggerTextStyle,
+                                    ),
                                   ),
-                                ),
-                              ],
-                            )
-
-                          ),
+                                ],
+                              )),
                           style: AppButtonStyle.primaryGreyButton,
                         ),
                       ),
