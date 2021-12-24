@@ -51,4 +51,24 @@ class AppFirestore {
     updateUser(username, 'posts', jsonUser['posts']);
     return true;
   }
+
+  static Future<List<User>> searchUser(String keyword) async {
+    List<User> userList = [];
+    QuerySnapshot<Map<String, dynamic>> searchResult;
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    print(keyword);
+    Query userQuery = users.where('username', isGreaterThanOrEqualTo: keyword,
+      isLessThan: keyword.substring(0, keyword.length - 1) +
+          String.fromCharCode(keyword.codeUnitAt(keyword.length - 1) + 1),);
+    searchResult = await userQuery.get() as QuerySnapshot<Map<String, dynamic>>;
+    if (searchResult.docs.isNotEmpty) {
+      for (int i = 0; i < searchResult.docs.length; i++) {
+         userList.add(
+           User.fromJson(searchResult.docs[i].data())
+         );
+      }
+    }
+
+    return userList;
+  }
 }
