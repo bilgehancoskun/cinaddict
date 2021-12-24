@@ -11,7 +11,6 @@ import 'routes/signup_view.dart';
 import 'routes/walkthrough_view.dart';
 import 'routes/welcome_view.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:cinaddict/routes/structure.dart';
 
 Future<void> main() async {
   runZonedGuarded<Future<void>>(() async {

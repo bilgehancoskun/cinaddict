@@ -11,6 +11,8 @@ class _NotificationPage extends State<NotificationPage>{
     return Scaffold(
       appBar: AppBar(
         title: Text('Notification Page'),
+        automaticallyImplyLeading: false,
+        centerTitle: true,
       ),
     );
   }

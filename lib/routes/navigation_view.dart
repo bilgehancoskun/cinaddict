@@ -11,6 +11,8 @@ class _NavigationPage extends State<NavigationPage>{
     return Scaffold(
       appBar: AppBar(
         title: Text('Navigation Page'),
+        automaticallyImplyLeading: false,
+        centerTitle: true,
       ),
     );
   }

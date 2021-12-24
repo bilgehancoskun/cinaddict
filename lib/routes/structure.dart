@@ -37,7 +37,7 @@ class _StructureState extends State<Structure> {
     return  Scaffold(
       body: pages[currentIndex],
             bottomNavigationBar:BottomNavigationBar(type: BottomNavigationBarType.fixed,
-                backgroundColor: AppColors.alternativeRed,
+                backgroundColor: AppColors.lightGrey,
                 selectedItemColor: AppColors.yellow,
                 unselectedItemColor: AppColors.white,
                 iconSize: 25,
@@ -69,7 +69,7 @@ class _StructureState extends State<Structure> {
 
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.accessible_forward_rounded),
+                    icon: Icon(Icons.person),
                     label:'Profile',
 
                   ),

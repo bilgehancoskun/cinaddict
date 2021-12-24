@@ -40,9 +40,7 @@ class AppFirestore {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
     DocumentSnapshot snapshot = await users.doc(username).get();
     Map<String, dynamic> userJson = snapshot.data() as Map<String, dynamic>;
-    print(userJson);
     User user = User.fromJson(userJson);
-    print(user);
     return user;
   }
 

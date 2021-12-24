@@ -10,6 +10,8 @@ class _MoviePage extends State<MoviePage>{
     return Scaffold(
       appBar: AppBar(
         title: Text('Movie Page'),
+        automaticallyImplyLeading: false,
+        centerTitle: true,
       ),
     );
   }
