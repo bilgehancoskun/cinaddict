@@ -28,14 +28,12 @@ class _NavigationPage extends State<NavigationPage>{
                padding: const EdgeInsets.fromLTRB(8, 16, 8, 8),
                   child: Expanded(
                     child: Image.network("https://upload.wikimedia.org/wikipedia/tr/9/97/Joker_%28film%29.jpg",
-                    width: MediaQuery.of(context).size.width/3.7,
+                    width: MediaQuery.of(context).size.width/3.4,
                     ),
                   ),
                 ),
-                Expanded(
-                  flex: 1,
-                  child: Image.network("https://i.ytimg.com/vi/2u_9nLfs8SI/maxresdefault.jpg",
-                  ),
+                Image.network("https://m.media-amazon.com/images/M/MV5BN2FjNmEyNWMtYzM0ZS00NjIyLTg5YzYtYThlMGVjNzE1OGViXkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_.jpg",
+                  width: 128,
                 ),
                 Expanded(
                   flex: 1,
