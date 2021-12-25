@@ -6,7 +6,7 @@ class NotificationPage extends StatefulWidget{
   _NotificationPage createState() => _NotificationPage();
 }
 class _NotificationPage extends State<NotificationPage>{
-  int counter =0;
+  int counter = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
