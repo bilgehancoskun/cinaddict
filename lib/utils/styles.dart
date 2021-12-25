@@ -54,3 +54,32 @@ class AppButtonStyle {
     backgroundColor: AppColors.midGrey,
   );
 }
+
+class TextWithIcon extends StatelessWidget {
+  final IconData icon;
+  final String text;
+  final double spacing;
+  final Function onPressed;
+  const TextWithIcon({Key? key, required this.icon, required this.text, this.spacing = 2, required this.onPressed}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed:() async {
+       await onPressed();
+      },
+
+
+      padding: const EdgeInsets.all(8),
+      icon: Column(
+
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon),
+          SizedBox(height: spacing),
+          Text(text),
+        ],
+      ),
+    );
+  }
+}
