@@ -15,34 +15,37 @@ class _NavigationPage extends State<NavigationPage>{
         automaticallyImplyLeading: false,
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Image.network("https://img3.aksam.com.tr/imgsdisk/2021/11/17/t25_spider-man-no-way-home-ne-384.jpg",
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Padding(
-               padding: const EdgeInsets.fromLTRB(8, 16, 8, 8),
-                  child: Expanded(
-                    child: Image.network("https://upload.wikimedia.org/wikipedia/tr/9/97/Joker_%28film%29.jpg",
-                    width: MediaQuery.of(context).size.width/3.4,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Image.network("https://img3.aksam.com.tr/imgsdisk/2021/11/17/t25_spider-man-no-way-home-ne-384.jpg",
+              ),
+              SizedBox(height: 8,),
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                     Expanded(
+                       flex: 1,
+                        child: Image.network("https://upload.wikimedia.org/wikipedia/tr/9/97/Joker_%28film%29.jpg",
+                        ),
+                      ),
+                    Expanded(
+                      flex: 1,
+                      child: Image.network("https://m.media-amazon.com/images/M/MV5BN2FjNmEyNWMtYzM0ZS00NjIyLTg5YzYtYThlMGVjNzE1OGViXkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_.jpg",
+                      ),
                     ),
-                  ),
+                    Expanded(
+                      flex: 1,
+                      child: Image.network("https://i.ytimg.com/vi/ePpJDKfRAyM/movieposter.jpg"),
+                    ),
+                  ],
                 ),
-                Image.network("https://m.media-amazon.com/images/M/MV5BN2FjNmEyNWMtYzM0ZS00NjIyLTg5YzYtYThlMGVjNzE1OGViXkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_.jpg",
-                  width: 128,
-                ),
-                Expanded(
-                  flex: 1,
-                  child: Image.network("https://i.ytimg.com/vi/ePpJDKfRAyM/movieposter.jpg"),
-                ),
-              ],
-            ),
-            Image.network("https://stayhipp.com/wp-content/uploads/2019/07/New.jpg")
-          ],
+              SizedBox(height: 8,),
+              Image.network("https://stayhipp.com/wp-content/uploads/2019/07/New.jpg")
+            ],
+          ),
         ),
       ),
     );
