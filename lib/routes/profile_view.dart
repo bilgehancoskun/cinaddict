@@ -1,5 +1,5 @@
 import 'package:cinaddict/routes/new_post.dart';
-import 'package:cinaddict/services/localcache.dart';
+import 'package:cinaddict/utils/shared_preferences.dart';
 import 'package:cinaddict/utils/colors.dart';
 import 'package:cinaddict/models/user.dart';
 import 'package:cinaddict/services/firestore.dart';
@@ -22,27 +22,17 @@ class _ProfileViewState extends State<ProfileView> {
 
   late User user = widget.user;
 
-  Future<void> _setUser() async {
-    User? _user = await LocalCache.getLocalUser();
-    if (_user != null) {
-      setState(() {
-        user = _user;
-      });
-    }
-    User userFromFirebase = await AppFirestore.getUser(user.username);
-    await LocalCache.saveJsonUser(userFromFirebase);
+  Future<void> _getUser() async {
+    User _user = await AppFirestore.getUser(user.username);
     setState(() {
-      user = userFromFirebase;
+      user = _user;
     });
   }
 
   Widget? setBody() {
       return RefreshIndicator(
         onRefresh: () async {
-          User _user = await AppFirestore.getUser(user.username);
-          setState(() {
-            user = _user;
-          });
+          await _getUser();
         },
         child: SingleChildScrollView(
           physics: AlwaysScrollableScrollPhysics(
@@ -268,6 +258,12 @@ class _ProfileViewState extends State<ProfileView> {
                 )]),
         ),
       );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getUser();
   }
 
 

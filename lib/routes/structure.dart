@@ -1,5 +1,5 @@
 import 'package:cinaddict/models/user.dart';
-import 'package:cinaddict/utils/app_shared_preferences.dart';
+import 'package:cinaddict/utils/shared_preferences.dart';
 import 'package:cinaddict/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:cinaddict/routes/home_view.dart';

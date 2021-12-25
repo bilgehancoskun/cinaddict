@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:ffi';
 import 'package:cinaddict/routes/feed_view.dart';
 import 'package:cinaddict/routes/structure.dart';
-import 'package:cinaddict/utils/app_shared_preferences.dart';
+import 'package:cinaddict/utils/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';

@@ -3,7 +3,7 @@ import 'package:cinaddict/routes/after_login.dart';
 import 'package:cinaddict/routes/profile_view.dart';
 import 'package:cinaddict/routes/structure.dart';
 import 'package:cinaddict/services/firestore.dart';
-import 'package:cinaddict/utils/app_shared_preferences.dart';
+import 'package:cinaddict/utils/shared_preferences.dart';
 import 'package:cinaddict/utils/colors.dart';
 import 'package:cinaddict/utils/styles.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';

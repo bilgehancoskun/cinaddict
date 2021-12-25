@@ -1,4 +1,4 @@
-import 'package:cinaddict/utils/app_shared_preferences.dart';
+import 'package:cinaddict/utils/shared_preferences.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:cinaddict/utils/colors.dart';
