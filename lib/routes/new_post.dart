@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 
 class NewPost extends StatefulWidget {
   const NewPost({Key? key, required this.username}) : super(key: key);
@@ -16,6 +17,7 @@ class NewPost extends StatefulWidget {
 }
 
 class _NewPostState extends State<NewPost> {
+  Image _image = Image(image: AssetImage('lib/assets/cinaddict_logo.png'));
 
   // Return image name if succeeded else return 'no-path'
   Future<String> uploadFromCamera() async {
@@ -74,6 +76,10 @@ class _NewPostState extends State<NewPost> {
                   String imageName = await uploadFromCamera();
                   Post newPost = Post(imageName, '', 5, 5, []);
                   AppFirestore.addPost(widget.username, newPost);
+                  Image image = await AppFirestore.getPostImageFromName(widget.username, imageName);
+                  setState(() {
+                    _image = image;
+                  });
                 },
                 child: Text('Upload Image From Camera')
             ),
@@ -82,9 +88,14 @@ class _NewPostState extends State<NewPost> {
                   String imageName = await uploadFromGallery();
                   Post newPost = Post(imageName, '', 5, 5, []);
                   AppFirestore.addPost(widget.username, newPost);
+                  Image image = await AppFirestore.getPostImageFromName(widget.username, imageName);
+                  setState(() {
+                    _image = image;
+                  });
                 },
                 child: Text('Upload Image From Gallery')
             ),
+              _image, // Image()
           ],
         ),
       ),
