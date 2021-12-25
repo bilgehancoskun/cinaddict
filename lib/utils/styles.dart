@@ -15,15 +15,44 @@ class AppTextStyle {
     fontSize: 14.0,
     letterSpacing: -0.7,
   );
+  static const lightestsmallTextStyle = TextStyle(
+    color: AppColors.lightestGrey,
+    fontSize: 11.0,
+    letterSpacing: -0.7,
+  );
   static const lighterbiggerTextStyle = TextStyle(
     color: AppColors.lighterGrey,
     fontSize: 16.0,
     letterSpacing: -0.7,
   );
+  static const lighterbiggerboldTextStyle = TextStyle(
+    color: AppColors.lighterGrey,
+    fontSize: 16.0,
+    letterSpacing: -0.7,
+    fontWeight:  FontWeight.bold,
+  );
+
   static const darkTextStyle = TextStyle(
     color: AppColors.black,
     fontSize: 16.0,
     letterSpacing: 0.3,
+  );
+  static const darksmallerTextStyle = TextStyle(
+    color: AppColors.black,
+    fontSize: 14.0,
+    letterSpacing: 0.0,
+  );
+  static const darksmallestTextStyle = TextStyle(
+    color: AppColors.black,
+    fontSize: 10.0,
+    letterSpacing: 0.0,
+  );
+  static const darkboldTextStyle = TextStyle(
+    color: AppColors.black,
+    fontSize: 16.0,
+    letterSpacing: 0.3,
+    fontWeight:  FontWeight.bold,
+
   );
 
   static const whiteTextStyle = TextStyle(

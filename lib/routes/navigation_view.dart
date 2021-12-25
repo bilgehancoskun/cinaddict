@@ -35,8 +35,8 @@ class _NavigationPage extends State<NavigationPage> {
                             flex: 1,
                             child: TextFormField(
                               decoration: InputDecoration(
-
-                                contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                                contentPadding:
+                                    EdgeInsets.fromLTRB(10, 10, 10, 0),
                                 //fillColor: Colors.grey,
                                 //filled: true,
                                 hintText: 'Search:',
@@ -52,7 +52,7 @@ class _NavigationPage extends State<NavigationPage> {
                                     color: Colors.white,
                                   ),
                                   borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
+                                      BorderRadius.all(Radius.circular(10)),
                                 ),
                               ),
                               onSaved: (value) async {
@@ -77,11 +77,10 @@ class _NavigationPage extends State<NavigationPage> {
                       SizedBox(height: 10),
                       for (User user in searchResults)
                         OutlinedButton(
-                          onPressed: (){},
+                          onPressed: () {},
                           style: OutlinedButton.styleFrom(
                             side: BorderSide(width: 1.0, color: Colors.grey),
                           ),
-
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -93,7 +92,9 @@ class _NavigationPage extends State<NavigationPage> {
                                   color: Colors.grey,
                                 ),
                               ),
-                              SizedBox(width: 90,),
+                              SizedBox(
+                                width: 90,
+                              ),
                               SizedBox(
                                 child: Image.network(
                                   'https://picsum.photos/250?image=9',
@@ -103,6 +104,39 @@ class _NavigationPage extends State<NavigationPage> {
                             ],
                           ),
                         ),
+                      Image.network(
+                        "https://img3.aksam.com.tr/imgsdisk/2021/11/17/t25_spider-man-no-way-home-ne-384.jpg",
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: Image.network(
+                              "https://upload.wikimedia.org/wikipedia/tr/9/97/Joker_%28film%29.jpg",
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Image.network(
+                              "https://m.media-amazon.com/images/M/MV5BN2FjNmEyNWMtYzM0ZS00NjIyLTg5YzYtYThlMGVjNzE1OGViXkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_.jpg",
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Image.network(
+                                "https://i.ytimg.com/vi/ePpJDKfRAyM/movieposter.jpg"),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Image.network(
+                          "https://stayhipp.com/wp-content/uploads/2019/07/New.jpg")
                     ],
                   )))),
     );

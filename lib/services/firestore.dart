@@ -2,6 +2,8 @@ import 'package:cinaddict/models/post.dart';
 import 'package:cinaddict/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager_firebase/flutter_cache_manager_firebase.dart';
+import 'dart:io';
 
 class AppFirestore {
   static Future<void> addUserToFirestore(String username) async {
@@ -71,4 +73,11 @@ class AppFirestore {
 
     return userList;
   }
+
+  static Future<Image> getPostImageFromName(String username, String imageName) async {
+    String imagePath = '$username/posts/$imageName';
+    File file = await FirebaseCacheManager().getSingleFile(imagePath);
+    return Image(image: FileImage(file),);
+  }
+
 }
