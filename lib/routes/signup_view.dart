@@ -8,17 +8,26 @@ import 'package:flutter/material.dart';
 import 'package:cinaddict/services/auth.dart';
 import 'package:email_validator/email_validator.dart';
 
-class SignUpView extends StatelessWidget {
+class SignUpView extends StatefulWidget {
   SignUpView({Key? key, required this.analytics, required this.observer}) : super(key: key);
   final FirebaseAnalytics analytics;
   final FirebaseAnalyticsObserver observer;
+
+  @override
+  State<SignUpView> createState() => _SignUpViewState();
+}
+
+class _SignUpViewState extends State<SignUpView> {
   final _formKey = GlobalKey<FormState>();
+
   String mail = "";
   String password = "";
   String passwordCheck="";
   String username = "";
   final validCharacters = RegExp(r'^[a-zA-Z0-9]+$');
+
   AuthService auth=AuthService();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -239,7 +248,7 @@ class SignUpView extends StatelessWidget {
                                   User? result = await auth.signupWithMailAndPass(mail, password);
                                   if (result != null) {
                                     await result.updateDisplayName(username);
-                                    await AppFirestore.addUserToFirestore(username);
+                                    await AppFirestore.addUserToFirestore(username: username);
                                     Navigator.pushNamed(context, '/login');
                                   }
                                   // TODO: If person cannot create the account then pop up a message. (1)

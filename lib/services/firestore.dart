@@ -7,18 +7,18 @@ import 'package:flutter_cache_manager_firebase/flutter_cache_manager_firebase.da
 import 'dart:io';
 
 class AppFirestore {
-  static Future<void> addUserToFirestore(String username) async {
+  static Future<void> addUserToFirestore({required String username, String displayName = '', String description = ''}) async {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
 
     return users
         .doc(username)
         .set({
-      'displayName': '',
+      'displayName': displayName,
       'username': username,
       'posts': [],
       'followers': [],
       'following': [],
-      'description': '',
+      'description': description,
       'isPrivate': false,
     })
         .then((value) => print("User Added: $username"))

@@ -14,7 +14,7 @@ class User {
       this.isPrivate,
       this.posts
       );
-
+  // TODO: Implement profile picture
   String username;
   String displayName;
   bool isPrivate;

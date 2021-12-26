@@ -230,6 +230,9 @@ class _LoginState extends State<LoginView> {
                                 UserCredential result = await loginUser();
                                 User? user = result.user;
                                 if (user != null && user.displayName != null) {
+                                  await AppSharedPreferences.setLoggedIn(true);
+                                  CinaddictUser.User userFromFirebase = await AppFirestore.getUser(user.displayName!);
+                                  await AppSharedPreferences.saveJsonUser(userFromFirebase);
                                   Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
@@ -296,11 +299,14 @@ class _LoginState extends State<LoginView> {
 
                             UserCredential result = await signInWithGoogle();
                             User? user = result.user;
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        AfterLoginDummy(user: user)));
+                            if (user != null) {
+                              print(user.email!.split("@"));
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          AfterLoginDummy(user: user)));
+                            }
                           },
                           child: Padding(
                               padding:
@@ -334,7 +340,7 @@ class _LoginState extends State<LoginView> {
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.pushNamed(
+                    Navigator.pushReplacementNamed(
                         context, '/signup'); //TODO change to go to  help?
                   },
                   child: Text(
@@ -349,7 +355,7 @@ class _LoginState extends State<LoginView> {
 
                 TextButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/signup');
+                    Navigator.pushReplacementNamed(context, '/signup');
                   },
                   child: Text(
                     "Sign Up",

@@ -75,10 +75,15 @@ String decideInitialRoute() {
     return '/walkthrough';
   }
   bool isLoggedIn = AppSharedPreferences.getLoggedIn();
-  return isLoggedIn ? '/structure' : '/welcome';
+  User? user = AppSharedPreferences.getLocalUser();
+  if (isLoggedIn && user != null)
+    return '/structure';
+
+  return '/welcome';
 }
 
 User getUser() {
   User? user = AppSharedPreferences.getLocalUser();
+  print(user);
   return user!;
 }
