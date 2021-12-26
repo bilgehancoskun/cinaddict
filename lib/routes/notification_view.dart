@@ -1,3 +1,4 @@
+import 'package:cinaddict/routes/follow_requests.view.dart';
 import 'package:flutter/material.dart';
 import 'package:cinaddict/utils/styles.dart';
 import 'package:cinaddict/utils/colors.dart';
@@ -29,29 +30,33 @@ class _NotificationPage extends State<NotificationPage>{
                     radius: 24,
                   ),
                 ),
-                Column(
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => FollowRequests()));
+                  },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(7.0, 0.0, 0, 0.0),
+                        child: Text(
+                          "Follow Requests",
+                          style: AppTextStyle.lighterbiggerboldTextStyle,
 
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(7.0, 0.0, 0, 0.0),
-                      child: Text(
-                        "Follow Requests",
-                        style: AppTextStyle.lighterbiggerboldTextStyle,
-
+                        ),
                       ),
-                    ),
-                    Padding(
+                      Padding(
 
-                      padding: const EdgeInsets.fromLTRB(20.0, 0.0, 0, 0.0),
-                      child: Text(
-                        "daily_movies + 308 more",
-                        style: AppTextStyle.lighterTextStyle,
+                        padding: const EdgeInsets.fromLTRB(20.0, 0.0, 0, 0.0),
+                        child: Text(
+                          "daily_movies + 308 more",
+                          style: AppTextStyle.lighterTextStyle,
 
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 )
               ],
             ),

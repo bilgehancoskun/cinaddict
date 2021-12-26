@@ -16,7 +16,6 @@ class _EditProfileState extends State<EditProfile> {
   Map<String, dynamic> data = {};
   late bool isPrivate = widget.user.isPrivate;
   String? displayName;
-  String? username;
   String? description;
 
   @override
@@ -31,7 +30,6 @@ class _EditProfileState extends State<EditProfile> {
               onPressed: (){
                 _formKey.currentState!.save();
                 data["displayName"]=displayName;
-                data["username"]=username;
                 data["description"]=description;
                 data["IsPrivate"]=isPrivate;
                 Navigator.pop(context, data);
@@ -65,7 +63,7 @@ class _EditProfileState extends State<EditProfile> {
                         style: AppTextStyle.lighterbiggerTextStyle,
                       ),
                       SizedBox(
-                        width: 280,
+                        width: 250,
                         child:TextFormField(
                             decoration: InputDecoration(
                               //fillColor: AppColors.darkGrey,
@@ -82,11 +80,10 @@ class _EditProfileState extends State<EditProfile> {
                               ),
                             ),
                             keyboardType: TextInputType.text,
-                            obscureText: true,
                             enableSuggestions: false,
                             autocorrect: false,
                             onSaved: (value){
-                              if(value == null){
+                              if(value == ''){
                                 displayName=widget.user.displayName;
                               }
                               else{
@@ -104,54 +101,11 @@ class _EditProfileState extends State<EditProfile> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Username: ",
-                      style: AppTextStyle.lighterbiggerTextStyle,
-                    ),
-                    SizedBox(
-                      width: 280,
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          //fillColor: AppColors.darkGrey,
-                          //filled: true,
-                          hintText: '${widget.user.username}',
-                          hintStyle: AppTextStyle.lightTextStyle,
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: AppColors.midGrey,
-                              width: 2.0,
-                            ),
-                            borderRadius:
-                            BorderRadius.all(Radius.circular(0)),
-                          ),
-                        ),
-                        keyboardType: TextInputType.text,
-                        obscureText: true,
-                        enableSuggestions: false,
-                        autocorrect: false,
-                        onSaved: (value){
-                          if(value == null){
-                            username=widget.user.username;
-                          }
-                          else{
-                            username=value;
-                          }
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
                       "Description: ",
                       style: AppTextStyle.lighterbiggerTextStyle,
                     ),
                     SizedBox(
-                      width: 280,
+                      width: 250,
                       child: TextFormField(
                         decoration: InputDecoration(
                           //fillColor: AppColors.darkGrey,
@@ -168,11 +122,10 @@ class _EditProfileState extends State<EditProfile> {
                           ),
                         ),
                         keyboardType: TextInputType.text,
-                        obscureText: true,
                         enableSuggestions: false,
                         autocorrect: false,
                         onSaved: (value){
-                          if(value == null){
+                          if(value == ''){
                             description=widget.user.description;
                           }
                           else{
@@ -196,7 +149,6 @@ class _EditProfileState extends State<EditProfile> {
                       activeColor: Colors.green,
                       value: isPrivate,
                       onChanged:(value){
-                        print(value);
                         setState(() {
                           isPrivate=value;
                         });

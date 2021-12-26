@@ -13,9 +13,10 @@ import 'package:async/async.dart';
 import 'edit_profile_view.dart';
 
 class ProfileView extends StatefulWidget {
-  const ProfileView({Key? key, required this.user}) : super(key: key);
+  const ProfileView({Key? key, required this.user, this.viewOnly = false}) : super(key: key);
 
   final User user;
+  final bool viewOnly;
 
   @override
   State<ProfileView> createState() => _ProfileViewState();
@@ -125,6 +126,7 @@ class _ProfileViewState extends State<ProfileView> {
                       ),
                     ],
                   ),
+                  if (widget.viewOnly)
                   Row(
                     children: [
                       OutlinedButton(
@@ -138,8 +140,8 @@ class _ProfileViewState extends State<ProfileView> {
                               MaterialStateProperty.all(AppColors.white),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
+                      SizedBox(
+                        width: 8,
                       ),
                       OutlinedButton(
                         onPressed: () {},
@@ -175,7 +177,7 @@ class _ProfileViewState extends State<ProfileView> {
                 Expanded(
                   flex: 1,
                   child: Text(
-                    'Charles Dickens', //display_name
+                    user.displayName, //display_name
                     style: AppTextStyle.whiteTextStyle,
                   ),
                 ),
@@ -200,7 +202,7 @@ class _ProfileViewState extends State<ProfileView> {
                 Expanded(
                   flex: 1,
                   child: Text(
-                    'Movie fan/ Part-time blogger', //description
+                    user.description, //description
                     style: AppTextStyle.lighterTextStyle,
                   ),
                 ),
@@ -257,6 +259,7 @@ class _ProfileViewState extends State<ProfileView> {
                 color: Colors.white, fontSize: 18, fontStyle: FontStyle.italic),
           ),
           actions: [
+            if (!widget.viewOnly)
             SizedBox(
               width: 35,
               child: IconButton(
@@ -271,16 +274,23 @@ class _ProfileViewState extends State<ProfileView> {
                 },
               ),
             ),
+            if (!widget.viewOnly)
             SizedBox(
               child: IconButton(
                 icon: Icon(Icons.edit, color: Colors.orangeAccent[300]),
                 onPressed: () async {
-                  Map<String, dynamic> data = await Navigator.push(
+                  Map<String, dynamic>? data = await Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => EditProfile(user: user)))
-                      as Map<String, dynamic>;
-                  print('My name in profile ${data['name']}');
+                      as Map<String, dynamic>?;
+
+                  if (data != null) {
+                    for (String key in data.keys) {
+                      await AppFirestore.updateUser(user.username, key, data[key]);
+                    }
+                    await _futureJobs();
+                  }
                 },
               ),
             ),

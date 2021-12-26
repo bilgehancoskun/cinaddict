@@ -1,4 +1,5 @@
 import 'package:cinaddict/models/user.dart';
+import 'package:cinaddict/routes/profile_view.dart';
 import 'package:cinaddict/services/firestore.dart';
 import 'package:cinaddict/utils/colors.dart';
 import 'package:flutter/material.dart';
@@ -77,7 +78,9 @@ class _NavigationPage extends State<NavigationPage> {
                       SizedBox(height: 10),
                       for (User user in searchResults)
                         OutlinedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileView(user: user, viewOnly: true,)));
+                          },
                           style: OutlinedButton.styleFrom(
                             side: BorderSide(width: 1.0, color: Colors.grey),
                           ),
