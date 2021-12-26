@@ -1,5 +1,6 @@
 import 'package:cinaddict/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTextStyle {
@@ -82,4 +83,17 @@ class AppButtonStyle {
   static ButtonStyle primaryGreyButton = OutlinedButton.styleFrom(
     backgroundColor: AppColors.midGrey,
   );
+}
+
+class LoadingAnimation extends StatelessWidget {
+  const LoadingAnimation({Key? key, this.padding = 80}) : super(key: key);
+  final double padding;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: this.padding),
+      child: SpinKitCubeGrid(color: Colors.white, size: 50.0),
+    );
+  }
 }

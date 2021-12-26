@@ -4,19 +4,21 @@ part 'post.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Post {
-  Post(
+  Post({
       this.image,
       this.description,
       this.likeCount,
       this.dislikeCount,
-      this.comments
-      );
+      this.comments,
+      this.timestamp,
+  });
 
-  String image;
-  String description;
-  int likeCount;
-  int dislikeCount;
-  List<Comment> comments;
+  String? image;
+  String? description;
+  int? likeCount;
+  int? dislikeCount;
+  List<Comment>? comments;
+  DateTime? timestamp;
 
 
 

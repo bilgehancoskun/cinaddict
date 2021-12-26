@@ -230,9 +230,7 @@ class _LoginState extends State<LoginView> {
                                 UserCredential result = await loginUser();
                                 User? user = result.user;
                                 if (user != null && user.displayName != null) {
-                                  AppSharedPreferences.setLoggedIn(true);
-                                  CinaddictUser.User userFromFirebase = await AppFirestore.getUser(user.displayName!);
-                                  Navigator.push(
+                                  Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => Structure(user: userFromFirebase,)));

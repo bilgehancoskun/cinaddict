@@ -1,8 +1,10 @@
 import 'package:cinaddict/models/post.dart';
 import 'package:cinaddict/services/firestore.dart';
 import 'package:cinaddict/utils/colors.dart';
+import 'package:cinaddict/utils/styles.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
@@ -17,48 +19,135 @@ class NewPost extends StatefulWidget {
 }
 
 class _NewPostState extends State<NewPost> {
-  Image _image = Image(image: AssetImage('lib/assets/cinaddict_logo.png'));
+  late Widget _image = createIconButtons();
+  Post newPost = Post();
+  String? imagePath;
+  void initState() {
+    super.initState();
+  }
 
-  // Return image name if succeeded else return 'no-path'
-  Future<String> uploadFromCamera() async {
-    var pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
-    if (pickedFile != null) {
-      String imageName = pickedFile.name;
-      String imagePath = '${widget.username}/posts/$imageName';
-      File file = File(pickedFile.path);
+  Widget createIconButtons() {
+    return Center(
+      child: Column(
 
-      try {
-        await FirebaseStorage.instance
-            .ref(imagePath)
-            .putFile(file);
-        return imageName;
-      } on FirebaseException catch (e) {
-        print("While uploading file error occurred: $e");
-        return 'no-image';
-      }
-    }
-    return 'no-image';
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 80),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                      children: [
+
+                        TextButton(
+                            onPressed: () async {
+                              setState(() {
+                                _image = LoadingAnimation();
+                              });
+                              try {
+                                var pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
+                                if (pickedFile != null) {
+                                  Image image = Image.file(File(pickedFile.path));
+                                  newPost.image = pickedFile.name;
+                                  imagePath = pickedFile.path;
+                                  setState(() {
+                                    _image = image;
+                                  });
+                                }
+                                else {
+                                  setState(() {
+                                    _image = createIconButtons();
+                                  });
+                                }
+
+                              } catch (error) {
+                                setState(() {
+                                  setState(() {
+                                    _image = createIconButtons();
+                                  });
+                                });
+                              }
+                            },
+                            child: Column(
+                              children: [
+                                Icon(Icons.camera, color: AppColors.white, size: 50,),
+                                Text('Take a photo from camera', style: TextStyle(
+                                    color: AppColors.white
+                                ),),
+                              ],
+                            )
+                                  ),
+                      ],
+                    ),
+
+
+
+                 Column(
+                      children: [
+
+                        TextButton(
+                            onPressed: () async {
+                              setState(() {
+                                _image = LoadingAnimation();
+                              });
+                              try {
+                                var pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+                                if (pickedFile != null) {
+                                  Image image = Image.file(File(pickedFile.path));
+                                  newPost.image = pickedFile.name;
+                                  imagePath = pickedFile.path;
+                                  setState(() {
+                                    _image = image;
+                                  });
+                                }
+                                else {
+                                  setState(() {
+                                    _image = createIconButtons();
+                                  });
+                                }
+
+                              } catch (error) {
+                                setState(() {
+                                  setState(() {
+                                    _image = createIconButtons();
+                                  });
+                                });
+                              }
+                            },
+                            child: Column(
+                              children: [
+                                Icon(Icons.album, color: Colors.white, size: 50,),
+                                Text('Select photo from gallery', style: TextStyle(
+                                  color: AppColors.white
+                                ),),
+                              ],
+                            )
+                        ),
+                      ],
+                    ),
+
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   // Return image name if succeeded else return 'no-path'
-  Future<String> uploadFromGallery() async {
-    var pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      String imageName = pickedFile.name;
-      String imagePath = '${widget.username}/posts/$imageName';
-      File file = File(pickedFile.path);
-
-      try {
-        await FirebaseStorage.instance
-            .ref(imagePath)
-            .putFile(file);
-        return imageName;
-      } on FirebaseException catch (e) {
-        print("While uploading file error occurred: $e");
-        return 'no-image';
-      }
+  Future<bool> createPost() async {
+    newPost.timestamp = DateTime.now();
+    if (imagePath != null) {
+      AppFirestore.uploadPostImage(
+          username: widget.username,
+          path: imagePath!,
+          imageName: newPost.image!
+      );
+      AppFirestore.addPost(widget.username, newPost);
+      return true;
     }
-    return 'no-image';
+
+    return false;
   }
 
   @override
@@ -66,37 +155,68 @@ class _NewPostState extends State<NewPost> {
     return Scaffold(
       appBar: AppBar(
         title: Text('New Post'),
-        backgroundColor: AppColors.primaryRed,
+        backgroundColor: AppColors.alternativeRed,
+        actions: [
+          TextButton(
+              onPressed: () async {
+                bool result = await createPost();
+                if(!result) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Text('Select an image!', textAlign: TextAlign.center, style: TextStyle(
+                            color: AppColors.white
+                          ),),
+                          backgroundColor: AppColors.primaryRed,
+                      )
+                    );
+                }
+                else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Text('Post Shared Successfully!', textAlign: TextAlign.center,),
+                        backgroundColor: AppColors.yellow,
+                      )
+                  );
+                  Navigator.pop(context);
+                }
+              },
+              child: Row(
+                children: [
+                  Text('Done ', style: TextStyle(color: AppColors.white),),
+                  Icon(Icons.done, color: AppColors.white,)
+                ],
+              )
+          )
+        ],
       ),
-      body: Center(
-        child: Column(
-          children: [
-            TextButton(
-                onPressed: () async {
-                  String imageName = await uploadFromCamera();
-                  Post newPost = Post(imageName, '', 5, 5, []);
-                  AppFirestore.addPost(widget.username, newPost);
-                  Image image = await AppFirestore.getPostImageFromName(widget.username, imageName);
-                  setState(() {
-                    _image = image;
-                  });
-                },
-                child: Text('Upload Image From Camera')
-            ),
-            TextButton(
-                onPressed: () async {
-                  String imageName = await uploadFromGallery();
-                  Post newPost = Post(imageName, '', 5, 5, []);
-                  AppFirestore.addPost(widget.username, newPost);
-                  Image image = await AppFirestore.getPostImageFromName(widget.username, imageName);
-                  setState(() {
-                    _image = image;
-                  });
-                },
-                child: Text('Upload Image From Gallery')
-            ),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: [
               _image, // Image()
-          ],
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: TextFormField(
+                        minLines: 3,
+                        maxLines: null,
+                        keyboardType: TextInputType.multiline,
+                        decoration: InputDecoration(
+                          fillColor: AppColors.darkGrey,
+                          filled: true,
+                          hintText: 'Write a caption...',
+                          hintStyle: AppTextStyle.lightTextStyle,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
