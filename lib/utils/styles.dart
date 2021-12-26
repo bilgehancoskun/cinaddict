@@ -86,14 +86,24 @@ class AppButtonStyle {
 }
 
 class LoadingAnimation extends StatelessWidget {
-  const LoadingAnimation({Key? key, this.padding = 80}) : super(key: key);
-  final double padding;
+  const LoadingAnimation({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: this.padding),
-      child: SpinKitCubeGrid(color: Colors.white, size: 50.0),
+      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 3),
+      child: Center(
+          child:
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SpinKitCubeGrid(color: Colors.white, size: 50.0),
+              Text('Sharing Post', style: TextStyle(
+                fontSize: 16,
+              ),),
+            ],
+          )
+      ),
     );
   }
 }

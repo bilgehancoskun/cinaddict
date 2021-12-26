@@ -20,6 +20,7 @@ class NewPost extends StatefulWidget {
 
 class _NewPostState extends State<NewPost> {
   late Widget _image = createIconButtons();
+  bool _loadingSwitch = false;
   Post newPost = Post();
   String? imagePath;
   void initState() {
@@ -27,6 +28,9 @@ class _NewPostState extends State<NewPost> {
   }
 
   Widget createIconButtons() {
+    setState(() {
+      _loadingSwitch = false;
+    });
     return Center(
       child: Column(
 
@@ -42,6 +46,7 @@ class _NewPostState extends State<NewPost> {
                         TextButton(
                             onPressed: () async {
                               setState(() {
+                                _loadingSwitch = true;
                                 _image = LoadingAnimation();
                               });
                               try {
@@ -51,6 +56,7 @@ class _NewPostState extends State<NewPost> {
                                   newPost.image = pickedFile.name;
                                   imagePath = pickedFile.path;
                                   setState(() {
+                                    _loadingSwitch = false;
                                     _image = image;
                                   });
                                 }
@@ -88,6 +94,7 @@ class _NewPostState extends State<NewPost> {
                         TextButton(
                             onPressed: () async {
                               setState(() {
+                                _loadingSwitch = true;
                                 _image = LoadingAnimation();
                               });
                               try {
@@ -97,6 +104,7 @@ class _NewPostState extends State<NewPost> {
                                   newPost.image = pickedFile.name;
                                   imagePath = pickedFile.path;
                                   setState(() {
+                                    _loadingSwitch = false;
                                     _image = image;
                                   });
                                 }
@@ -138,12 +146,12 @@ class _NewPostState extends State<NewPost> {
   Future<bool> createPost() async {
     newPost.timestamp = DateTime.now();
     if (imagePath != null) {
-      AppFirestore.uploadPostImage(
+      await AppFirestore.uploadPostImage(
           username: widget.username,
           path: imagePath!,
           imageName: newPost.image!
       );
-      AppFirestore.addPost(widget.username, newPost);
+      await AppFirestore.addPost(widget.username, newPost);
       return true;
     }
 
@@ -159,6 +167,10 @@ class _NewPostState extends State<NewPost> {
         actions: [
           TextButton(
               onPressed: () async {
+                setState(() {
+                  _loadingSwitch = true;
+                  _image = LoadingAnimation();
+                });
                 bool result = await createPost();
                 if(!result) {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -169,6 +181,9 @@ class _NewPostState extends State<NewPost> {
                           backgroundColor: AppColors.primaryRed,
                       )
                     );
+                    setState(() {
+                      _image = createIconButtons();
+                    });
                 }
                 else {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -193,7 +208,8 @@ class _NewPostState extends State<NewPost> {
         child: Center(
           child: Column(
             children: [
-              _image, // Image()
+              _image,
+              if (!_loadingSwitch)
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(

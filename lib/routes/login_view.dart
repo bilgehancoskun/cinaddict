@@ -300,12 +300,26 @@ class _LoginState extends State<LoginView> {
                             UserCredential result = await signInWithGoogle();
                             User? user = result.user;
                             if (user != null) {
-                              print(user.email!.split("@"));
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          AfterLoginDummy(user: user)));
+                              List splitUser = user.email!.split("@");
+                              if (await AppFirestore.hasUser(splitUser[0])) {
+                                await AppSharedPreferences.setLoggedIn(true);
+                                CinaddictUser.User userFromFirebase = await AppFirestore.getUser(splitUser[0]);
+                                await AppSharedPreferences.saveJsonUser(userFromFirebase);
+                                Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                builder: (context) => Structure(user: userFromFirebase,)));
+                              }
+                              else {
+                                await AppFirestore.addUserToFirestore(username: splitUser[0], displayName: user.displayName ?? '');
+                                await AppSharedPreferences.setLoggedIn(true);
+                                CinaddictUser.User userFromFirebase = await AppFirestore.getUser(splitUser[0]);
+                                await AppSharedPreferences.saveJsonUser(userFromFirebase);
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Structure(user: userFromFirebase,)));
+                              }
                             }
                           },
                           child: Padding(

@@ -84,6 +84,5 @@ String decideInitialRoute() {
 
 User getUser() {
   User? user = AppSharedPreferences.getLocalUser();
-  print(user);
   return user!;
 }

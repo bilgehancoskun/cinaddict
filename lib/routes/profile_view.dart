@@ -1,3 +1,4 @@
+import 'package:cinaddict/models/post.dart';
 import 'package:cinaddict/routes/new_post.dart';
 import 'package:cinaddict/utils/shared_preferences.dart';
 import 'package:cinaddict/utils/colors.dart';
@@ -22,7 +23,7 @@ class ProfileView extends StatefulWidget {
 
 class _ProfileViewState extends State<ProfileView> {
   late User user = widget.user;
-
+  List<Image> postImages = [];
   Future<void> _getUser() async {
     User _user = await AppFirestore.getUser(user.username);
     setState(() {
@@ -30,10 +31,21 @@ class _ProfileViewState extends State<ProfileView> {
     });
   }
 
+  Future<void> _getPostImages() async {
+    List<Image> images = [];
+    for (Post post in user.posts) {
+      images.add(await AppFirestore.getPostImageFromName(user.username, post.image!));
+    }
+    setState(() {
+      postImages = images;
+    });
+  }
+
   Widget? setBody() {
     return RefreshIndicator(
       onRefresh: () async {
         await _getUser();
+        await _getPostImages();
       },
       child: SingleChildScrollView(
         physics: AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
@@ -202,49 +214,12 @@ class _ProfileViewState extends State<ProfileView> {
             crossAxisCount: 3,
             physics: NeverScrollableScrollPhysics(),
             children: [
+              for (Image postImage in postImages.reversed)
               InkWell(
                 onTap: () {},
                 child: Container(
                   padding: const EdgeInsets.all(0),
-                  child: Image.network(
-                      'https://www.linkpicture.com/q/IMG_2031-2_1.jpg',
-                      fit: BoxFit.cover),
-                ),
-              ),
-              InkWell(
-                onTap: () {},
-                child: Container(
-                  padding: const EdgeInsets.all(0),
-                  child: Image.network(
-                      'https://www.linkpicture.com/q/IMG_2034-2.jpg',
-                      fit: BoxFit.cover),
-                ),
-              ),
-              InkWell(
-                onTap: () {},
-                child: Container(
-                  padding: const EdgeInsets.all(0),
-                  child: Image.network(
-                      'https://www.linkpicture.com/q/IMG_2032-2_1.jpg',
-                      fit: BoxFit.cover),
-                ),
-              ),
-              InkWell(
-                onTap: () {},
-                child: Container(
-                  padding: const EdgeInsets.all(0),
-                  child: Image.network(
-                      'https://www.linkpicture.com/q/IMG_2036-3.jpg',
-                      fit: BoxFit.cover),
-                ),
-              ),
-              InkWell(
-                onTap: () {},
-                child: Container(
-                  padding: const EdgeInsets.all(0),
-                  child: Image.network(
-                      'https://www.linkpicture.com/q/IMG_2037-2_1.jpg',
-                      fit: BoxFit.cover),
+                  child: postImage,
                 ),
               ),
             ],
@@ -257,7 +232,12 @@ class _ProfileViewState extends State<ProfileView> {
   @override
   void initState() {
     super.initState();
-    _getUser();
+    _futureJobs();
+  }
+
+  Future<void> _futureJobs() async {
+    await _getUser();
+    await _getPostImages();
   }
 
   @override
@@ -282,11 +262,12 @@ class _ProfileViewState extends State<ProfileView> {
               child: IconButton(
                 icon: Icon(Icons.add, color: Colors.orangeAccent[300]),
                 onPressed: () async {
-                  Navigator.push(
+                  await Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
                               NewPost(username: user.username)));
+                  _futureJobs();
                 },
               ),
             ),

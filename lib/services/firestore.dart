@@ -47,6 +47,16 @@ class AppFirestore {
     return user;
   }
 
+  static Future<bool> hasUser(String username) async {
+    bool hasUser = false;
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    DocumentSnapshot snapshot = await users.doc(username).get();
+    if (snapshot.data() != null)
+      hasUser = true;
+
+    return hasUser;
+  }
+
   static Future<bool> addPost(String username, Post newPost) async {
     User user = await getUser(username);
     Map<String, dynamic> jsonUser = user.toJson();
@@ -75,11 +85,11 @@ class AppFirestore {
     return userList;
   }
 
-  static Future<Image> getPostImageFromName(String username,
+  static Future getPostImageFromName(String username,
       String imageName) async {
     String imagePath = '$username/posts/$imageName';
     File file = await FirebaseCacheManager().getSingleFile(imagePath);
-    return Image(image: FileImage(file),);
+    return Image(image: FileImage(file),fit: BoxFit.cover,);
   }
 
   static Future<void> uploadPostImage({
