@@ -150,4 +150,15 @@ class AppFirestore {
 
     return result;
   }
+
+  static Future<List<User>> getPostsFollowing(User user) async {
+    User mainUser = await getUser(user.username);
+    List<User> followingUsers = [];
+    for (String following in mainUser.following) {
+      User newUser = await getUser(following);
+      followingUsers.add(newUser);
+    }
+
+    return followingUsers;
+  }
 }

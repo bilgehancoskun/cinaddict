@@ -24,7 +24,7 @@ class Structure extends StatefulWidget {
 class _StructureState extends State<Structure> {
   int currentIndex = 0;
   late List<Widget> pages = [
-    HomePage(),
+    HomePage(user:widget.user),
     NavigationPage(user:widget.user),
     MoviePage(),
     NotificationPage(),

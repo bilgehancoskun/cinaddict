@@ -26,8 +26,9 @@ class ProfileView extends StatefulWidget {
 class _ProfileViewState extends State<ProfileView> {
   late User user = widget.user;
   List<Image> postImages = [];
+
   Future<void> _getUser() async {
-    User _user = await AppFirestore.getUser(user.username);
+    User _user = await AppFirestore.getUser(widget.user.username);
     setState(() {
       user = _user;
     });

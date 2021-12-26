@@ -20,6 +20,7 @@ class NewPost extends StatefulWidget {
 
 class _NewPostState extends State<NewPost> {
   late Widget _image = createIconButtons();
+  final _formKey = GlobalKey<FormState>();
   bool _loadingSwitch = false;
   Post newPost = Post();
   String? imagePath;
@@ -143,7 +144,8 @@ class _NewPostState extends State<NewPost> {
   }
 
   // Return image name if succeeded else return 'no-path'
-  Future<bool> createPost() async {
+  Future<bool> createPost(String? caption) async {
+    newPost.description = caption ?? '';
     newPost.timestamp = DateTime.now();
     if (imagePath != null) {
       await AppFirestore.uploadPostImage(
@@ -167,33 +169,7 @@ class _NewPostState extends State<NewPost> {
         actions: [
           TextButton(
               onPressed: () async {
-                setState(() {
-                  _loadingSwitch = true;
-                  _image = LoadingAnimation();
-                });
-                bool result = await createPost();
-                if(!result) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          content: Text('Select an image!', textAlign: TextAlign.center, style: TextStyle(
-                            color: AppColors.white
-                          ),),
-                          backgroundColor: AppColors.primaryRed,
-                      )
-                    );
-                    setState(() {
-                      _image = createIconButtons();
-                    });
-                }
-                else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          content: Text('Post Shared Successfully!', textAlign: TextAlign.center,),
-                        backgroundColor: AppColors.yellow,
-                      )
-                  );
-                  Navigator.pop(context);
-                }
+                _formKey.currentState!.save();
               },
               child: Row(
                 children: [
@@ -212,26 +188,60 @@ class _NewPostState extends State<NewPost> {
               if (!_loadingSwitch)
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: TextFormField(
-                        style: TextStyle(
-                          color: AppColors.white,
-                        ),
-                        minLines: 3,
-                        maxLines: null,
-                        keyboardType: TextInputType.multiline,
-                        decoration: InputDecoration(
-                          fillColor: AppColors.darkGrey,
-                          filled: true,
-                          hintText: 'Write a caption...',
-                          hintStyle: AppTextStyle.lightTextStyle,
+                child: Form(
+                  key: _formKey,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: TextFormField(
+                          style: TextStyle(
+                            color: AppColors.white,
+                          ),
+                          minLines: 3,
+                          maxLines: null,
+                          keyboardType: TextInputType.multiline,
+                          decoration: InputDecoration(
+                            fillColor: AppColors.darkGrey,
+                            filled: true,
+                            hintText: 'Write a caption...',
+                            hintStyle: AppTextStyle.lightTextStyle,
+                          ),
+                            onSaved: (value) async {
+                              setState(() {
+                                _loadingSwitch = true;
+                                _image = LoadingAnimation();
+                              });
+
+                              bool result = await createPost(value);
+                              if(!result) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('Select an image!', textAlign: TextAlign.center, style: TextStyle(
+                                          color: AppColors.white
+                                      ),),
+                                      backgroundColor: AppColors.primaryRed,
+                                    )
+                                );
+                                setState(() {
+                                  _image = createIconButtons();
+                                });
+                              }
+                              else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('Post Shared Successfully!', textAlign: TextAlign.center,),
+                                      backgroundColor: AppColors.yellow,
+                                    )
+                                );
+                                Navigator.pop(context);
+                              }
+                            },
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
+
                 ),
               )
             ],
