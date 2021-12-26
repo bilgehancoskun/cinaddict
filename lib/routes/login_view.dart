@@ -1,7 +1,9 @@
+import 'package:cinaddict/models/user.dart' as CinaddictUser;
 import 'package:cinaddict/routes/after_login.dart';
 import 'package:cinaddict/routes/profile_view.dart';
 import 'package:cinaddict/routes/structure.dart';
 import 'package:cinaddict/services/firestore.dart';
+import 'package:cinaddict/utils/shared_preferences.dart';
 import 'package:cinaddict/utils/colors.dart';
 import 'package:cinaddict/utils/styles.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -231,7 +233,7 @@ class _LoginState extends State<LoginView> {
                                   Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => Structure(username: user.displayName!,)));
+                                          builder: (context) => Structure(user: userFromFirebase,)));
                                 }
                               } on FirebaseAuthException catch (e) {
                                 print(

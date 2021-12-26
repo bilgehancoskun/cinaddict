@@ -1,3 +1,5 @@
+import 'package:cinaddict/models/user.dart';
+import 'package:cinaddict/utils/shared_preferences.dart';
 import 'package:cinaddict/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:cinaddict/routes/home_view.dart';
@@ -12,9 +14,8 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 
 class Structure extends StatefulWidget {
 
-  Structure({Key? key, required this.username}) : super(key: key);
-  final String username;
-
+  Structure({Key? key, required this.user}) : super(key: key);
+  final User user;
 
   @override
   _StructureState createState() => _StructureState();
@@ -27,7 +28,7 @@ class _StructureState extends State<Structure> {
     NavigationPage(),
     MoviePage(),
     NotificationPage(),
-    ProfileView(username:widget.username),
+    ProfileView(user:widget.user),
 
   ];
 
