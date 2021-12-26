@@ -13,10 +13,11 @@ import 'package:async/async.dart';
 import 'edit_profile_view.dart';
 
 class ProfileView extends StatefulWidget {
-  const ProfileView({Key? key, required this.user, this.viewOnly = false}) : super(key: key);
+  const ProfileView({Key? key, required this.user, this.viewOnly = false, this.sentBy = 'None'}) : super(key: key);
 
   final User user;
   final bool viewOnly;
+  final String sentBy;
 
   @override
   State<ProfileView> createState() => _ProfileViewState();
@@ -130,10 +131,42 @@ class _ProfileViewState extends State<ProfileView> {
                   Row(
                     children: [
                       OutlinedButton(
-                        onPressed: () {},
-                        child: Text(
-                          "Follow",
-                          style: AppTextStyle.darkTextStyle,
+                        onPressed: () async {
+                          if (!user.followers.contains(widget.sentBy)) {
+                            bool result = await AppFirestore.followUser(widget.sentBy, user.username);
+                            if (result) {
+                              setState(() {
+                                user.followers.add(widget.sentBy);
+                              });
+                            }
+                          }
+                          else {
+                            bool result = await AppFirestore.unfollowUser(widget.sentBy, user.username);
+                            if (result) {
+                              setState(() {
+                                user.followers.remove(widget.sentBy);
+                              });
+                            }
+                          }
+                        },
+                        child: Row(
+                          children: [
+                            if (!user.followers.contains(widget.sentBy))
+                            Text(
+                              "Follow",
+                              style: AppTextStyle.darkTextStyle,
+                            )
+                            else
+                              Row(
+                                children: [
+                                  Text(
+                                    "Following",
+                                    style: AppTextStyle.darkTextStyle,
+                                  ),
+                                  Icon(Icons.done),
+                                ],
+                              ),
+                          ],
                         ),
                         style: ButtonStyle(
                           backgroundColor:
@@ -248,10 +281,19 @@ class _ProfileViewState extends State<ProfileView> {
         appBar: AppBar(
 
           automaticallyImplyLeading: false,
-          leading: Image(
-            image: AssetImage(
-              'lib/assets/cinaddict_logo.png',
-            ),
+          leading: Row(
+            children: [
+              if (widget.viewOnly)
+              IconButton(onPressed: (){
+                Navigator.pop(context);
+              }, icon: Icon(Icons.arrow_back)),
+              if (!widget.viewOnly)
+              Image(
+                image: AssetImage(
+                  'lib/assets/cinaddict_logo.png',
+                ),
+              ),
+            ],
           ),
           title: Text(
             '@${user.username}',

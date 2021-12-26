@@ -23,7 +23,6 @@ class _EditProfileState extends State<EditProfile> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit Profile'),
-        backgroundColor: AppColors.alternativeRed,
         actions: [
           SizedBox(
             child: TextButton(

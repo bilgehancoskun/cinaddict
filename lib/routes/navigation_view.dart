@@ -6,14 +6,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class NavigationPage extends StatefulWidget {
+  const NavigationPage({Key? key, required this.user}) : super(key: key);
+
+  final User user;
   @override
   _NavigationPage createState() => _NavigationPage();
+
 }
 
 class _NavigationPage extends State<NavigationPage> {
   int counter = 0;
   List<User> searchResults = [];
   final _formKey = GlobalKey<FormState>();
+  bool _searchActive = false;
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +69,7 @@ class _NavigationPage extends State<NavigationPage> {
                                   List<User> _searchResults =
                                       await AppFirestore.searchUser(value);
                                   setState(() {
+                                    _searchActive = true;
                                     searchResults = _searchResults;
                                   });
                                 }
@@ -82,7 +88,7 @@ class _NavigationPage extends State<NavigationPage> {
                       for (User user in searchResults)
                         OutlinedButton(
                           onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileView(user: user, viewOnly: true,)));
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileView(user: user, viewOnly: true, sentBy: widget.user.username,)));
                           },
                           style: OutlinedButton.styleFrom(
                             side: BorderSide(width: 1.0, color: Colors.grey),
@@ -110,39 +116,45 @@ class _NavigationPage extends State<NavigationPage> {
                             ],
                           ),
                         ),
-                      Image.network(
-                        "https://img3.aksam.com.tr/imgsdisk/2021/11/17/t25_spider-man-no-way-home-ne-384.jpg",
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                      if (!_searchActive)
+                      Column(
                         children: [
-                          Expanded(
-                            flex: 1,
-                            child: Image.network(
-                              "https://upload.wikimedia.org/wikipedia/tr/9/97/Joker_%28film%29.jpg",
-                            ),
+                          Image.network(
+                            "https://img3.aksam.com.tr/imgsdisk/2021/11/17/t25_spider-man-no-way-home-ne-384.jpg",
                           ),
-                          Expanded(
-                            flex: 1,
-                            child: Image.network(
-                              "https://m.media-amazon.com/images/M/MV5BN2FjNmEyNWMtYzM0ZS00NjIyLTg5YzYtYThlMGVjNzE1OGViXkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_.jpg",
-                            ),
+                          SizedBox(
+                            height: 8,
                           ),
-                          Expanded(
-                            flex: 1,
-                            child: Image.network(
-                                "https://i.ytimg.com/vi/ePpJDKfRAyM/movieposter.jpg"),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                flex: 1,
+                                child: Image.network(
+                                  "https://upload.wikimedia.org/wikipedia/tr/9/97/Joker_%28film%29.jpg",
+                                ),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: Image.network(
+                                  "https://m.media-amazon.com/images/M/MV5BN2FjNmEyNWMtYzM0ZS00NjIyLTg5YzYtYThlMGVjNzE1OGViXkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_.jpg",
+                                ),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: Image.network(
+                                    "https://i.ytimg.com/vi/ePpJDKfRAyM/movieposter.jpg"),
+                              ),
+                            ],
                           ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Image.network(
+                              "https://stayhipp.com/wp-content/uploads/2019/07/New.jpg")
                         ],
                       ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Image.network(
-                          "https://stayhipp.com/wp-content/uploads/2019/07/New.jpg")
+
                     ],
                   )))),
     );

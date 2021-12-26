@@ -92,6 +92,7 @@ class AppFirestore {
     return Image(image: FileImage(file),fit: BoxFit.cover,);
   }
 
+
   static Future<void> uploadPostImage({
     required String username,
     required String path,
@@ -104,5 +105,49 @@ class AppFirestore {
     } on FirebaseException catch (e) {
       print("While uploading file error occurred: $e");
     }
+  }
+
+  static Future<bool> followUser(String user, String willFollow) async {
+    bool result = false;
+    try {
+      CollectionReference users = FirebaseFirestore.instance.collection('users');
+      DocumentSnapshot snapshot = await users.doc(user).get();
+      Map<String, dynamic> userJson = snapshot.data() as Map<String, dynamic>;
+      userJson['following'].add(willFollow);
+      await users.doc(user).update(userJson);
+
+      DocumentSnapshot willFollowSnapshot = await users.doc(willFollow).get();
+      Map<String, dynamic> willFollowSnapshotUserJson = willFollowSnapshot.data() as Map<String, dynamic>;
+      willFollowSnapshotUserJson['followers'].add(user);
+      await users.doc(willFollow).update(willFollowSnapshotUserJson);
+
+      result = true;
+    } catch (e) {
+      print("Error occurred while follow operation $user - $willFollow");
+    }
+
+    return result;
+  }
+
+  static Future<bool> unfollowUser(String user, String willUnfollow) async {
+    bool result = false;
+    try {
+      CollectionReference users = FirebaseFirestore.instance.collection('users');
+      DocumentSnapshot snapshot = await users.doc(user).get();
+      Map<String, dynamic> userJson = snapshot.data() as Map<String, dynamic>;
+      userJson['following'].remove(willUnfollow);
+      await users.doc(user).update(userJson);
+
+      DocumentSnapshot willFollowSnapshot = await users.doc(willUnfollow).get();
+      Map<String, dynamic> willFollowSnapshotUserJson = willFollowSnapshot.data() as Map<String, dynamic>;
+      willFollowSnapshotUserJson['followers'].remove(user);
+      await users.doc(willUnfollow).update(willFollowSnapshotUserJson);
+
+      result = true;
+    } catch (e) {
+      print("Error occurred while unfollow operation $user - $willUnfollow");
+    }
+
+    return result;
   }
 }

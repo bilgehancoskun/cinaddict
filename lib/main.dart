@@ -69,8 +69,8 @@ class App extends StatelessWidget {
       theme: ThemeData(
         canvasColor: Color(0xFF393E46),//0xFF1A374D0xFF406882
           bottomNavigationBarTheme: BottomNavigationBarThemeData(backgroundColor: Color(
-              0xFFFFFFFF), selectedItemColor: Color(0xFF000000), unselectedItemColor: Color(
-              0x66FF0000)) ,
+              0xFF222831), selectedItemColor: Color(0xFF000000), unselectedItemColor: Color(
+              0xFFFFFFFF)) ,
           appBarTheme: AppBarTheme(backgroundColor: Color(
           0xFF222831)),
           buttonTheme: ButtonThemeData(
