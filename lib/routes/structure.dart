@@ -38,9 +38,6 @@ class _StructureState extends State<Structure> {
     return  Scaffold(
       body: pages[currentIndex],
             bottomNavigationBar:BottomNavigationBar(type: BottomNavigationBarType.fixed,
-                backgroundColor: AppColors.lightGrey,
-                selectedItemColor: AppColors.yellow,
-                unselectedItemColor: AppColors.white,
                 iconSize: 25,
                 selectedFontSize: 15,
                 unselectedFontSize: 10,

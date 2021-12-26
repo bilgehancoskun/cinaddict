@@ -130,6 +130,9 @@ class _LoginState extends State<LoginView> {
                             ),
                           ),
                           keyboardType: TextInputType.emailAddress,
+                          style: TextStyle(
+                            color: AppColors.white,
+                          ),
                           validator: (value) {
                             if (value == null) {
                               return 'E-mail field cannot be empty';
@@ -181,6 +184,10 @@ class _LoginState extends State<LoginView> {
                             ),
                           ),
                           keyboardType: TextInputType.text,
+                          style: TextStyle(
+                            color: AppColors.white,
+                          ),
+
                           obscureText: true,
                           enableSuggestions: false,
                           autocorrect: false,

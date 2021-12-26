@@ -217,6 +217,9 @@ class _NewPostState extends State<NewPost> {
                     Expanded(
                       flex: 1,
                       child: TextFormField(
+                        style: TextStyle(
+                          color: AppColors.white,
+                        ),
                         minLines: 3,
                         maxLines: null,
                         keyboardType: TextInputType.multiline,

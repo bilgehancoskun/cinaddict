@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:ffi';
 import 'package:cinaddict/routes/feed_view.dart';
 import 'package:cinaddict/routes/structure.dart';
+import 'package:cinaddict/utils/colors.dart';
 import 'package:cinaddict/utils/shared_preferences.dart';
+import 'package:cinaddict/utils/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -64,7 +66,19 @@ class App extends StatelessWidget {
         '/structure': (context) => Structure(user: getUser())
 
       },
-      theme: ThemeData.dark(),
+      theme: ThemeData(
+        canvasColor: Color(0xFF393E46),//0xFF1A374D0xFF406882
+          bottomNavigationBarTheme: BottomNavigationBarThemeData(backgroundColor: Color(
+              0xFFFFFFFF), selectedItemColor: Color(0xFF000000), unselectedItemColor: Color(
+              0x66FF0000)) ,
+          appBarTheme: AppBarTheme(backgroundColor: Color(
+          0xFF222831)),
+          buttonTheme: ButtonThemeData(
+            buttonColor: Color(0xFFFFFFFF),
+          ),
+         // primaryColor: Colors.white,
+
+      ),
     );
   }
 }
