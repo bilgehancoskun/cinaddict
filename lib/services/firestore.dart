@@ -1,6 +1,7 @@
 import 'package:cinaddict/models/post.dart';
 import 'package:cinaddict/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager_firebase/flutter_cache_manager_firebase.dart';
 import 'dart:io';
@@ -12,20 +13,20 @@ class AppFirestore {
     return users
         .doc(username)
         .set({
-          'displayName': '',
-          'username': username,
-          'posts': [],
-          'followers': [],
-          'following': [],
-          'description': '',
-          'isPrivate': false,
-        })
+      'displayName': '',
+      'username': username,
+      'posts': [],
+      'followers': [],
+      'following': [],
+      'description': '',
+      'isPrivate': false,
+    })
         .then((value) => print("User Added: $username"))
         .catchError((error) => print("Failed to add user: $error"));
   }
 
-  static Future<bool> updateUser(
-      String username, String key, dynamic value) async {
+  static Future<bool> updateUser(String username, String key,
+      dynamic value) async {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
 
     users
@@ -65,19 +66,33 @@ class AppFirestore {
     searchResult = await userQuery.get() as QuerySnapshot<Map<String, dynamic>>;
     if (searchResult.docs.isNotEmpty) {
       for (int i = 0; i < searchResult.docs.length; i++) {
-         userList.add(
-           User.fromJson(searchResult.docs[i].data())
-         );
+        userList.add(
+            User.fromJson(searchResult.docs[i].data())
+        );
       }
     }
 
     return userList;
   }
 
-  static Future<Image> getPostImageFromName(String username, String imageName) async {
+  static Future<Image> getPostImageFromName(String username,
+      String imageName) async {
     String imagePath = '$username/posts/$imageName';
     File file = await FirebaseCacheManager().getSingleFile(imagePath);
     return Image(image: FileImage(file),);
   }
 
+  static Future<void> uploadPostImage({
+    required String username,
+    required String path,
+    required String imageName
+  }) async {
+    String imagePath = '$username/posts/$imageName';
+    File file = File(path);
+    try {
+      await FirebaseStorage.instance.ref(imagePath).putFile(file);
+    } on FirebaseException catch (e) {
+      print("While uploading file error occurred: $e");
+    }
+  }
 }

@@ -87,7 +87,7 @@ class WelcomeView1 extends State<WelcomeView> {
                                 Expanded(
                                   child: OutlinedButton(
                                     onPressed: () {
-                                      Navigator.pushNamed(context, "/login");
+                                      Navigator.pushReplacementNamed(context, "/login");
                                     },
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -110,7 +110,7 @@ class WelcomeView1 extends State<WelcomeView> {
                                 Expanded(
                                   child: OutlinedButton(
                                     onPressed: () {
-                                      Navigator.pushNamed(context, "/signup");
+                                      Navigator.pushReplacementNamed(context, "/signup");
                                     },
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(vertical: 12.0),

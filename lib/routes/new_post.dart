@@ -20,7 +20,8 @@ class NewPost extends StatefulWidget {
 
 class _NewPostState extends State<NewPost> {
   late Widget _image = createIconButtons();
-
+  Post newPost = Post();
+  String? imagePath;
   void initState() {
     super.initState();
   }
@@ -33,58 +34,95 @@ class _NewPostState extends State<NewPost> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 80),
             child: Row(
-
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
 
-                        TextWithIcon(
+                        TextButton(
                             onPressed: () async {
                               setState(() {
-                                _image = SpinKitCubeGrid(color: Colors.white, size: 50.0);
+                                _image = LoadingAnimation();
                               });
-                              String imageName = await uploadFromCamera();
-                              Post newPost = Post(imageName, '', 5, 5, []);
-                              AppFirestore.addPost(widget.username, newPost);
+                              try {
+                                var pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
+                                if (pickedFile != null) {
+                                  Image image = Image.file(File(pickedFile.path));
+                                  newPost.image = pickedFile.name;
+                                  imagePath = pickedFile.path;
+                                  setState(() {
+                                    _image = image;
+                                  });
+                                }
+                                else {
+                                  setState(() {
+                                    _image = createIconButtons();
+                                  });
+                                }
 
-                              Image image = await AppFirestore.getPostImageFromName(
-                                  widget.username, imageName);
-                              setState(() {
-                                _image = image;
-                              });
+                              } catch (error) {
+                                setState(() {
+                                  setState(() {
+                                    _image = createIconButtons();
+                                  });
+                                });
+                              }
                             },
-                            icon:  Icons.camera, text: 'Camera', ),
+                            child: Column(
+                              children: [
+                                Icon(Icons.camera, color: AppColors.white, size: 50,),
+                                Text('Take a photo from camera', style: TextStyle(
+                                    color: AppColors.white
+                                ),),
+                              ],
+                            )
+                                  ),
                       ],
                     ),
 
 
 
                  Column(
-                   mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
 
-                        TextWithIcon(
+                        TextButton(
                             onPressed: () async {
                               setState(() {
-                                _image = SpinKitCubeGrid(color: Colors.white, size: 50.0);
+                                _image = LoadingAnimation();
                               });
-                              String imageName = await uploadFromGallery();
-                              Post newPost = Post(imageName, '', 5, 5, []);
+                              try {
+                                var pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+                                if (pickedFile != null) {
+                                  Image image = Image.file(File(pickedFile.path));
+                                  newPost.image = pickedFile.name;
+                                  imagePath = pickedFile.path;
+                                  setState(() {
+                                    _image = image;
+                                  });
+                                }
+                                else {
+                                  setState(() {
+                                    _image = createIconButtons();
+                                  });
+                                }
 
-                              AppFirestore.addPost(widget.username, newPost);
-                              Image image = await AppFirestore.getPostImageFromName(
-                                  widget.username, imageName);
-                              setState(() {
-                                _image = image;
-                              });
+                              } catch (error) {
+                                setState(() {
+                                  setState(() {
+                                    _image = createIconButtons();
+                                  });
+                                });
+                              }
                             },
-                            icon: Icons.album, text: 'Gallery', ),
+                            child: Column(
+                              children: [
+                                Icon(Icons.album, color: Colors.white, size: 50,),
+                                Text('Select photo from gallery', style: TextStyle(
+                                  color: AppColors.white
+                                ),),
+                              ],
+                            )
+                        ),
                       ],
                     ),
 
@@ -97,41 +135,19 @@ class _NewPostState extends State<NewPost> {
   }
 
   // Return image name if succeeded else return 'no-path'
-  Future<String> uploadFromCamera() async {
-    var pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
-    if (pickedFile != null) {
-      String imageName = pickedFile.name;
-      String imagePath = '${widget.username}/posts/$imageName';
-      File file = File(pickedFile.path);
-
-      try {
-        await FirebaseStorage.instance.ref(imagePath).putFile(file);
-        return imageName;
-      } on FirebaseException catch (e) {
-        print("While uploading file error occurred: $e");
-        return 'no-image';
-      }
+  Future<bool> createPost() async {
+    newPost.timestamp = DateTime.now();
+    if (imagePath != null) {
+      AppFirestore.uploadPostImage(
+          username: widget.username,
+          path: imagePath!,
+          imageName: newPost.image!
+      );
+      AppFirestore.addPost(widget.username, newPost);
+      return true;
     }
-    return 'no-image';
-  }
 
-  // Return image name if succeeded else return 'no-path'
-  Future<String> uploadFromGallery() async {
-    var pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      String imageName = pickedFile.name;
-      String imagePath = '${widget.username}/posts/$imageName';
-      File file = File(pickedFile.path);
-
-      try {
-        await FirebaseStorage.instance.ref(imagePath).putFile(file);
-        return imageName;
-      } on FirebaseException catch (e) {
-        print("While uploading file error occurred: $e");
-        return 'no-image';
-      }
-    }
-    return 'no-image';
+    return false;
   }
 
   @override
@@ -139,7 +155,39 @@ class _NewPostState extends State<NewPost> {
     return Scaffold(
       appBar: AppBar(
         title: Text('New Post'),
-        backgroundColor: AppColors.primaryRed,
+        backgroundColor: AppColors.alternativeRed,
+        actions: [
+          TextButton(
+              onPressed: () async {
+                bool result = await createPost();
+                if(!result) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Text('Select an image!', textAlign: TextAlign.center, style: TextStyle(
+                            color: AppColors.white
+                          ),),
+                          backgroundColor: AppColors.primaryRed,
+                      )
+                    );
+                }
+                else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Text('Post Shared Successfully!', textAlign: TextAlign.center,),
+                        backgroundColor: AppColors.yellow,
+                      )
+                  );
+                  Navigator.pop(context);
+                }
+              },
+              child: Row(
+                children: [
+                  Text('Done ', style: TextStyle(color: AppColors.white),),
+                  Icon(Icons.done, color: AppColors.white,)
+                ],
+              )
+          )
+        ],
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -159,7 +207,7 @@ class _NewPostState extends State<NewPost> {
                         decoration: InputDecoration(
                           fillColor: AppColors.darkGrey,
                           filled: true,
-                          hintText: 'Write a Caption...',
+                          hintText: 'Write a caption...',
                           hintStyle: AppTextStyle.lightTextStyle,
                         ),
                       ),

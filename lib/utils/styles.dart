@@ -1,5 +1,6 @@
 import 'package:cinaddict/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTextStyle {
@@ -55,31 +56,15 @@ class AppButtonStyle {
   );
 }
 
-class TextWithIcon extends StatelessWidget {
-  final IconData icon;
-  final String text;
-  final double spacing;
-  final Function onPressed;
-  const TextWithIcon({Key? key, required this.icon, required this.text, this.spacing = 2, required this.onPressed}) : super(key: key);
+class LoadingAnimation extends StatelessWidget {
+  const LoadingAnimation({Key? key, this.padding = 80}) : super(key: key);
+  final double padding;
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      onPressed:() async {
-       await onPressed();
-      },
-
-
-      padding: const EdgeInsets.all(8),
-      icon: Column(
-
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon),
-          SizedBox(height: spacing),
-          Text(text),
-        ],
-      ),
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: this.padding),
+      child: SpinKitCubeGrid(color: Colors.white, size: 50.0),
     );
   }
 }

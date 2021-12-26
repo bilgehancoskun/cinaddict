@@ -228,7 +228,7 @@ class _LoginState extends State<LoginView> {
                                 UserCredential result = await loginUser();
                                 User? user = result.user;
                                 if (user != null && user.displayName != null) {
-                                  Navigator.push(
+                                  Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => Structure(username: user.displayName!,)));
