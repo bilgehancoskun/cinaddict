@@ -264,7 +264,7 @@ class _ProfileViewState extends State<ProfileView> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: AppColors.alternativeRed,
+
           automaticallyImplyLeading: false,
           leading: Image(
             image: AssetImage(

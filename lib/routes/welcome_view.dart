@@ -85,7 +85,7 @@ class WelcomeView1 extends State<WelcomeView> {
                               direction: Axis.horizontal,
                               children: [
                                 Expanded(
-                                  child: OutlinedButton(
+                                  child: ElevatedButton(
                                     onPressed: () {
                                       Navigator.pushReplacementNamed(context, "/login");
                                     },

@@ -34,6 +34,9 @@ class _NavigationPage extends State<NavigationPage> {
                           Expanded(
                             flex: 1,
                             child: TextFormField(
+                              style: TextStyle(
+                                color: AppColors.white,
+                              ),
                               decoration: InputDecoration(
                                 contentPadding:
                                     EdgeInsets.fromLTRB(10, 10, 10, 0),

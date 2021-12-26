@@ -70,6 +70,9 @@ class _SignUpViewState extends State<SignUpView> {
                                 ),
                               ),
                               keyboardType: TextInputType.emailAddress,
+                              style: TextStyle(
+                                color: AppColors.white,
+                              ),
                               validator: (value){
                                 if (value == null) {
                                   return 'E-mail field cannot be empty';
@@ -118,6 +121,9 @@ class _SignUpViewState extends State<SignUpView> {
                                 ),
                               ),
                               keyboardType: TextInputType.text,
+                              style: TextStyle(
+                                color: AppColors.white,
+                              ),
                               validator: (value) {
                                 if (value == null) {
                                   return 'Username field cannot be empty';
@@ -168,6 +174,9 @@ class _SignUpViewState extends State<SignUpView> {
                                 ),
                               ),
                               keyboardType: TextInputType.text,
+                              style: TextStyle(
+                                color: AppColors.white,
+                              ),
                               obscureText: true,
                               enableSuggestions: false,
                               autocorrect: false,
@@ -212,6 +221,9 @@ class _SignUpViewState extends State<SignUpView> {
                                 ),
                               ),
                               keyboardType: TextInputType.text,
+                              style: TextStyle(
+                                color: AppColors.white,
+                              ),
                               obscureText: true,
                               enableSuggestions: false,
                               autocorrect: false,

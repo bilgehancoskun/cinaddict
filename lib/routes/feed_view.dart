@@ -14,7 +14,7 @@ class FeedView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Feed'),
-        backgroundColor: AppColors.primaryRed,
+
       ),
       body: Column(
         children: [
