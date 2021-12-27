@@ -19,8 +19,8 @@ class WalkthroughView extends StatelessWidget {
         child: IntroductionScreen(
           pages: [
             PageViewModel(
-              title: 'We Love Movies',
-              body: 'Connect and meet with all movie lovers around the world.',
+              titleWidget: Text('We Love Movies', style: TextStyle(color: AppColors.white, fontSize: 24),),
+              bodyWidget: Text('Connect and meet with all movie lovers around the world.', style: TextStyle(color: AppColors.white, fontSize: 20), textAlign: TextAlign.center,),
               image: Icon(
                 Icons.local_movies_outlined,
                 size: AppDimensions.walkthroughDefaultIconSize,
@@ -29,8 +29,8 @@ class WalkthroughView extends StatelessWidget {
               decoration: getCardDecoration(),
             ),
             PageViewModel(
-              title: 'Share Posts',
-              body: 'Share photos or videos about movies or movie theaters.',
+              titleWidget: Text('Share Posts', style: TextStyle(color: AppColors.white, fontSize: 24),),
+              bodyWidget: Text('Share photos or videos about movies or movie theaters.', style: TextStyle(color: AppColors.white, fontSize: 20), textAlign: TextAlign.center,),
               image: Icon(
                 Icons.image_outlined,
                 size: AppDimensions.walkthroughDefaultIconSize,
@@ -39,8 +39,8 @@ class WalkthroughView extends StatelessWidget {
               decoration: getCardDecoration(),
             ),
             PageViewModel(
-              title: 'Interact with People',
-              body: 'Like other people\'s posts, comment on them, share them.',
+              titleWidget: Text('Interact with People', style: TextStyle(color: AppColors.white, fontSize: 24),),
+              bodyWidget: Text('Like other people\'s posts, comment on them, share them.', style: TextStyle(color: AppColors.white, fontSize: 20), textAlign: TextAlign.center,),
               image: Padding(
                 padding: const EdgeInsets.fromLTRB(0, 0, 0, 30),
                 child: Column(
@@ -91,18 +91,16 @@ class WalkthroughView extends StatelessWidget {
               decoration: getCardDecoration(),
             ),
             PageViewModel(
-              title: 'Discuss with People',
-              body:
-                  'Find out what people think about movies or movie theaters.',
+              titleWidget: Text('Discuss with People', style: TextStyle(color: AppColors.white, fontSize: 24),),
+              bodyWidget: Text('Find out what people think about movies or movie theaters.', style: TextStyle(color: AppColors.white, fontSize: 20), textAlign: TextAlign.center,),
               image: Icon(Icons.tag,
                   size: AppDimensions.walkthroughDefaultIconSize,
                   color: AppColors.primaryRed),
               decoration: getCardDecoration(),
             ),
             PageViewModel(
-              title: 'Checkout Upcoming Movies',
-              body:
-                  'Checkout current or upcoming movies in theatres. Discuss with other people about them.',
+              titleWidget: Text('Checkout Upcoming Movies', style: TextStyle(color: AppColors.white, fontSize: 24),),
+              bodyWidget: Text('Checkout current or upcoming movies in theatres. Discuss with other people about them.', style: TextStyle(color: AppColors.white, fontSize: 20), textAlign: TextAlign.center,),
               image: Icon(Icons.theater_comedy,
                   size: AppDimensions.walkthroughDefaultIconSize,
                   color: AppColors.primaryRed),

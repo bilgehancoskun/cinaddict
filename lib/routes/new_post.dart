@@ -22,7 +22,7 @@ class _NewPostState extends State<NewPost> {
   late Widget _image = createIconButtons();
   final _formKey = GlobalKey<FormState>();
   bool _loadingSwitch = false;
-  Post newPost = Post();
+  late Post newPost = Post(owner: widget.username);
   String? imagePath;
   void initState() {
     super.initState();

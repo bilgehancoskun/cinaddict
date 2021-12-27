@@ -5,6 +5,7 @@ part 'post.g.dart';
 @JsonSerializable(explicitToJson: true)
 class Post {
   Post({
+      this.owner,
       this.image,
       this.description,
       this.likeCount,
@@ -13,6 +14,7 @@ class Post {
       this.timestamp,
   });
 
+  String? owner;
   String? image;
   String? description;
   int? likeCount;

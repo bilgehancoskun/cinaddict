@@ -7,6 +7,7 @@ part of 'post.dart';
 // **************************************************************************
 
 Post _$PostFromJson(Map<String, dynamic> json) => Post(
+      owner: json['owner'] as String?,
       image: json['image'] as String?,
       description: json['description'] as String?,
       likeCount: json['likeCount'] as int?,
@@ -20,6 +21,7 @@ Post _$PostFromJson(Map<String, dynamic> json) => Post(
     );
 
 Map<String, dynamic> _$PostToJson(Post instance) => <String, dynamic>{
+      'owner': instance.owner,
       'image': instance.image,
       'description': instance.description,
       'likeCount': instance.likeCount,

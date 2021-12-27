@@ -40,7 +40,7 @@ class _ProfileViewState extends State<ProfileView> {
       images.add(await AppFirestore.getPostImageFromName(user.username, post.image!));
     }
     setState(() {
-      postImages = images;
+      postImages = List.from(images.reversed);
     });
   }
 
@@ -250,7 +250,7 @@ class _ProfileViewState extends State<ProfileView> {
             crossAxisCount: 3,
             physics: NeverScrollableScrollPhysics(),
             children: [
-              for (Image postImage in postImages.reversed)
+              for (Image postImage in postImages)
               InkWell(
                 onTap: () {},
                 child: Container(

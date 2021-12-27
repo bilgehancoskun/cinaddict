@@ -1,4 +1,5 @@
 import 'package:cinaddict/models/user.dart';
+import 'package:cinaddict/services/firestore.dart';
 import 'package:cinaddict/utils/shared_preferences.dart';
 import 'package:cinaddict/utils/colors.dart';
 import 'package:flutter/material.dart';
@@ -22,15 +23,29 @@ class Structure extends StatefulWidget {
 }
 
 class _StructureState extends State<Structure> {
+  late User user = widget.user;
   int currentIndex = 0;
   late List<Widget> pages = [
-    HomePage(user:widget.user),
-    NavigationPage(user:widget.user),
+    HomePage(user:user),
+    NavigationPage(user:user),
     MoviePage(),
     NotificationPage(),
-    ProfileView(user:widget.user),
-
+    ProfileView(user:user),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _futureJobs();
+  }
+
+  Future<void> _futureJobs() async {
+    User _user = await AppFirestore.getUser(user.username);
+    setState(() {
+      user = _user;
+    });
+    await AppSharedPreferences.saveJsonUser(user);
+  }
 
   @override
   Widget build(BuildContext context) {

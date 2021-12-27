@@ -3,6 +3,7 @@ import 'package:cinaddict/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_cache_manager_firebase/flutter_cache_manager_firebase.dart';
 import 'dart:io';
 
@@ -83,6 +84,25 @@ class AppFirestore {
     }
 
     return userList;
+  }
+
+  /*
+  * FileInfo? cacheFile = await FirebaseCacheManager().getFileFromCache(imagePath);
+    if (cacheFile != null) {
+      print(cacheFile.validTill);
+      print(cacheFile.originalUrl);
+    }
+    * */
+
+  static Future<bool> postsCached(String username,
+      String imageName) async {
+    bool result = false;
+    String imagePath = '$username/posts/$imageName';
+    FileInfo? cacheFile = await FirebaseCacheManager().getFileFromCache(imagePath);
+    if (cacheFile != null) {
+      result = true;
+    }
+    return result;
   }
 
   static Future getPostImageFromName(String username,
