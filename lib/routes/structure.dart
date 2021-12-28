@@ -29,7 +29,7 @@ class _StructureState extends State<Structure> {
     HomePage(user:user),
     NavigationPage(user:user),
     MoviePage(),
-    NotificationPage(),
+    NotificationPage(user:user),
     ProfileView(user:user),
   ];
 

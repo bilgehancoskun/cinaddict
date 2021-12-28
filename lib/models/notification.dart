@@ -22,6 +22,7 @@ class Notification {
 
 class NotificationType {
   static String followed = 'followed';
+  static String followRequest = 'followRequest';
   static String commentedOnPost = 'commentedOnPost';
   static String likedPost = 'likedPost';
   static String likedComment = 'likedComment';

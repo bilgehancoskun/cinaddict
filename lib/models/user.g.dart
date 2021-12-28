@@ -22,9 +22,11 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       (json['followRequests'] as List<dynamic>)
           .map((e) => User.fromJson(e as Map<String, dynamic>))
           .toList(),
+      json['profilePicture'] as String,
     );
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
+      'profilePicture': instance.profilePicture,
       'username': instance.username,
       'displayName': instance.displayName,
       'isPrivate': instance.isPrivate,

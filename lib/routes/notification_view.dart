@@ -1,8 +1,14 @@
+import 'package:cinaddict/models/user.dart';
 import 'package:cinaddict/routes/follow_requests.view.dart';
 import 'package:flutter/material.dart';
 import 'package:cinaddict/utils/styles.dart';
 import 'package:cinaddict/utils/colors.dart';
+import 'package:cinaddict/models/notification.dart' as CN;
 class NotificationPage extends StatefulWidget{
+  const NotificationPage({Key? key, required this.user}) : super(key: key);
+
+  final User user;
+
   @override
   _NotificationPage createState() => _NotificationPage();
 }
@@ -74,6 +80,9 @@ class _NotificationPage extends State<NotificationPage>{
                   ),
                 ],
               ),
+
+              for (CN.Notification notification in widget.user.notifications)...[
+                if (notification.notificationType == CN.NotificationType.followed)...[
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -94,7 +103,7 @@ class _NotificationPage extends State<NotificationPage>{
                   Expanded(
                             //flex: 4,
                             child: Text(
-                              "peter_williams started following you.",
+                              "${notification.user.username} started following you.",
                               style: AppTextStyle.lighterTextStyle,
                               ),
                   ),
@@ -120,6 +129,8 @@ class _NotificationPage extends State<NotificationPage>{
 
                     ],
                   ),
+                ],
+                    if (notification.notificationType == CN.NotificationType.followRequest)...[
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -185,7 +196,9 @@ class _NotificationPage extends State<NotificationPage>{
 
                 ],
               ),
+              ],
 
+              if (notification.notificationType == CN.NotificationType.commentedOnPost)...[
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -227,10 +240,12 @@ class _NotificationPage extends State<NotificationPage>{
 
                 ],
               ),
+              ],
+              ],
 
 
               //----------------
-             
+
 
             ],
 

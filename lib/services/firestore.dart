@@ -9,7 +9,7 @@ import 'package:cinaddict/models/notification.dart' as CN;
 import 'dart:io';
 
 class AppFirestore {
-  static Future<void> addUserToFirestore({required String username, String displayName = '', String description = ''}) async {
+  static Future<void> addUserToFirestore({required String username, String displayName = '', String description = '', String profilePicture = ''}) async {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
 
     return users
@@ -24,6 +24,7 @@ class AppFirestore {
       'description': description,
       'isPrivate': false,
       'followRequests': [],
+      'profilePicture': profilePicture
     })
         .then((value) => print("User Added: $username"))
         .catchError((error) => print("Failed to add user: $error"));
@@ -128,6 +129,27 @@ class AppFirestore {
     } on FirebaseException catch (e) {
       print("While uploading file error occurred: $e");
     }
+  }
+
+  static Future<void> uploadProfilePicture({
+    required String username,
+    required String path,
+    required String imageName
+  }) async {
+    String imagePath = '$username/profile/$imageName';
+    File file = File(path);
+    try {
+      await FirebaseStorage.instance.ref(imagePath).putFile(file);
+    } on FirebaseException catch (e) {
+      print("While uploading file error occurred: $e");
+    }
+  }
+
+  static Future getProfilePictureFromName(String username,
+      String imageName) async {
+    String imagePath = '$username/profile/$imageName';
+    File file = await FirebaseCacheManager().getSingleFile(imagePath);
+    return Image(image: FileImage(file),fit: BoxFit.cover,);
   }
 
   static Future<bool> followUser(String user, String willFollow) async {

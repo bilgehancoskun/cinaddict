@@ -15,9 +15,11 @@ class User {
       this.isPrivate,
       this.posts,
       this.notifications,
-      this.followRequests
+      this.followRequests,
+      this.profilePicture
       );
-  // TODO: Implement profile picture
+
+  String profilePicture;
   String username;
   String displayName;
   bool isPrivate;

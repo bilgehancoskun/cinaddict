@@ -83,6 +83,20 @@ class _HomePage extends State<HomePage> {
           padding: const EdgeInsets.all(8),
           child: Column(
             children: [
+              if (posts.length == 0)
+                Center(
+                  child: Column(
+                    children: [
+                      Text('There is no posts to show.', style: TextStyle(
+                        color: AppColors.white, fontSize: 18
+                      ),),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Icon(Icons.hide_image_outlined, color: AppColors.white, size: 36,),
+                      )
+                    ],
+                  ),
+                ),
               for (int idx = 0; idx < posts.length; idx++)
                 Column(
                   children: [
