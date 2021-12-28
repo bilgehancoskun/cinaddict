@@ -44,7 +44,7 @@ class _ProfileViewState extends State<ProfileView> {
     });
   }
 
-  Widget? setBody() {
+  Widget? get setBody {
     return RefreshIndicator(
       onRefresh: () async {
         await _getUser();
@@ -128,9 +128,9 @@ class _ProfileViewState extends State<ProfileView> {
                       ),
                     ],
                   ),
-                  if (widget.viewOnly)
                   Row(
                     children: [
+                      if (widget.viewOnly)...[
                       OutlinedButton(
                         onPressed: () async {
                           if (!user.followers.contains(widget.sentBy)) {
@@ -188,6 +188,26 @@ class _ProfileViewState extends State<ProfileView> {
                               MaterialStateProperty.all(AppColors.white),
                         ),
                       ),
+                      ] else...[
+                        TextButton(onPressed: () async {
+                          Map<String, dynamic>? data = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EditProfile(user: user)))
+                          as Map<String, dynamic>?;
+
+                          if (data != null) {
+                            for (String key in data.keys) {
+                              await AppFirestore.updateUser(user.username, key, data[key]);
+                            }
+                            await _futureJobs();
+                          }
+                        }, child: Text('Edit Profile', style: TextStyle(
+                          color: AppColors.black
+                        ),), style: TextButton.styleFrom(
+                          backgroundColor: AppColors.white
+                        ),)
+                      ]
                     ],
                   ),
                 ],
@@ -320,25 +340,17 @@ class _ProfileViewState extends State<ProfileView> {
             if (!widget.viewOnly)
             SizedBox(
               child: IconButton(
-                icon: Icon(Icons.edit, color: Colors.orangeAccent[300]),
+                icon: Icon(Icons.logout, color: Colors.orangeAccent[300]),
                 onPressed: () async {
-                  Map<String, dynamic>? data = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => EditProfile(user: user)))
-                      as Map<String, dynamic>?;
-
-                  if (data != null) {
-                    for (String key in data.keys) {
-                      await AppFirestore.updateUser(user.username, key, data[key]);
-                    }
-                    await _futureJobs();
+                  bool result = await AppSharedPreferences.logout();
+                  if (result) {
+                    Navigator.pushNamedAndRemoveUntil(context, '/login', ModalRoute.withName('/'));
                   }
                 },
               ),
             ),
           ],
         ),
-        body: setBody());
+        body: setBody);
   }
 }

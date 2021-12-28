@@ -1,3 +1,4 @@
+import 'package:cinaddict/models/notification.dart';
 import 'package:cinaddict/models/post.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -12,7 +13,8 @@ class User {
       this.followers,
       this.following,
       this.isPrivate,
-      this.posts
+      this.posts,
+      this.notifications
       );
   // TODO: Implement profile picture
   String username;
@@ -22,6 +24,7 @@ class User {
   List<String> following;
   String description;
   List<Post> posts;
+  List<Notification> notifications;
 
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);

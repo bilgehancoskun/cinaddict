@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_cache_manager_firebase/flutter_cache_manager_firebase.dart';
+import 'package:cinaddict/models/notification.dart' as CN;
 import 'dart:io';
 
 class AppFirestore {
@@ -19,6 +20,7 @@ class AppFirestore {
       'posts': [],
       'followers': [],
       'following': [],
+      'notifications': [],
       'description': description,
       'isPrivate': false,
     })
@@ -140,8 +142,9 @@ class AppFirestore {
       Map<String, dynamic> willFollowSnapshotUserJson = willFollowSnapshot.data() as Map<String, dynamic>;
       willFollowSnapshotUserJson['followers'].add(user);
       await users.doc(willFollow).update(willFollowSnapshotUserJson);
+      if (await notify(User.fromJson(userJson), CN.NotificationType.followed, willFollow))
+        result = true;
 
-      result = true;
     } catch (e) {
       print("Error occurred while follow operation $user - $willFollow");
     }
@@ -181,4 +184,22 @@ class AppFirestore {
 
     return followingUsers;
   }
+
+  static Future<bool> notify(User who, String notificationType, String user) async {
+    bool result = false;
+    CN.Notification notification = CN.Notification(who, notificationType, DateTime.now());
+    try {
+      CollectionReference users = FirebaseFirestore.instance.collection('users');
+      DocumentSnapshot snapshot = await users.doc(user).get();
+      Map<String, dynamic> userJson = snapshot.data() as Map<String, dynamic>;
+      userJson['notifications'].add(notification.toJson());
+      await users.doc(user).update(userJson);
+      result = true;
+    } catch (e) {
+      print("Error occurred while notify operation $user - ${notification.notificationType}\n $e");
+    }
+
+    return result;
+  }
+
 }

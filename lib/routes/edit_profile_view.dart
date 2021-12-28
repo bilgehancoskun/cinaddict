@@ -14,9 +14,15 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   final _formKey = GlobalKey<FormState>();
   Map<String, dynamic> data = {};
-  late bool isPrivate = widget.user.isPrivate;
+  late bool isPrivate;
   String? displayName;
   String? description;
+
+  @override
+  void initState() {
+    isPrivate = widget.user.isPrivate;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +36,7 @@ class _EditProfileState extends State<EditProfile> {
                 _formKey.currentState!.save();
                 data["displayName"]=displayName;
                 data["description"]=description;
-                data["IsPrivate"]=isPrivate;
+                data["isPrivate"]=isPrivate;
                 Navigator.pop(context, data);
               },
               child: Row(

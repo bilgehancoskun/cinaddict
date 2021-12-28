@@ -32,4 +32,16 @@ class AppSharedPreferences {
     return user;
   }
 
+  static Future<bool> logout() async {
+    bool result = false;
+    try {
+      _preferences.setBool('loggedIn', false);
+      _preferences.remove('profile');
+      result = true;
+    } catch (e) {
+      print("When logging out a problem occurred\n$e");
+    }
+    return result;
+  }
+
 }
