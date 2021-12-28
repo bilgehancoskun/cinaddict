@@ -19,6 +19,9 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       (json['notifications'] as List<dynamic>)
           .map((e) => Notification.fromJson(e as Map<String, dynamic>))
           .toList(),
+      (json['followRequests'] as List<dynamic>)
+          .map((e) => User.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
@@ -30,4 +33,5 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'description': instance.description,
       'posts': instance.posts.map((e) => e.toJson()).toList(),
       'notifications': instance.notifications.map((e) => e.toJson()).toList(),
+      'followRequests': instance.followRequests.map((e) => e.toJson()).toList(),
     };
