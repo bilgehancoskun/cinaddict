@@ -14,7 +14,8 @@ class User {
       this.following,
       this.isPrivate,
       this.posts,
-      this.notifications
+      this.notifications,
+      this.followRequests
       );
   // TODO: Implement profile picture
   String username;
@@ -25,6 +26,7 @@ class User {
   String description;
   List<Post> posts;
   List<Notification> notifications;
+  List<User> followRequests;
 
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);

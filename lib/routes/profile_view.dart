@@ -36,12 +36,12 @@ class _ProfileViewState extends State<ProfileView> {
 
   Future<void> _getPostImages() async {
     List<Image> images = [];
-    for (Post post in user.posts) {
+    for (Post post in user.posts.reversed) {
       images.add(await AppFirestore.getPostImageFromName(user.username, post.image!));
+      setState(() {
+        postImages = images;
+      });
     }
-    setState(() {
-      postImages = List.from(images.reversed);
-    });
   }
 
   Widget? get setBody {
@@ -263,6 +263,7 @@ class _ProfileViewState extends State<ProfileView> {
               ],
             ),
           ),
+          if (!widget.viewOnly || !user.isPrivate || user.followers.contains(widget.sentBy)) // add !widget.viewOnly
           GridView.count(
             shrinkWrap: true,
             crossAxisSpacing: 0,
@@ -270,16 +271,38 @@ class _ProfileViewState extends State<ProfileView> {
             crossAxisCount: 3,
             physics: NeverScrollableScrollPhysics(),
             children: [
-              for (Image postImage in postImages)
+              for (int idx = 0; idx < user.posts.length; idx++)
               InkWell(
                 onTap: () {},
                 child: Container(
                   padding: const EdgeInsets.all(0),
-                  child: postImage,
+                  child: idx < postImages.length ? postImages[idx]: null,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: AppColors.black,
+                      width: 1,
+                    )
+                  ),
                 ),
               ),
             ],
-          )
+          ) else
+            Column(
+              children: [
+                Divider(
+                  color: AppColors.white,
+                  thickness: 1,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(Icons.lock, color: AppColors.white, size: 36,),
+                ),
+                Text('Account is private', style: TextStyle(
+                  color: AppColors.white,
+                  fontSize: 18,
+                ),),
+              ],
+            ),
         ]),
       ),
     );

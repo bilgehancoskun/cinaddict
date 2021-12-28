@@ -23,6 +23,7 @@ class AppFirestore {
       'notifications': [],
       'description': description,
       'isPrivate': false,
+      'followRequests': [],
     })
         .then((value) => print("User Added: $username"))
         .catchError((error) => print("Failed to add user: $error"));
