@@ -43,7 +43,7 @@ class _HomePage extends State<HomePage> {
     List<Image> _postImages = [];
     for (Post post in posts) {
       _postImages.add(
-          await AppFirestore.getPostImageFromName('bilgehan', post.image!));
+          await AppFirestore.getPostImageFromName(post.owner!, post.image!));
       setState(() {
         postImages = _postImages;
       });
