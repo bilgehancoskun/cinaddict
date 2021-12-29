@@ -1,4 +1,3 @@
-import 'package:cinaddict/bloc/main_bloc.dart';
 import 'package:cinaddict/models/post.dart';
 import 'package:cinaddict/routes/new_post.dart';
 import 'package:cinaddict/utils/shared_preferences.dart';
@@ -8,8 +7,6 @@ import 'package:cinaddict/services/firestore.dart';
 import 'package:cinaddict/utils/styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:async/async.dart';
 
 import 'edit_profile_view.dart';
 
@@ -38,6 +35,7 @@ class _ProfileViewState extends State<ProfileView> {
 
   Future<void> _getPostImages() async {
     List<Image> images = [];
+    profilePicture = await AppFirestore.getProfilePictureFromName(user.username, user.profilePicture);
     for (Post post in user.posts.reversed) {
       images.add(await AppFirestore.getPostImageFromName(user.username, post.image!));
       setState(() {
