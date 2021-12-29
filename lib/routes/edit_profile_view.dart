@@ -18,7 +18,7 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   final _formKey = GlobalKey<FormState>();
   Map<String, dynamic> data = {};
-  late bool isPrivate;
+  late bool isPrivate = widget.user.isPrivate;
   String? displayName;
   String? description;
 
@@ -33,7 +33,6 @@ class _EditProfileState extends State<EditProfile> {
     });
     return Center(
       child: Column(
-
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 80),
@@ -42,30 +41,31 @@ class _EditProfileState extends State<EditProfile> {
               children: [
                 Column(
                   children: [
-
                     TextButton(
                         onPressed: () async {
                           setState(() {
                             _loadingSwitch = true;
-                            _image = LoadingAnimation();
+                            _image = LoadingAnimation(text: 'Changing Profile Picture');
                           });
                           try {
-                            var pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
+                            var pickedFile = await ImagePicker()
+                                .pickImage(source: ImageSource.camera);
                             if (pickedFile != null) {
-                              Image image = Image.file(File(pickedFile.path));
+                              FileImage image = FileImage(File(pickedFile.path));
                               imagePath = pickedFile.path;
                               imageName = pickedFile.name;
                               setState(() {
                                 _loadingSwitch = false;
-                                _image = image;
+                                _image = CircleAvatar(
+                                  backgroundImage: image,
+                                  radius: 72,
+                                );
                               });
-                            }
-                            else {
+                            } else {
                               setState(() {
                                 _image = createIconButtons();
                               });
                             }
-
                           } catch (error) {
                             setState(() {
                               setState(() {
@@ -76,44 +76,46 @@ class _EditProfileState extends State<EditProfile> {
                         },
                         child: Column(
                           children: [
-                            Icon(Icons.camera, color: AppColors.white, size: 50,),
-                            Text('Take a photo from camera', style: TextStyle(
-                                color: AppColors.white
-                            ),),
+                            Icon(
+                              Icons.camera,
+                              color: AppColors.white,
+                              size: 50,
+                            ),
+                            Text(
+                              'Take a photo from camera',
+                              style: TextStyle(color: AppColors.white),
+                            ),
                           ],
-                        )
-                    ),
+                        )),
                   ],
                 ),
-
-
-
                 Column(
                   children: [
-
                     TextButton(
                         onPressed: () async {
                           setState(() {
                             _loadingSwitch = true;
-                            _image = LoadingAnimation();
+                            _image = LoadingAnimation(text: 'Changing Profile Picture');
                           });
                           try {
-                            var pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+                            var pickedFile = await ImagePicker()
+                                .pickImage(source: ImageSource.gallery);
                             if (pickedFile != null) {
-                              Image image = Image.file(File(pickedFile.path));
+                              FileImage image = FileImage(File(pickedFile.path));
                               imagePath = pickedFile.path;
                               imageName = pickedFile.name;
                               setState(() {
                                 _loadingSwitch = false;
-                                _image = image;
+                                _image = CircleAvatar(
+                                  backgroundImage: image,
+                                  radius: 72,
+                                );
                               });
-                            }
-                            else {
+                            } else {
                               setState(() {
                                 _image = createIconButtons();
                               });
                             }
-
                           } catch (error) {
                             setState(() {
                               setState(() {
@@ -124,29 +126,25 @@ class _EditProfileState extends State<EditProfile> {
                         },
                         child: Column(
                           children: [
-                            Icon(Icons.album, color: Colors.white, size: 50,),
-                            Text('Select photo from gallery', style: TextStyle(
-                                color: AppColors.white
-                            ),),
+                            Icon(
+                              Icons.album,
+                              color: Colors.white,
+                              size: 50,
+                            ),
+                            Text(
+                              'Select photo from gallery',
+                              style: TextStyle(color: AppColors.white),
+                            ),
                           ],
-                        )
-                    ),
+                        )),
                   ],
                 ),
-
               ],
             ),
           ),
         ],
       ),
     );
-  }
-
-
-  @override
-  void initState() {
-    isPrivate = widget.user.isPrivate;
-    super.initState();
   }
 
   @override
@@ -157,16 +155,25 @@ class _EditProfileState extends State<EditProfile> {
         actions: [
           SizedBox(
             child: TextButton(
-              onPressed: (){
-                _loadingSwitch = true;
+              onPressed: () async {
+                setState(() {
+                  _loadingSwitch = true;
+                  _image = LoadingAnimation(text: 'Changing Profile Picture');
+                });
                 _formKey.currentState!.save();
-                data["displayName"]=displayName;
-                data["description"]=description;
-                data["isPrivate"]=isPrivate;
-                data["image"] = imageName;
-                if (imageName != null && imagePath != null)
-                  AppFirestore.uploadProfilePicture(username: widget.user.username, path: imagePath!, imageName: imageName!);
-                _loadingSwitch = false;
+                data["displayName"] = displayName;
+                data["description"] = description;
+                data["isPrivate"] = isPrivate;
+                if (imageName != null && imagePath != null) {
+                  await AppFirestore.uploadProfilePicture(
+                      username: widget.user.username,
+                      path: imagePath!,
+                      imageName: imageName!);
+                  data["profilePicture"] = imageName;
+                }
+                setState(() {
+                  _loadingSwitch = false;
+                });
                 Navigator.pop(context, data);
               },
               child: Row(
@@ -177,7 +184,10 @@ class _EditProfileState extends State<EditProfile> {
                       color: AppColors.white,
                     ),
                   ),
-                  Icon(Icons.done,color: AppColors.white,)
+                  Icon(
+                    Icons.done,
+                    color: AppColors.white,
+                  )
                 ],
               ),
             ),
@@ -186,63 +196,66 @@ class _EditProfileState extends State<EditProfile> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          Text(
-                            "Change Profile Picture ",
-                            style: AppTextStyle.lighterbiggerTextStyle,
-                          ),
-                          _image,
-                        ],
-                      ),
-                    ),
-                    if (!_loadingSwitch)...[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Display Name: ",
+          padding: const EdgeInsets.all(8.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      if(!_loadingSwitch)
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Change Profile Picture ",
                           style: AppTextStyle.lighterbiggerTextStyle,
                         ),
-                        SizedBox(
-                          width: 250,
-                          child:TextFormField(
-                              decoration: InputDecoration(
-                                //fillColor: AppColors.darkGrey,
-                                //filled: true,
-                                hintText: '${widget.user.displayName}',
-                                hintStyle: AppTextStyle.lightTextStyle,
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: AppColors.midGrey,
-                                    width: 2.0,
-                                  ),
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(0)),
-                                ),
+                      ),
+                      _image,
+                    ],
+                  ),
+                ),
+                if (!_loadingSwitch) ...[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Display Name: ",
+                        style: AppTextStyle.lighterbiggerTextStyle,
+                      ),
+                      SizedBox(
+                        width: 250,
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            //fillColor: AppColors.darkGrey,
+                            //filled: true,
+                            hintText: '${widget.user.displayName}',
+                            hintStyle: AppTextStyle.lightTextStyle,
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: AppColors.midGrey,
+                                width: 2.0,
                               ),
-                              keyboardType: TextInputType.text,
-                              enableSuggestions: false,
-                              autocorrect: false,
-                              onSaved: (value){
-                                if(value == ''){
-                                  displayName=widget.user.displayName;
-                                }
-                                else{
-                                  displayName=value;
-                                }
-                              },
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(0)),
                             ),
+                          ),
+                          keyboardType: TextInputType.text,
+                          enableSuggestions: false,
+                          autocorrect: false,
+                          onSaved: (value) {
+                            if (value == '') {
+                              displayName = widget.user.displayName;
+                            } else {
+                              displayName = value;
+                            }
+                          },
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
+                  ),
                   SizedBox(
                     height: 16,
                   ),
@@ -267,18 +280,17 @@ class _EditProfileState extends State<EditProfile> {
                                 width: 2.0,
                               ),
                               borderRadius:
-                              BorderRadius.all(Radius.circular(0)),
+                                  BorderRadius.all(Radius.circular(0)),
                             ),
                           ),
                           keyboardType: TextInputType.text,
                           enableSuggestions: false,
                           autocorrect: false,
-                          onSaved: (value){
-                            if(value == ''){
-                              description=widget.user.description;
-                            }
-                            else{
-                              description=value;
+                          onSaved: (value) {
+                            if (value == '') {
+                              description = widget.user.description;
+                            } else {
+                              description = value;
                             }
                           },
                         ),
@@ -297,27 +309,20 @@ class _EditProfileState extends State<EditProfile> {
                       Switch(
                         activeColor: Colors.green,
                         value: isPrivate,
-                        onChanged:(value){
+                        onChanged: (value) {
                           setState(() {
-                            isPrivate=value;
+                            isPrivate = value;
                           });
                         },
                       ),
                     ],
                   ),
-                  ]
-                ],
-              ),
+                ]
+              ],
             ),
           ),
+        ),
       ),
     );
   }
 }
-// User = widget.user
-// Display Name: data['displayName']
-// Username: data['username']
-// Description: data['description']
-// Private Account: data['isPrivate'] -> Bool (Switch ile yap)
-//data['name'] = 'Bilgehan';
-//Navigator.pop(context, data);

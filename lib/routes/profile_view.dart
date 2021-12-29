@@ -1,3 +1,4 @@
+import 'package:cinaddict/bloc/main_bloc.dart';
 import 'package:cinaddict/models/post.dart';
 import 'package:cinaddict/routes/new_post.dart';
 import 'package:cinaddict/utils/shared_preferences.dart';
@@ -26,6 +27,7 @@ class ProfileView extends StatefulWidget {
 class _ProfileViewState extends State<ProfileView> {
   late User user = widget.user;
   List<Image> postImages = [];
+  ImageProvider? profilePicture;
 
   Future<void> _getUser() async {
     User _user = await AppFirestore.getUser(widget.user.username);
@@ -59,8 +61,8 @@ class _ProfileViewState extends State<ProfileView> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 12.0, 0, 12.0),
                 child: CircleAvatar(
-                  child: ClipOval(
-                      child: Image.asset("lib/assets/cinaddict_logo.png")),
+                  backgroundColor: AppColors.lightGrey,
+                  backgroundImage: profilePicture,
                   radius: 50,
                 ),
               ),

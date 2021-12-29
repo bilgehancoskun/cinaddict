@@ -86,7 +86,9 @@ class AppButtonStyle {
 }
 
 class LoadingAnimation extends StatelessWidget {
-  const LoadingAnimation({Key? key}) : super(key: key);
+  const LoadingAnimation({Key? key, this.text = 'Sharing Post'}) : super(key: key);
+
+  final String text;
 
   @override
   Widget build(BuildContext context) {
@@ -98,8 +100,8 @@ class LoadingAnimation extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SpinKitCubeGrid(color: Colors.white, size: 50.0),
-              Text('Sharing Post', style: TextStyle(
-                fontSize: 16,
+              Text(text, style: TextStyle(
+                fontSize: 16, color: AppColors.white
               ),),
             ],
           )

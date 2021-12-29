@@ -147,9 +147,14 @@ class AppFirestore {
 
   static Future getProfilePictureFromName(String username,
       String imageName) async {
-    String imagePath = '$username/profile/$imageName';
-    File file = await FirebaseCacheManager().getSingleFile(imagePath);
-    return Image(image: FileImage(file),fit: BoxFit.cover,);
+    try {
+      String imagePath = '$username/profile/$imageName';
+      print(imagePath);
+      File file = await FirebaseCacheManager().getSingleFile(imagePath);
+      return FileImage(file);
+    } catch(e) {
+      return AssetImage("lib/assets/cinaddict_logo.png");
+    }
   }
 
   static Future<bool> followUser(String user, String willFollow) async {
