@@ -9,7 +9,8 @@ import 'package:cinaddict/services/auth.dart';
 import 'package:email_validator/email_validator.dart';
 
 class SignUpView extends StatefulWidget {
-  SignUpView({Key? key, required this.analytics, required this.observer}) : super(key: key);
+  SignUpView({Key? key, required this.analytics, required this.observer})
+      : super(key: key);
   final FirebaseAnalytics analytics;
   final FirebaseAnalyticsObserver observer;
 
@@ -22,11 +23,11 @@ class _SignUpViewState extends State<SignUpView> {
 
   String mail = "";
   String password = "";
-  String passwordCheck="";
+  String passwordCheck = "";
   String username = "";
   final validCharacters = RegExp(r'^[a-zA-Z0-9]+$');
 
-  AuthService auth=AuthService();
+  AuthService auth = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +37,7 @@ class _SignUpViewState extends State<SignUpView> {
           child: Padding(
             padding: EdgeInsets.all(30),
             child: Form(
-              key:_formKey,
+              key: _formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -60,20 +61,20 @@ class _SignUpViewState extends State<SignUpView> {
                                 filled: true,
                                 hintText: 'E-mail',
                                 hintStyle: AppTextStyle.lightTextStyle,
-
                                 enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
                                     color: AppColors.midGrey,
                                     width: 2.0,
                                   ),
-                                  borderRadius: BorderRadius.all(Radius.circular(0)),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(0)),
                                 ),
                               ),
                               keyboardType: TextInputType.emailAddress,
                               style: TextStyle(
                                 color: AppColors.white,
                               ),
-                              validator: (value){
+                              validator: (value) {
                                 if (value == null) {
                                   return 'E-mail field cannot be empty';
                                 } else {
@@ -81,15 +82,15 @@ class _SignUpViewState extends State<SignUpView> {
                                   if (trimmedValue.isEmpty) {
                                     return 'E-mail field cannot be empty';
                                   }
-                                   if(!EmailValidator.validate(trimmedValue)) {
+                                  if (!EmailValidator.validate(trimmedValue)) {
                                     return 'Please enter a valid email';
-                                   }
+                                  }
                                 }
                                 return null;
 
                                 // TODO: Account already exists durumu için yine yukardan uyarı bildirimi (popup) gelecek (2)
                               },
-                              onSaved: (value){
+                              onSaved: (value) {
                                 if (value != null) {
                                   mail = value;
                                 }
@@ -111,13 +112,13 @@ class _SignUpViewState extends State<SignUpView> {
                                 filled: true,
                                 hintText: 'Username',
                                 hintStyle: AppTextStyle.lightTextStyle,
-
                                 enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
                                     color: AppColors.midGrey,
                                     width: 2.0,
                                   ),
-                                  borderRadius: BorderRadius.all(Radius.circular(0)),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(0)),
                                 ),
                               ),
                               keyboardType: TextInputType.text,
@@ -135,12 +136,11 @@ class _SignUpViewState extends State<SignUpView> {
                                   if (trimmedValue.length < 3) {
                                     return 'Username must be at least 3 characters long';
                                   }
-                                  if (!validCharacters.hasMatch(trimmedValue)){
+                                  if (!validCharacters.hasMatch(trimmedValue)) {
                                     return 'Username can only contains alphanumerical characters';
                                   }
                                   //passwordCheck=trimmedValue;
                                 }
-                                return null;
                               },
                               onSaved: (value) {
                                 if (value != null) {
@@ -164,13 +164,13 @@ class _SignUpViewState extends State<SignUpView> {
                                 filled: true,
                                 hintText: 'Password',
                                 hintStyle: AppTextStyle.lightTextStyle,
-
                                 enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
                                     color: AppColors.midGrey,
                                     width: 2.0,
                                   ),
-                                  borderRadius: BorderRadius.all(Radius.circular(0)),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(0)),
                                 ),
                               ),
                               keyboardType: TextInputType.text,
@@ -191,7 +191,7 @@ class _SignUpViewState extends State<SignUpView> {
                                   if (trimmedValue.length < 8) {
                                     return 'Password must be at least 8 characters long';
                                   }
-                                  passwordCheck=trimmedValue;
+                                  passwordCheck = trimmedValue;
                                 }
                                 return null;
                               },
@@ -211,13 +211,13 @@ class _SignUpViewState extends State<SignUpView> {
                                 filled: true,
                                 hintText: 'Password (Repeat)',
                                 hintStyle: AppTextStyle.lightTextStyle,
-
                                 enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
                                     color: AppColors.midGrey,
                                     width: 2.0,
                                   ),
-                                  borderRadius: BorderRadius.all(Radius.circular(0)),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(0)),
                                 ),
                               ),
                               keyboardType: TextInputType.text,
@@ -235,7 +235,7 @@ class _SignUpViewState extends State<SignUpView> {
                                   if (trimmedValue.isEmpty) {
                                     return 'Password field cannot be empty';
                                   }
-                                  if (trimmedValue != passwordCheck){
+                                  if (trimmedValue != passwordCheck) {
                                     return "Password is not the same";
                                   }
                                 }
@@ -257,17 +257,28 @@ class _SignUpViewState extends State<SignUpView> {
                               onPressed: () async {
                                 if (_formKey.currentState!.validate()) {
                                   _formKey.currentState!.save();
-                                  User? result = await auth.signupWithMailAndPass(mail, password);
-                                  if (result != null) {
-                                    await result.updateDisplayName(username);
-                                    await AppFirestore.addUserToFirestore(username: username);
-                                    Navigator.pushNamed(context, '/login');
+                                  if (await AppFirestore.userExists(username)) {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content: Text('Username already in use', textAlign: TextAlign.center,),
+                                      backgroundColor: AppColors.primaryRed,
+                                    ));
+                                  } else {
+                                    User? result = await auth
+                                        .signupWithMailAndPass(mail, password);
+                                    if (result != null) {
+                                      await result.updateDisplayName(username);
+                                      await AppFirestore.addUserToFirestore(uid: result.uid,
+                                          username: username);
+                                      Navigator.pushNamed(context, '/login');
+                                    }
                                   }
                                   // TODO: If person cannot create the account then pop up a message. (1)
                                 }
                               },
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 12.0),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 12.0),
                                 child: Text(
                                   'Sign Up',
                                   style: TextStyle(color: Colors.white),
@@ -279,9 +290,8 @@ class _SignUpViewState extends State<SignUpView> {
                         ],
                       ),
                       TextButton(
-                        onPressed:() {
+                        onPressed: () {
                           Navigator.pushNamed(context, '/login');
-
                         },
                         child: Text(
                           "Already have an account? Click here to login.",

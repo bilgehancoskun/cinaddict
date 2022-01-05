@@ -35,9 +35,12 @@ class _ProfileViewState extends State<ProfileView> {
 
   Future<void> _getPostImages() async {
     List<Image> images = [];
-    profilePicture = await AppFirestore.getProfilePictureFromName(user.username, user.profilePicture);
+    ImageProvider _profilePicture = await AppFirestore.getProfilePictureFromName(user.username, user.profilePicture);
+    setState(() {
+      profilePicture = _profilePicture;
+    });
     for (Post post in user.posts.reversed) {
-      images.add(await AppFirestore.getPostImageFromName(user.username, post.image!));
+      images.add(await AppFirestore.getPostImageFromName(user.username, post.image));
       setState(() {
         postImages = images;
       });
@@ -262,6 +265,10 @@ class _ProfileViewState extends State<ProfileView> {
                 ),
               ],
             ),
+          ),
+          Divider(
+            color: AppColors.white,
+            thickness: 2,
           ),
           if (!widget.viewOnly || !user.isPrivate || user.followers.contains(widget.sentBy)) // add !widget.viewOnly
           GridView.count(

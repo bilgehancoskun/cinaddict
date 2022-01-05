@@ -41,7 +41,7 @@ class _HomePage extends State<HomePage> {
     List<Image> _postImages = [];
     for (Post post in posts) {
       _postImages.add(
-          await AppFirestore.getPostImageFromName(post.owner!, post.image!));
+          await AppFirestore.getPostImageFromName(post.owner, post.image));
       setState(() {
         postImages = _postImages;
       });
@@ -60,7 +60,7 @@ class _HomePage extends State<HomePage> {
       });
     }
     else {
-      _posts.sort((a, b) => a.timestamp!.compareTo(b.timestamp!));
+      _posts.sort((a, b) => a.timestamp.compareTo(b.timestamp));
       setState(() {
         posts = List.from(_posts.reversed);
       });
@@ -121,7 +121,7 @@ class _HomePage extends State<HomePage> {
                             ),
                           ),
                           Text(
-                            posts[idx].owner ?? 'no-owner', // post.owner
+                            posts[idx].owner, // post.owner
                             style: AppTextStyle.lighterTextStyle,
                           ),
                         ],
@@ -153,14 +153,8 @@ class _HomePage extends State<HomePage> {
                                 color: Colors.white,
                               ),
                               onPressed: () async {
-                                if (posts[idx].likeCount != null) {
-                                  posts[idx].likeCount = posts[idx].likeCount! + 1;
-                                }
-                                else {
-                                  posts[idx].likeCount = 0;
-                                  posts[idx].likeCount = posts[idx].likeCount! + 1;
-                                }
-                                await AppFirestore.updatePost(posts[idx]);
+                                posts[idx].like.add(user.username);
+                                bool result = await AppFirestore.updatePost(posts[idx]);
                               },
                             ),
                             SizedBox(
@@ -172,13 +166,7 @@ class _HomePage extends State<HomePage> {
                                 color: Colors.white,
                               ),
                               onPressed: () async {
-                                if (posts[idx].dislikeCount != null) {
-                                  posts[idx].dislikeCount = posts[idx].dislikeCount! + 1;
-                                }
-                                else {
-                                  posts[idx].dislikeCount = 0;
-                                  posts[idx].dislikeCount = posts[idx].dislikeCount! + 1;
-                                }
+                                posts[idx].dislike.add(user.username);
                                 bool result = await AppFirestore.updatePost(posts[idx]);
                               },
                             ),
@@ -210,12 +198,12 @@ class _HomePage extends State<HomePage> {
                           Row(
                             children: [
                               Text(
-                                '@${posts[idx].owner ?? 'no-owner'}', // post.owner
+                                '@${posts[idx].owner}', // post.owner
                                 style: TextStyle(
                                     color: AppColors.white,
                                     fontWeight: FontWeight.bold),
                               ),
-                              if (posts[idx].description!.length < 23)
+                              if (posts[idx].description.length < 23)
                                 Text(
                                   '  ${posts[idx].description}',
                                   style: TextStyle(
@@ -228,7 +216,7 @@ class _HomePage extends State<HomePage> {
                                     TextButton(
                                       onPressed: () {},
                                       child: Text(
-                                        '${posts[idx].description!.substring(0, 23)}...',
+                                        '${posts[idx].description.substring(0, 23)}...',
                                         style: TextStyle(
                                           color: AppColors.white,
                                         ),
@@ -241,7 +229,7 @@ class _HomePage extends State<HomePage> {
                           Row(
                             children: [
                               Text(
-                                timeago.format(posts[idx].timestamp!),
+                                timeago.format(posts[idx].timestamp),
                                 style: TextStyle(color: AppColors.white),
                               ),
                             ],

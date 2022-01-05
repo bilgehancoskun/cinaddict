@@ -9,12 +9,13 @@ import 'package:cinaddict/models/notification.dart' as CN;
 import 'dart:io';
 
 class AppFirestore {
-  static Future<void> addUserToFirestore({required String username, String displayName = '', String description = '', String profilePicture = ''}) async {
+  static Future<void> addUserToFirestore({required String uid, required String username, String displayName = '', String description = '', String profilePicture = ''}) async {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
 
     return users
         .doc(username)
         .set({
+      'uid': uid,
       'displayName': displayName,
       'username': username,
       'posts': [],
@@ -52,15 +53,6 @@ class AppFirestore {
     return user;
   }
 
-  static Future<bool> hasUser(String username) async {
-    bool hasUser = false;
-    CollectionReference users = FirebaseFirestore.instance.collection('users');
-    DocumentSnapshot snapshot = await users.doc(username).get();
-    if (snapshot.data() != null)
-      hasUser = true;
-
-    return hasUser;
-  }
 
   static Future<bool> addPost(String username, Post newPost) async {
     User user = await getUser(username);
@@ -145,13 +137,13 @@ class AppFirestore {
     }
   }
 
-  static Future getProfilePictureFromName(String username,
+  static Future<ImageProvider> getProfilePictureFromName(String username,
       String imageName) async {
     try {
       String imagePath = '$username/profile/$imageName';
-      print(imagePath);
       File file = await FirebaseCacheManager().getSingleFile(imagePath);
       return FileImage(file);
+
     } catch(e) {
       return AssetImage("lib/assets/cinaddict_logo.png");
     }
@@ -233,7 +225,7 @@ class AppFirestore {
   static Future<bool> updatePost(Post post) async {
     bool result = false;
     try {
-      User user = await getUser(post.owner!);
+      User user = await getUser(post.owner);
       for (int idx = 0; idx < user.posts.length; idx++) {
         if (user.posts[idx].timestamp == post.timestamp) {
           user.posts[idx] = post;
@@ -247,6 +239,13 @@ class AppFirestore {
       print("Error Occurred while updating post:\n$e");
     }
     return result;
+  }
+
+  static Future<bool> userExists(String username) async {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    DocumentSnapshot snapshot = await users.doc(username).get();
+    print(snapshot.exists);
+    return snapshot.exists;
   }
 
 }

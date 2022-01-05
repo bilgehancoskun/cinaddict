@@ -38,6 +38,29 @@ class _LoginState extends State<LoginView> {
   late int count;
   String _message = '';
 
+  Future createAlertDialog(BuildContext context) {
+    TextEditingController _controller = TextEditingController();
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Username:"),
+            content: TextField(
+              controller: _controller,
+            ),
+            actions: [
+              MaterialButton(
+                onPressed: () {
+                  Navigator.of(context).pop(_controller.text.toString());
+                },
+                elevation: 5.0,
+                child: Text('Submit'),
+              )
+            ],
+          );
+        });
+  }
+
   void setmessage(String msg) {
     setState(() {
       _message = msg;
@@ -64,7 +87,7 @@ class _LoginState extends State<LoginView> {
 
   Future<UserCredential> loginUser() async {
     UserCredential userCredential =
-    await auth.signInWithEmailAndPassword(email: mail, password: password);
+        await auth.signInWithEmailAndPassword(email: mail, password: password);
 
     return userCredential;
   }
@@ -82,13 +105,11 @@ class _LoginState extends State<LoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-
         child: Padding(
           padding: EdgeInsets.all(30.0), //TODO DIMENSIONS
           child: Form(
             key: _formKey,
             child: Column(
-
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 SizedBox(
@@ -96,12 +117,10 @@ class _LoginState extends State<LoginView> {
                 ),
 
                 SizedBox(
-
                   height: 200,
                   child: Image(
                     image: AssetImage('lib/assets/cinaddict_logo.png'),
                   ),
-
                 ),
                 SizedBox(
                   height: 10,
@@ -126,7 +145,7 @@ class _LoginState extends State<LoginView> {
                                 width: 2.0,
                               ),
                               borderRadius:
-                              BorderRadius.all(Radius.circular(0)),
+                                  BorderRadius.all(Radius.circular(0)),
                             ),
                           ),
                           keyboardType: TextInputType.emailAddress,
@@ -180,14 +199,13 @@ class _LoginState extends State<LoginView> {
                                 width: 2.0,
                               ),
                               borderRadius:
-                              BorderRadius.all(Radius.circular(0)),
+                                  BorderRadius.all(Radius.circular(0)),
                             ),
                           ),
                           keyboardType: TextInputType.text,
                           style: TextStyle(
                             color: AppColors.white,
                           ),
-
                           obscureText: true,
                           enableSuggestions: false,
                           autocorrect: false,
@@ -238,24 +256,25 @@ class _LoginState extends State<LoginView> {
                                 User? user = result.user;
                                 if (user != null && user.displayName != null) {
                                   await AppSharedPreferences.setLoggedIn(true);
-                                  CinaddictUser.User userFromFirebase = await AppFirestore.getUser(user.displayName!);
-                                  await AppSharedPreferences.saveJsonUser(userFromFirebase);
+                                  CinaddictUser.User userFromFirebase =
+                                      await AppFirestore.getUser(
+                                          user.displayName!);
+                                  await AppSharedPreferences.saveJsonUser(
+                                      userFromFirebase);
                                   Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => Structure(user: userFromFirebase,)));
+                                          builder: (context) => Structure(
+                                                user: userFromFirebase,
+                                              )));
                                 }
                               } on FirebaseAuthException catch (e) {
                                 print(
                                     'Error Catched in Login: ${e.toString()}');
-                                if (e.code == 'user-not-found') {
-                                  signupUser();
-                                } else if (e.code == 'wrong-password') {
+                                if (e.code == 'wrong-password') {
                                   setmessage('Please check your password');
                                 }
                               }
-
-                              //TODO  getUser();
                             } else {
                               setState(() {
                                 count += 1;
@@ -287,11 +306,11 @@ class _LoginState extends State<LoginView> {
                             Future<UserCredential> signInWithGoogle() async {
                               // Trigger the authentication flow
                               final GoogleSignInAccount? googleUser =
-                              await GoogleSignIn().signIn();
+                                  await GoogleSignIn().signIn();
 
                               // Obtain the auth details from the request
                               final GoogleSignInAuthentication? googleAuth =
-                              await googleUser?.authentication;
+                                  await googleUser?.authentication;
 
                               // Create a new credential
                               final credential = GoogleAuthProvider.credential(
@@ -308,30 +327,77 @@ class _LoginState extends State<LoginView> {
                             User? user = result.user;
                             if (user != null) {
                               List splitUser = user.email!.split("@");
-                              if (await AppFirestore.hasUser(splitUser[0])) {
+                              if (await AppFirestore.userExists(splitUser[0])) {
+                                CinaddictUser.User userFromFirebase =
+                                    await AppFirestore.getUser(splitUser[0]);
+                                if (userFromFirebase.uid == user.uid) {
+                                  await AppSharedPreferences.setLoggedIn(true);
+                                  await AppSharedPreferences.saveJsonUser(
+                                      userFromFirebase);
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => Structure(
+                                                user: userFromFirebase,
+                                              )));
+                                } else {
+                                  String selectedUsername = '';
+                                  createAlertDialog(context).then((value) {
+                                    selectedUsername = value;
+                                  });
+                                  while (selectedUsername != '' &&
+                                      await AppFirestore.userExists(
+                                          selectedUsername)) {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content: Text(
+                                        'Username already in use, select another.',
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      backgroundColor: AppColors.primaryRed,
+                                    ));
+                                    createAlertDialog(context).then((value) {
+                                      selectedUsername = value;
+                                    });
+                                  }
+                                  await AppFirestore.addUserToFirestore(
+                                      uid: user.uid,
+                                      username: splitUser[0],
+                                      displayName: user.displayName ?? '');
+                                  await AppSharedPreferences.setLoggedIn(true);
+                                  CinaddictUser.User userFromFirebase =
+                                  await AppFirestore.getUser(splitUser[0]);
+                                  await AppSharedPreferences.saveJsonUser(
+                                      userFromFirebase);
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => Structure(
+                                            user: userFromFirebase,
+                                          )));
+                                }
+                              } else {
+                                await AppFirestore.addUserToFirestore(
+                                    uid: user.uid,
+                                    username: splitUser[0],
+                                    displayName: user.displayName ?? '');
                                 await AppSharedPreferences.setLoggedIn(true);
-                                CinaddictUser.User userFromFirebase = await AppFirestore.getUser(splitUser[0]);
-                                await AppSharedPreferences.saveJsonUser(userFromFirebase);
-                                Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                builder: (context) => Structure(user: userFromFirebase,)));
-                              }
-                              else {
-                                await AppFirestore.addUserToFirestore(username: splitUser[0], displayName: user.displayName ?? '');
-                                await AppSharedPreferences.setLoggedIn(true);
-                                CinaddictUser.User userFromFirebase = await AppFirestore.getUser(splitUser[0]);
-                                await AppSharedPreferences.saveJsonUser(userFromFirebase);
+                                CinaddictUser.User userFromFirebase =
+                                    await AppFirestore.getUser(splitUser[0]);
+                                await AppSharedPreferences.saveJsonUser(
+                                    userFromFirebase);
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Structure(user: userFromFirebase,)));
+                                        builder: (context) => Structure(
+                                              user: userFromFirebase,
+                                            )));
                               }
                             }
                           },
                           child: Padding(
                               padding:
-                              const EdgeInsets.symmetric(vertical: 12.0),
+                                  const EdgeInsets.symmetric(vertical: 12.0),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -344,11 +410,11 @@ class _LoginState extends State<LoginView> {
                                   ),
                                   Padding(
                                     padding:
-                                    const EdgeInsets.fromLTRB(50, 0, 0, 0),
+                                        const EdgeInsets.fromLTRB(50, 0, 0, 0),
                                     child: Text(
                                       'Login / Sign Up with Google',
                                       style:
-                                      AppTextStyle.lighterbiggerTextStyle,
+                                          AppTextStyle.lighterbiggerTextStyle,
                                     ),
                                   ),
                                 ],
