@@ -230,4 +230,23 @@ class AppFirestore {
     return result;
   }
 
+  static Future<bool> updatePost(Post post) async {
+    bool result = false;
+    try {
+      User user = await getUser(post.owner!);
+      for (int idx = 0; idx < user.posts.length; idx++) {
+        if (user.posts[idx].timestamp == post.timestamp) {
+          user.posts[idx] = post;
+        }
+      }
+
+      Map<String, dynamic> jsonUser = user.toJson();
+      await updateUser(jsonUser['username'], 'posts', jsonUser['posts']);
+      result = true;
+    } catch (e) {
+      print("Error Occurred while updating post:\n$e");
+    }
+    return result;
+  }
+
 }

@@ -147,16 +147,40 @@ class _HomePage extends State<HomePage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Icon(
-                              Icons.thumb_up_sharp,
-                              color: Colors.white,
+                            IconButton(
+                              icon: Icon(
+                                Icons.thumb_up_sharp,
+                                color: Colors.white,
+                              ),
+                              onPressed: () async {
+                                if (posts[idx].likeCount != null) {
+                                  posts[idx].likeCount = posts[idx].likeCount! + 1;
+                                }
+                                else {
+                                  posts[idx].likeCount = 0;
+                                  posts[idx].likeCount = posts[idx].likeCount! + 1;
+                                }
+                                await AppFirestore.updatePost(posts[idx]);
+                              },
                             ),
                             SizedBox(
                               width: 8,
                             ),
-                            Icon(
-                              Icons.thumb_down_sharp,
-                              color: Colors.white,
+                            IconButton(
+                              icon: Icon(
+                                Icons.thumb_down_sharp,
+                                color: Colors.white,
+                              ),
+                              onPressed: () async {
+                                if (posts[idx].dislikeCount != null) {
+                                  posts[idx].dislikeCount = posts[idx].dislikeCount! + 1;
+                                }
+                                else {
+                                  posts[idx].dislikeCount = 0;
+                                  posts[idx].dislikeCount = posts[idx].dislikeCount! + 1;
+                                }
+                                bool result = await AppFirestore.updatePost(posts[idx]);
+                              },
                             ),
                             SizedBox(
                               width: 8,
