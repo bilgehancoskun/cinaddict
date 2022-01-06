@@ -1,5 +1,6 @@
 import 'package:cinaddict/models/post.dart';
 import 'package:cinaddict/routes/new_post.dart';
+import 'package:cinaddict/routes/show_post.dart';
 import 'package:cinaddict/utils/shared_preferences.dart';
 import 'package:cinaddict/utils/colors.dart';
 import 'package:cinaddict/models/user.dart';
@@ -280,7 +281,9 @@ class _ProfileViewState extends State<ProfileView> {
             children: [
               for (int idx = 0; idx < user.posts.length; idx++)
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ShowPost(post: user.posts[idx], postImage: postImages[idx], user: user)));
+                },
                 child: Container(
                   padding: const EdgeInsets.all(0),
                   child: idx < postImages.length ? postImages[idx]: null,
