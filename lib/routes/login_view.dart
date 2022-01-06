@@ -137,7 +137,7 @@ class _LoginState extends State<LoginView> {
                           decoration: InputDecoration(
                             fillColor: AppColors.darkGrey,
                             filled: true,
-                            hintText: 'Username or email',
+                            hintText: 'Email',
                             hintStyle: AppTextStyle.lightTextStyle,
                             enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(

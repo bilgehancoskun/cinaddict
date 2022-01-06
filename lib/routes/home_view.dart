@@ -1,5 +1,6 @@
 import 'package:cinaddict/models/post.dart';
 import 'package:cinaddict/models/user.dart';
+import 'package:cinaddict/routes/comments_view.dart';
 import 'package:cinaddict/services/firestore.dart';
 import 'package:cinaddict/utils/colors.dart';
 import 'package:cinaddict/utils/styles.dart';
@@ -223,7 +224,7 @@ class _HomePage extends State<HomePage> {
                                       ),
                                     ),
                                   ],
-                                )
+                                ),
                             ],
                           ),
                           Row(
@@ -236,8 +237,26 @@ class _HomePage extends State<HomePage> {
                           )
                         ],
                       ),
+                      Row(
+                        children: [
+                          TextButton(
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero
+                            ),
+                              onPressed: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => CommentsView(post: posts[idx], username: user.username,)));
+                              },
+                              child: Text(
+                                  'View all ${posts[idx].comments.length} comments',
+                                style: TextStyle(
+                                  color: AppColors.lighterGrey
+                                ),
+                              )
+                          ),
+                        ],
+                      ),
                       SizedBox(
-                        height: 8,
+                        height: 4,
                       ),
                       Divider(
                         color: AppColors.white,
