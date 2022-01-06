@@ -8,11 +8,12 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'package:cinaddict/routes/comments_view.dart';
 
 class ShowPost extends StatelessWidget {
-  const ShowPost({Key? key, required this.post, required this.postImage, required this.user}) : super(key: key);
+  const ShowPost({Key? key, required this.post, required this.postImage, required this.user, required this.profilePicture}) : super(key: key);
 
   final Post post;
   final Image postImage;
   final User user;
+  final ImageProvider? profilePicture;
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +29,8 @@ class ShowPost extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(8),
                   child: CircleAvatar(
-                    child: ClipOval(
-                        child: Image.asset(
-                            "lib/assets/cinaddict_logo.png")),
-                    radius: 25,
+                    backgroundImage: profilePicture,
+                    backgroundColor: AppColors.lightestGrey,
                   ),
                 ),
                 Text(

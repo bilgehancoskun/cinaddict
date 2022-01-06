@@ -46,7 +46,6 @@ class _CommentsViewState extends State<CommentsView> {
               AsyncSnapshot<List<ImageProvider>> snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               List<ImageProvider> profilePictures = snapshot.data!;
-              print(profilePictures);
               return Column(
                 children: [
                   SingleChildScrollView(

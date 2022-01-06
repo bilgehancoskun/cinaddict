@@ -282,7 +282,7 @@ class _ProfileViewState extends State<ProfileView> {
               for (int idx = 0; idx < user.posts.length; idx++)
               InkWell(
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => ShowPost(post: user.posts[idx], postImage: postImages[idx], user: user)));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ShowPost(post: user.posts.reversed.elementAt(idx), postImage: postImages[idx], user: user, profilePicture: profilePicture,)));
                 },
                 child: Container(
                   padding: const EdgeInsets.all(0),
