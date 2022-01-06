@@ -24,10 +24,17 @@ class ProfileView extends StatefulWidget {
 
 class _ProfileViewState extends State<ProfileView> {
   late User user = widget.user;
+  User? sentBy;
   List<Image> postImages = [];
   ImageProvider? profilePicture;
 
   Future<void> _getUser() async {
+    if (widget.sentBy != 'None') {
+      User _sentBy = await AppFirestore.getUser(widget.sentBy);
+      setState(() {
+        sentBy = _sentBy;
+      });
+    }
     User _user = await AppFirestore.getUser(widget.user.username);
     setState(() {
       user = _user;
@@ -281,9 +288,10 @@ class _ProfileViewState extends State<ProfileView> {
             children: [
               for (int idx = 0; idx < user.posts.length; idx++)
               InkWell(
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => ShowPost(post: user.posts.reversed.elementAt(idx), postImage: postImages[idx], user: user, profilePicture: profilePicture,)));
-                },
+                onTap: () async {
+                  await Navigator.push(context, MaterialPageRoute(builder: (context) => ShowPost(sentBy: sentBy, post: user.posts.reversed.elementAt(idx), postImage: postImages[idx], user: user, profilePicture: profilePicture,)));
+                  await _futureJobs();
+                  },
                 child: Container(
                   padding: const EdgeInsets.all(0),
                   child: idx < postImages.length ? postImages[idx]: null,

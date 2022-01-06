@@ -241,6 +241,25 @@ class AppFirestore {
     return result;
   }
 
+  static Future<bool> deletePost(Post post) async {
+    bool result = false;
+    try {
+      User user = await getUser(post.owner);
+      for (int idx = 0; idx < user.posts.length; idx++) {
+        if (user.posts[idx].timestamp == post.timestamp) {
+          user.posts.removeAt(idx);
+        }
+      }
+
+      Map<String, dynamic> jsonUser = user.toJson();
+      await updateUser(jsonUser['username'], 'posts', jsonUser['posts']);
+      result = true;
+    } catch (e) {
+      print("Error Occurred while deleting post:\n$e");
+    }
+    return result;
+  }
+
   static Future<bool> userExists(String username) async {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
     DocumentSnapshot snapshot = await users.doc(username).get();
