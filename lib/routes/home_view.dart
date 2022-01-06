@@ -174,9 +174,14 @@ class _HomePage extends State<HomePage> {
                             SizedBox(
                               width: 8,
                             ),
-                            Icon(
-                              Icons.comment,
-                              color: Colors.white,
+                            IconButton(
+                              onPressed: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => CommentsView(post: posts[idx], username: user.username,)));
+                              },
+                              icon: Icon(
+                                Icons.comment,
+                                color: Colors.white,
+                              ),
                             ),
                             SizedBox(
                               width: 8,

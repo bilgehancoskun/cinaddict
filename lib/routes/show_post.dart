@@ -22,6 +22,8 @@ class ShowPost extends StatefulWidget {
 
 class _ShowPostState extends State<ShowPost> {
 
+  late int commentsLength = widget.post.comments.length;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,9 +100,14 @@ class _ShowPostState extends State<ShowPost> {
                   SizedBox(
                     width: 8,
                   ),
-                  Icon(
-                    Icons.comment,
-                    color: Colors.white,
+                  IconButton(
+                    onPressed: () async {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CommentsView(post: widget.post, username: widget.sentBy != null ? widget.sentBy!.username: widget.user.username,)));
+                    },
+                    icon: Icon(
+                      Icons.comment,
+                      color: Colors.white,
+                    ),
                   ),
                   SizedBox(
                     width: 8,
@@ -167,9 +174,9 @@ class _ShowPostState extends State<ShowPost> {
                     style: TextButton.styleFrom(
                         padding: EdgeInsets.zero
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => CommentsView(post: widget.post, username: widget.sentBy != null ? widget.sentBy!.username: widget.user.username,)));
-                    },
+                      },
                     child: Text(
                       'View all ${widget.post.comments.length} comments',
                       style: TextStyle(
