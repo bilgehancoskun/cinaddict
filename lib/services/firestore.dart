@@ -230,4 +230,10 @@ class AppFirestore {
     return result;
   }
 
+  static Future<bool> userExists(String username) async {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    DocumentSnapshot snapshot = await users.doc(username).get();
+    print(snapshot.exists);
+    return snapshot.exists;
+  }
 }
