@@ -23,7 +23,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  flutter_facebook_auth: ^3.5.7
   introduction_screen: ^2.1.0
   cupertino_icons: ^1.0.0
   google_fonts: ^2.0.0

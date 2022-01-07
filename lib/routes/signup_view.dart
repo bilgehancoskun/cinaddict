@@ -257,6 +257,7 @@ class _SignUpViewState extends State<SignUpView> {
                               onPressed: () async {
                                 if (_formKey.currentState!.validate()) {
                                   _formKey.currentState!.save();
+
                                   if (await AppFirestore.userExists(username)) {
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(SnackBar(

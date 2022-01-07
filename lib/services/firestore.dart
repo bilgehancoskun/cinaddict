@@ -266,5 +266,17 @@ class AppFirestore {
     print(snapshot.exists);
     return snapshot.exists;
   }
+  
+  static Future<User?> getUserWithUID(String uid) async {
+    User? user;
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    Query query = users.where('uid', isEqualTo: uid);
+    QuerySnapshot snapshot = await query.get();
+    if (snapshot.docs.isNotEmpty) {
+      Map<String, dynamic> userJson = snapshot.docs.first.data() as Map<String, dynamic>;
+      user = User.fromJson(userJson);
+    }
+    return user;
+  }
 
 }
