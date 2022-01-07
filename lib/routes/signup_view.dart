@@ -260,7 +260,7 @@ class _SignUpViewState extends State<SignUpView> {
                                   User? result = await auth.signupWithMailAndPass(mail, password);
                                   if (result != null) {
                                     await result.updateDisplayName(username);
-                                    await AppFirestore.addUserToFirestore(username: username);
+                                    await AppFirestore.addUserToFirestore(uid: result.uid, username: username);
                                     Navigator.pushNamed(context, '/login');
                                   }
                                   // TODO: If person cannot create the account then pop up a message. (1)

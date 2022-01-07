@@ -330,27 +330,44 @@ class _LoginState extends State<LoginView> {
 
                             UserCredential result = await signInWithGoogle();
                             User? user = result.user;
+
                             if (user != null) {
-                              List splitUser = user.email!.split("@");
-                              if (await AppFirestore.hasUser(splitUser[0])) {
+                              CinaddictUser.User? userFromFirebase = await AppFirestore.getUserWithUID(user.uid);
+                              if (userFromFirebase == null) {
+                                String selectedUsername = '';
+                                selectedUsername = await createAlertDialog(context);
+                                while (selectedUsername == '' ||
+                                    await AppFirestore.userExists(
+                                        selectedUsername)) {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                    content: Text(
+                                      'Username already in use, select another.',
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    backgroundColor: AppColors.primaryRed,
+                                  ));
+                                  selectedUsername = await createAlertDialog(context);
+                                }
+
+                                await AppFirestore.addUserToFirestore(uid: user.uid, username: selectedUsername, displayName: user.displayName ?? '');
                                 await AppSharedPreferences.setLoggedIn(true);
-                                CinaddictUser.User userFromFirebase = await AppFirestore.getUser(splitUser[0]);
-                                await AppSharedPreferences.saveJsonUser(userFromFirebase);
-                                Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                builder: (context) => Structure(user: userFromFirebase,)));
-                              }
-                              else {
-                                await AppFirestore.addUserToFirestore(username: splitUser[0], displayName: user.displayName ?? '');
-                                await AppSharedPreferences.setLoggedIn(true);
-                                CinaddictUser.User userFromFirebase = await AppFirestore.getUser(splitUser[0]);
+                                CinaddictUser.User userFromFirebase = await AppFirestore.getUser(selectedUsername);
                                 await AppSharedPreferences.saveJsonUser(userFromFirebase);
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => Structure(user: userFromFirebase,)));
                               }
+                              else {
+                                await AppSharedPreferences.setLoggedIn(true);
+                                await AppSharedPreferences.saveJsonUser(userFromFirebase);
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Structure(user: userFromFirebase,)));
+                              }
+
                             }
                           },
                           child: Padding(
@@ -404,24 +421,26 @@ class _LoginState extends State<LoginView> {
 
                             UserCredential? result = await signInWithFacebook();
                             User? user = result!.user;
-                            print(user);
                             if (user != null) {
-                              String selectedUsername = '';
-                              selectedUsername = await createAlertDialog(context);
-                              while (selectedUsername == '' ||
-                                  await AppFirestore.userExists(
-                                      selectedUsername)) {
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(SnackBar(
-                                  content: Text(
-                                    'Username already in use, select another.',
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  backgroundColor: AppColors.primaryRed,
-                                ));
+                              CinaddictUser.User? userFromFirebase = await AppFirestore.getUserWithUID(user.uid);
+                              if (userFromFirebase == null) {
+                                String selectedUsername = '';
                                 selectedUsername = await createAlertDialog(context);
-                              }
-                              if (await AppFirestore.userExists(selectedUsername)) {
+                                while (selectedUsername == '' ||
+                                    await AppFirestore.userExists(
+                                        selectedUsername)) {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                    content: Text(
+                                      'Username already in use, select another.',
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    backgroundColor: AppColors.primaryRed,
+                                  ));
+                                  selectedUsername = await createAlertDialog(context);
+                                }
+
+                                await AppFirestore.addUserToFirestore(uid: user.uid, username: selectedUsername, displayName: user.displayName ?? '');
                                 await AppSharedPreferences.setLoggedIn(true);
                                 CinaddictUser.User userFromFirebase = await AppFirestore.getUser(selectedUsername);
                                 await AppSharedPreferences.saveJsonUser(userFromFirebase);
@@ -431,15 +450,14 @@ class _LoginState extends State<LoginView> {
                                         builder: (context) => Structure(user: userFromFirebase,)));
                               }
                               else {
-                                await AppFirestore.addUserToFirestore(username: selectedUsername, displayName: user.displayName ?? '');
                                 await AppSharedPreferences.setLoggedIn(true);
-                                CinaddictUser.User userFromFirebase = await AppFirestore.getUser(selectedUsername);
                                 await AppSharedPreferences.saveJsonUser(userFromFirebase);
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => Structure(user: userFromFirebase,)));
                               }
+
                             }
                           },
                           child: Padding(

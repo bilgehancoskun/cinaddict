@@ -9,12 +9,13 @@ import 'package:cinaddict/models/notification.dart' as CN;
 import 'dart:io';
 
 class AppFirestore {
-  static Future<void> addUserToFirestore({required String username, String displayName = '', String description = '', String profilePicture = ''}) async {
+  static Future<void> addUserToFirestore({required String uid, required String username, String displayName = '', String description = '', String profilePicture = ''}) async {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
 
     return users
         .doc(username)
         .set({
+      'uid': uid,
       'displayName': displayName,
       'username': username,
       'posts': [],
@@ -233,7 +234,18 @@ class AppFirestore {
   static Future<bool> userExists(String username) async {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
     DocumentSnapshot snapshot = await users.doc(username).get();
-    print(snapshot.exists);
     return snapshot.exists;
+  }
+
+  static Future<User?> getUserWithUID(String uid) async {
+    User? user;
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    Query query = users.where('uid', isEqualTo: uid);
+    QuerySnapshot snapshot = await query.get();
+    if (snapshot.docs.isNotEmpty) {
+      Map<String, dynamic> userJson = snapshot.docs.first.data() as Map<String, dynamic>;
+      user = User.fromJson(userJson);
+    }
+    return user;
   }
 }

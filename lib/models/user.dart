@@ -7,6 +7,7 @@ part 'user.g.dart';
 @JsonSerializable(explicitToJson: true)
 class User {
   User(
+      this.uid,
       this.description,
       this.username,
       this.displayName,
@@ -19,6 +20,7 @@ class User {
       this.profilePicture
       );
 
+  String uid;
   String profilePicture;
   String username;
   String displayName;
