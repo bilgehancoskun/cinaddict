@@ -407,9 +407,7 @@ class _LoginState extends State<LoginView> {
                             print(user);
                             if (user != null) {
                               String selectedUsername = '';
-                              createAlertDialog(context).then((value) {
-                                selectedUsername = value;
-                              });
+                              selectedUsername = await createAlertDialog(context);
                               while (selectedUsername == '' ||
                                   await AppFirestore.userExists(
                                       selectedUsername)) {
@@ -421,9 +419,7 @@ class _LoginState extends State<LoginView> {
                                   ),
                                   backgroundColor: AppColors.primaryRed,
                                 ));
-                                createAlertDialog(context).then((value) {
-                                  selectedUsername = value;
-                                });
+                                selectedUsername = await createAlertDialog(context);
                               }
                               if (await AppFirestore.userExists(selectedUsername)) {
                                 await AppSharedPreferences.setLoggedIn(true);
