@@ -1,5 +1,6 @@
 import 'package:cinaddict/models/user.dart';
 import 'package:cinaddict/routes/follow_requests.view.dart';
+import 'package:cinaddict/services/firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:cinaddict/utils/styles.dart';
 import 'package:cinaddict/utils/colors.dart';
@@ -17,6 +18,20 @@ class NotificationPage extends StatefulWidget {
 
 class _NotificationPage extends State<NotificationPage> {
   int counter = 0;
+  late User user = widget.user;
+
+  @override
+  void initState() {
+    super.initState();
+    _futureJobs();
+  }
+
+  void _futureJobs() async {
+    User _user = await AppFirestore.getUser(user.username);
+    setState(() {
+      user = _user;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +42,7 @@ class _NotificationPage extends State<NotificationPage> {
           centerTitle: true,
         ),
         body: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
           child: Column(
             children: [
               Row(
@@ -71,7 +87,7 @@ class _NotificationPage extends State<NotificationPage> {
               ),
 
               for (CN.Notification notification
-                  in widget.user.notifications) ...[
+                  in user.notifications) ...[
                 if (notification.notificationType ==
                     CN.NotificationType.followed) ...[
                   Row(

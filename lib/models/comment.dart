@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'comment.g.dart';
@@ -6,8 +5,6 @@ part 'comment.g.dart';
 @JsonSerializable(explicitToJson: true)
 class Comment {
   Comment(
-      this.dislikeCount,
-      this.likeCount,
       this.content,
       this.timestamp,
       this.writtenBy
@@ -15,8 +12,6 @@ class Comment {
 
   String writtenBy;
   String content;
-  int likeCount;
-  int dislikeCount;
   DateTime timestamp;
 
 

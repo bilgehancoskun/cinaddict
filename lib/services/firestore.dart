@@ -53,15 +53,6 @@ class AppFirestore {
     return user;
   }
 
-  static Future<bool> hasUser(String username) async {
-    bool hasUser = false;
-    CollectionReference users = FirebaseFirestore.instance.collection('users');
-    DocumentSnapshot snapshot = await users.doc(username).get();
-    if (snapshot.data() != null)
-      hasUser = true;
-
-    return hasUser;
-  }
 
   static Future<bool> addPost(String username, Post newPost) async {
     User user = await getUser(username);
@@ -146,13 +137,13 @@ class AppFirestore {
     }
   }
 
-  static Future getProfilePictureFromName(String username,
+  static Future<ImageProvider> getProfilePictureFromName(String username,
       String imageName) async {
     try {
       String imagePath = '$username/profile/$imageName';
-      print(imagePath);
       File file = await FirebaseCacheManager().getSingleFile(imagePath);
       return FileImage(file);
+
     } catch(e) {
       return AssetImage("lib/assets/cinaddict_logo.png");
     }
@@ -231,12 +222,51 @@ class AppFirestore {
     return result;
   }
 
+  static Future<bool> updatePost(Post post) async {
+    bool result = false;
+    try {
+      User user = await getUser(post.owner);
+      for (int idx = 0; idx < user.posts.length; idx++) {
+        if (user.posts[idx].timestamp == post.timestamp) {
+          user.posts[idx] = post;
+        }
+      }
+
+      Map<String, dynamic> jsonUser = user.toJson();
+      await updateUser(jsonUser['username'], 'posts', jsonUser['posts']);
+      result = true;
+    } catch (e) {
+      print("Error Occurred while updating post:\n$e");
+    }
+    return result;
+  }
+
+  static Future<bool> deletePost(Post post) async {
+    bool result = false;
+    try {
+      User user = await getUser(post.owner);
+      for (int idx = 0; idx < user.posts.length; idx++) {
+        if (user.posts[idx].timestamp == post.timestamp) {
+          user.posts.removeAt(idx);
+        }
+      }
+
+      Map<String, dynamic> jsonUser = user.toJson();
+      await updateUser(jsonUser['username'], 'posts', jsonUser['posts']);
+      result = true;
+    } catch (e) {
+      print("Error Occurred while deleting post:\n$e");
+    }
+    return result;
+  }
+
   static Future<bool> userExists(String username) async {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
     DocumentSnapshot snapshot = await users.doc(username).get();
+    print(snapshot.exists);
     return snapshot.exists;
   }
-
+  
   static Future<User?> getUserWithUID(String uid) async {
     User? user;
     CollectionReference users = FirebaseFirestore.instance.collection('users');
@@ -248,4 +278,5 @@ class AppFirestore {
     }
     return user;
   }
+
 }

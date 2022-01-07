@@ -1,5 +1,6 @@
 import 'package:cinaddict/models/post.dart';
 import 'package:cinaddict/models/user.dart';
+import 'package:cinaddict/routes/comments_view.dart';
 import 'package:cinaddict/services/firestore.dart';
 import 'package:cinaddict/utils/colors.dart';
 import 'package:cinaddict/utils/styles.dart';
@@ -41,7 +42,7 @@ class _HomePage extends State<HomePage> {
     List<Image> _postImages = [];
     for (Post post in posts) {
       _postImages.add(
-          await AppFirestore.getPostImageFromName(post.owner!, post.image!));
+          await AppFirestore.getPostImageFromName(post.owner, post.image));
       setState(() {
         postImages = _postImages;
       });
@@ -60,7 +61,7 @@ class _HomePage extends State<HomePage> {
       });
     }
     else {
-      _posts.sort((a, b) => a.timestamp!.compareTo(b.timestamp!));
+      _posts.sort((a, b) => a.timestamp.compareTo(b.timestamp));
       setState(() {
         posts = List.from(_posts.reversed);
       });
@@ -121,7 +122,7 @@ class _HomePage extends State<HomePage> {
                             ),
                           ),
                           Text(
-                            posts[idx].owner ?? 'no-owner', // post.owner
+                            posts[idx].owner, // post.owner
                             style: AppTextStyle.lighterTextStyle,
                           ),
                         ],
@@ -147,23 +148,40 @@ class _HomePage extends State<HomePage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Icon(
-                              Icons.thumb_up_sharp,
-                              color: Colors.white,
+                            IconButton(
+                              icon: Icon(
+                                Icons.thumb_up_sharp,
+                                color: Colors.white,
+                              ),
+                              onPressed: () async {
+                                posts[idx].like.add(user.username);
+                                bool result = await AppFirestore.updatePost(posts[idx]);
+                              },
                             ),
                             SizedBox(
                               width: 8,
                             ),
-                            Icon(
-                              Icons.thumb_down_sharp,
-                              color: Colors.white,
+                            IconButton(
+                              icon: Icon(
+                                Icons.thumb_down_sharp,
+                                color: Colors.white,
+                              ),
+                              onPressed: () async {
+                                posts[idx].dislike.add(user.username);
+                                bool result = await AppFirestore.updatePost(posts[idx]);
+                              },
                             ),
                             SizedBox(
                               width: 8,
                             ),
-                            Icon(
-                              Icons.comment,
-                              color: Colors.white,
+                            IconButton(
+                              onPressed: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => CommentsView(post: posts[idx], username: user.username,)));
+                              },
+                              icon: Icon(
+                                Icons.comment,
+                                color: Colors.white,
+                              ),
                             ),
                             SizedBox(
                               width: 8,
@@ -186,12 +204,12 @@ class _HomePage extends State<HomePage> {
                           Row(
                             children: [
                               Text(
-                                '@${posts[idx].owner ?? 'no-owner'}', // post.owner
+                                '@${posts[idx].owner}', // post.owner
                                 style: TextStyle(
                                     color: AppColors.white,
                                     fontWeight: FontWeight.bold),
                               ),
-                              if (posts[idx].description!.length < 23)
+                              if (posts[idx].description.length < 23)
                                 Text(
                                   '  ${posts[idx].description}',
                                   style: TextStyle(
@@ -204,28 +222,46 @@ class _HomePage extends State<HomePage> {
                                     TextButton(
                                       onPressed: () {},
                                       child: Text(
-                                        '${posts[idx].description!.substring(0, 23)}...',
+                                        '${posts[idx].description.substring(0, 23)}...',
                                         style: TextStyle(
                                           color: AppColors.white,
                                         ),
                                       ),
                                     ),
                                   ],
-                                )
+                                ),
                             ],
                           ),
                           Row(
                             children: [
                               Text(
-                                timeago.format(posts[idx].timestamp!),
+                                timeago.format(posts[idx].timestamp),
                                 style: TextStyle(color: AppColors.white),
                               ),
                             ],
                           )
                         ],
                       ),
+                      Row(
+                        children: [
+                          TextButton(
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero
+                            ),
+                              onPressed: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => CommentsView(post: posts[idx], username: user.username,)));
+                              },
+                              child: Text(
+                                  'View all ${posts[idx].comments.length} comments',
+                                style: TextStyle(
+                                  color: AppColors.lighterGrey
+                                ),
+                              )
+                          ),
+                        ],
+                      ),
                       SizedBox(
-                        height: 8,
+                        height: 4,
                       ),
                       Divider(
                         color: AppColors.white,
