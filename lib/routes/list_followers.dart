@@ -100,19 +100,12 @@ class _ListFollowersState extends State<ListFollowers> {
                                 ),
                               ),
                             Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
                                   child: Text(
                                     '${followers[idx].username}',
-                                    style: AppTextStyle.whiteTextStyle,
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                                  child: Text(
-                                    '${followers[idx].description}',
                                     style: AppTextStyle.whiteTextStyle,
                                   ),
                                 ),

@@ -1,6 +1,6 @@
 import 'package:cinaddict/models/post.dart';
 import 'package:cinaddict/routes/List_followers.dart';
-import 'package:cinaddict/routes/List_following.dart';
+import 'package:cinaddict/routes/list_following.dart';
 import 'package:cinaddict/routes/new_post.dart';
 import 'package:cinaddict/routes/show_post.dart';
 import 'package:cinaddict/utils/shared_preferences.dart';
