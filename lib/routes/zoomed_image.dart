@@ -60,13 +60,9 @@ void dispose(){
         child: AspectRatio(
           aspectRatio: 1,
           child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: CircleAvatar(
-                backgroundColor: AppColors.lightGrey,
-                backgroundImage: widget.profilePicture,
-                radius: 50,
 
-              ),
+                child:widget.profilePicture != null ? Image(image:widget.profilePicture! ): null
+                //widget.profilePicture,
           ),
         )
     ),
