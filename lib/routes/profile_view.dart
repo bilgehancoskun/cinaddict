@@ -1,6 +1,7 @@
 import 'package:cinaddict/models/post.dart';
 import 'package:cinaddict/routes/new_post.dart';
 import 'package:cinaddict/routes/show_post.dart';
+import 'package:cinaddict/routes/zoomed_image.dart';
 import 'package:cinaddict/utils/shared_preferences.dart';
 import 'package:cinaddict/utils/colors.dart';
 import 'package:cinaddict/models/user.dart';
@@ -69,11 +70,23 @@ class _ProfileViewState extends State<ProfileView> {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 12.0, 0, 12.0),
-                child: CircleAvatar(
+               child:GestureDetector(
+                  onTap: () async{
+                    await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                ZoomedImage(profilePicture: profilePicture,)));
+                  },
+                  child: CircleAvatar(
                   backgroundColor: AppColors.lightGrey,
                   backgroundImage: profilePicture,
                   radius: 50,
+
                 ),
+                )
+
+
               ),
               Column(
                 children: [
