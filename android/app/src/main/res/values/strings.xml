@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">cinaddict</string>
+    <string name="facebook_app_id">1069788936929901</string>
+    <string name="fb_login_protocol_scheme">fb1069788936929901</string>
+    <string name="facebook_client_token">c4bea5f66d1b8066c744b104cac89dcc</string>
+</resources>

@@ -13,6 +13,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -325,67 +326,38 @@ class _LoginState extends State<LoginView> {
 
                             UserCredential result = await signInWithGoogle();
                             User? user = result.user;
+
                             if (user != null) {
-                              List splitUser = user.email!.split("@");
-                              if (await AppFirestore.userExists(splitUser[0])) {
-                                CinaddictUser.User userFromFirebase =
-                                    await AppFirestore.getUser(splitUser[0]);
-                                if (userFromFirebase.uid == user.uid) {
-                                  await AppSharedPreferences.setLoggedIn(true);
-                                  await AppSharedPreferences.saveJsonUser(
-                                      userFromFirebase);
-                                  Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => Structure(
-                                                user: userFromFirebase,
-                                              )));
-                                } else {
-                                  String selectedUsername = '';
-                                  createAlertDialog(context).then((value) {
-                                    selectedUsername = value;
-                                  });
-                                  while (selectedUsername != '' &&
-                                      await AppFirestore.userExists(
-                                          selectedUsername)) {
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(SnackBar(
-                                      content: Text(
-                                        'Username already in use, select another.',
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      backgroundColor: AppColors.primaryRed,
-                                    ));
-                                    createAlertDialog(context).then((value) {
-                                      selectedUsername = value;
-                                    });
-                                  }
-                                  await AppFirestore.addUserToFirestore(
-                                      uid: user.uid,
-                                      username: splitUser[0],
-                                      displayName: user.displayName ?? '');
-                                  await AppSharedPreferences.setLoggedIn(true);
-                                  CinaddictUser.User userFromFirebase =
-                                  await AppFirestore.getUser(splitUser[0]);
-                                  await AppSharedPreferences.saveJsonUser(
-                                      userFromFirebase);
-                                  Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => Structure(
-                                            user: userFromFirebase,
-                                          )));
+                              CinaddictUser.User? userFromFirebase = await AppFirestore.getUserWithUID(user.uid);
+                              if (userFromFirebase == null) {
+                                String selectedUsername = '';
+                                selectedUsername = await createAlertDialog(context);
+                                while (selectedUsername == '' ||
+                                    await AppFirestore.userExists(
+                                        selectedUsername)) {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                    content: Text(
+                                      'Username already in use, select another.',
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    backgroundColor: AppColors.primaryRed,
+                                  ));
+                                  selectedUsername = await createAlertDialog(context);
                                 }
-                              } else {
-                                await AppFirestore.addUserToFirestore(
-                                    uid: user.uid,
-                                    username: splitUser[0],
-                                    displayName: user.displayName ?? '');
+
+                                await AppFirestore.addUserToFirestore(uid: user.uid, username: selectedUsername, displayName: user.displayName ?? '');
                                 await AppSharedPreferences.setLoggedIn(true);
-                                CinaddictUser.User userFromFirebase =
-                                    await AppFirestore.getUser(splitUser[0]);
-                                await AppSharedPreferences.saveJsonUser(
-                                    userFromFirebase);
+                                CinaddictUser.User userFromFirebase = await AppFirestore.getUser(selectedUsername);
+                                await AppSharedPreferences.saveJsonUser(userFromFirebase);
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Structure(user: userFromFirebase,)));
+                              }
+                              else {
+                                await AppSharedPreferences.setLoggedIn(true);
+                                await AppSharedPreferences.saveJsonUser(userFromFirebase);
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
@@ -393,6 +365,7 @@ class _LoginState extends State<LoginView> {
                                               user: userFromFirebase,
                                             )));
                               }
+
                             }
                           },
                           child: Padding(
@@ -415,6 +388,96 @@ class _LoginState extends State<LoginView> {
                                       'Login / Sign Up with Google',
                                       style:
                                           AppTextStyle.lighterbiggerTextStyle,
+                                    ),
+                                  ),
+                                ],
+                              )),
+                          style: AppButtonStyle.primaryGreyButton,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: double.infinity,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () async {
+                            Future<UserCredential?> signInWithFacebook() async {
+                              final LoginResult result = await FacebookAuth.instance.login();
+                              if(result.status == LoginStatus.success){
+                                // Create a credential from the access token
+                                final OAuthCredential credential = FacebookAuthProvider.credential(result.accessToken!.token);
+                                // Once signed in, return the UserCredential
+                                return await FirebaseAuth.instance.signInWithCredential(credential);
+                              }
+                                return null;
+                            }
+
+                            UserCredential? result = await signInWithFacebook();
+                            User? user = result!.user;
+                            if (user != null) {
+                              CinaddictUser.User? userFromFirebase = await AppFirestore.getUserWithUID(user.uid);
+                              if (userFromFirebase == null) {
+                                String selectedUsername = '';
+                                selectedUsername = await createAlertDialog(context);
+                                while (selectedUsername == '' ||
+                                    await AppFirestore.userExists(
+                                        selectedUsername)) {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                    content: Text(
+                                      'Username already in use, select another.',
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    backgroundColor: AppColors.primaryRed,
+                                  ));
+                                  selectedUsername = await createAlertDialog(context);
+                                }
+
+                                await AppFirestore.addUserToFirestore(uid: user.uid, username: selectedUsername, displayName: user.displayName ?? '');
+                                await AppSharedPreferences.setLoggedIn(true);
+                                CinaddictUser.User userFromFirebase = await AppFirestore.getUser(selectedUsername);
+                                await AppSharedPreferences.saveJsonUser(userFromFirebase);
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Structure(user: userFromFirebase,)));
+                              }
+                              else {
+                                await AppSharedPreferences.setLoggedIn(true);
+                                await AppSharedPreferences.saveJsonUser(userFromFirebase);
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Structure(user: userFromFirebase,)));
+                              }
+
+                            }
+                          },
+                          child: Padding(
+                              padding:
+                              const EdgeInsets.symmetric(vertical: 12.0),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    height: 18,
+                                    child: Image(
+                                      image: AssetImage(
+                                          'lib/assets/Facebook_logo.png'),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                    const EdgeInsets.fromLTRB(50, 0, 0, 0),
+                                    child: Text(
+                                      'Login / Sign Up with Facebook',
+                                      style:
+                                      AppTextStyle.lighterbiggerTextStyle,
                                     ),
                                   ),
                                 ],
