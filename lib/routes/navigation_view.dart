@@ -4,10 +4,11 @@ import 'package:cinaddict/services/firestore.dart';
 import 'package:cinaddict/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:cinaddict/models/post.dart';
+
 
 class NavigationPage extends StatefulWidget {
   const NavigationPage({Key? key, required this.user}) : super(key: key);
-
   final User user;
   @override
   _NavigationPage createState() => _NavigationPage();
@@ -15,8 +16,11 @@ class NavigationPage extends StatefulWidget {
 }
 
 class _NavigationPage extends State<NavigationPage> {
+  late Post description;
+  List<Post> postSearchResults = [];
   int counter = 0;
   List<User> searchResults = [];
+
   final _formKey = GlobalKey<FormState>();
   bool _searchActive = false;
 

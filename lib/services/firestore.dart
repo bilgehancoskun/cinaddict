@@ -82,6 +82,25 @@ class AppFirestore {
     return userList;
   }
 
+  static Future <List<Post>> searchPost(String keyword) async{
+    List<Post> postDescription = [];
+    QuerySnapshot<Map<String, dynamic>>searchResult;
+    CollectionReference _posts = FirebaseFirestore.instance.collection('users');
+    print(keyword);
+    Query userQuery = _posts.where('description', isGreaterThanOrEqualTo: keyword,
+      isLessThan: keyword.substring(0, keyword.length - 1) +
+          String.fromCharCode(keyword.codeUnitAt(keyword.length - 1) + 1),);
+    searchResult = await userQuery.get() as QuerySnapshot<Map<String, dynamic>>;
+    if (searchResult.docs.isNotEmpty) {
+      for (int i = 0; i < searchResult.docs.length; i++) {
+        postDescription.add(
+            Post.fromJson(searchResult.docs[i].data())
+        );
+      }
+    }
+    return postDescription;
+  }
+
   /*
   * FileInfo? cacheFile = await FirebaseCacheManager().getFileFromCache(imagePath);
     if (cacheFile != null) {
@@ -141,6 +160,9 @@ class AppFirestore {
       String imageName) async {
     try {
       String imagePath = '$username/profile/$imageName';
+      if(imageName.contains(RegExp(r'cinaddict_logo', caseSensitive: false)))
+          imagePath = 'app/cinaddict_logo.png';
+
       File file = await FirebaseCacheManager().getSingleFile(imagePath);
       return FileImage(file);
 
