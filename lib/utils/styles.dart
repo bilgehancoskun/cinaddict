@@ -16,9 +16,21 @@ class AppTextStyle {
     fontSize: 14.0,
     letterSpacing: -0.7,
   );
+  static const lightersmallTextStyle = TextStyle(
+    color: AppColors.lighterGrey,
+    fontSize: 12.0,
+    letterSpacing: -0.7,
+  );
+  static const lightestboldTextStyle = TextStyle(
+    color: AppColors.white,
+    fontSize: 14.0,
+    letterSpacing: -0.7,
+    fontWeight:  FontWeight.bold,
+  );
+
   static const lightestsmallTextStyle = TextStyle(
     color: AppColors.lightestGrey,
-    fontSize: 11.0,
+    fontSize: 12.0,
     letterSpacing: -0.7,
   );
   static const lighterbiggerTextStyle = TextStyle(

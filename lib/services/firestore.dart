@@ -9,7 +9,7 @@ import 'package:cinaddict/models/notification.dart' as CN;
 import 'dart:io';
 
 class AppFirestore {
-  static Future<void> addUserToFirestore({required String uid, required String username, String displayName = '', String description = '', String profilePicture = ''}) async {
+  static Future<void> addUserToFirestore({required String uid, required String username, String displayName = '', String description = '', String profilePicture = 'app/cinaddict_logo.png'}) async {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
 
     return users

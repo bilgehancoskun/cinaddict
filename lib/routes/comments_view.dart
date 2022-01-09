@@ -69,10 +69,28 @@ class _CommentsViewState extends State<CommentsView> {
                               ),
                               Expanded(
                                 //flex: 4,
-                                child: Text(
-                                  "${post.comments[idx].writtenBy}: ${post.comments[idx].content} - ${timeago.format(post.comments[idx].timestamp)}",
-                                  style: AppTextStyle.lighterTextStyle,
+                                child:
+                                RichText(
+                                  text: TextSpan(
+                                      text: '',
+                                      children: <TextSpan>[
+                                        TextSpan(
+                                          text: '${post.comments[idx].writtenBy}: ',
+                                          style: AppTextStyle.lightestboldTextStyle,
+                                        ),
+                                        TextSpan(
+                                          text: ' ${post.comments[idx].content}  ',
+                                          style: AppTextStyle.lighterTextStyle
+                                          ),
+                                        TextSpan(
+                                            text: '- ${timeago.format(post.comments[idx].timestamp)} ',
+                                            style: AppTextStyle.lightersmallTextStyle
+                                        ),
+
+                                      ]
+                                  ),
                                 ),
+
                               ),
                             ],
                           ),
