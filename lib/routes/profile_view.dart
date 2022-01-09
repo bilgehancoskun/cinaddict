@@ -1,4 +1,6 @@
 import 'package:cinaddict/models/post.dart';
+import 'package:cinaddict/routes/List_followers.dart';
+import 'package:cinaddict/routes/list_following.dart';
 import 'package:cinaddict/routes/new_post.dart';
 import 'package:cinaddict/routes/show_post.dart';
 import 'package:cinaddict/utils/shared_preferences.dart';
@@ -103,38 +105,58 @@ class _ProfileViewState extends State<ProfileView> {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            Text(
-                              "${user.followers.length}",
-                              style: AppTextStyle.whiteTextStyle,
-                            ),
-                            Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(0, 8.0, 0, 0)),
-                            Text(
-                              "Followers",
-                              style: AppTextStyle.lighterbiggerTextStyle,
-                            ),
-                          ],
+                        child:TextButton(
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                          ),
+                          onPressed: (){
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => ListFollowers(user: user,)));
+                          },
+                          child: Column(
+                            children: [
+                              Text(
+                                "${user.followers.length}",
+                                style: AppTextStyle.whiteTextStyle,
+                              ),
+                              Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 8.0, 0, 0)),
+                              Text(
+                                "Followers",
+                                style: AppTextStyle.lighterbiggerTextStyle,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            Text(
-                              "${user.following.length}",
-                              style: AppTextStyle.whiteTextStyle,
-                            ),
-                            Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(0, 8.0, 0, 0)),
-                            Text(
-                              "Following",
-                              style: AppTextStyle.lighterbiggerTextStyle,
-                            ),
-                          ],
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                          ),
+                          onPressed: (){
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => ListFollowing(user: user)));
+                          },
+                          child: Column(
+                            children: [
+                              Text(
+                                "${user.following.length}",
+                                style: AppTextStyle.whiteTextStyle,
+                              ),
+                              Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 8.0, 0, 0)),
+                              Text(
+                                "Following",
+                                style: AppTextStyle.lighterbiggerTextStyle,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],
