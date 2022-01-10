@@ -8,12 +8,19 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'package:cinaddict/routes/comments_view.dart';
 
 class ShowPost extends StatefulWidget {
-  const ShowPost({Key? key, required this.post, required this.postImage, required this.user, required this.profilePicture, required this.sentBy}) : super(key: key);
+  const ShowPost(
+      {Key? key,
+      required this.post,
+      required this.postImage,
+      required this.user,
+      required this.profilePicture,
+      required this.sentBy})
+      : super(key: key);
 
   final Post post;
   final Image postImage;
   final User user;
-  final User? sentBy;
+  final User sentBy;
   final ImageProvider? profilePicture;
 
   @override
@@ -21,8 +28,41 @@ class ShowPost extends StatefulWidget {
 }
 
 class _ShowPostState extends State<ShowPost> {
+  late User user = widget.user;
+  late Post post = widget.post;
 
   late int commentsLength = widget.post.comments.length;
+
+  bool founds = false;
+  bool founds_dislike = false;
+
+  void getPosts()  {
+    for (int i = 0; i < post.like.length; i++) {
+
+      if (post.like[i] == widget.sentBy.username) {
+
+        setState(() {
+          founds = true;
+        });
+
+      }
+    }
+
+    for (int i = 0; i < post.dislike.length; i++) {
+      if (post.dislike[i] == widget.sentBy.username) {
+
+        setState(() {
+          founds_dislike = true;
+        });
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    getPosts() ;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,8 +98,10 @@ class _ShowPostState extends State<ShowPost> {
                         Navigator.pop(context);
                       }
                     },
-                    icon: Icon(Icons.delete, color: AppColors.white,)
-                )
+                    icon: Icon(
+                      Icons.delete,
+                      color: AppColors.white,
+                    ))
               ],
             ),
             SizedBox(
@@ -77,12 +119,35 @@ class _ShowPostState extends State<ShowPost> {
                   IconButton(
                     icon: Icon(
                       Icons.thumb_up_sharp,
-                      color: Colors.white,
+                      color: founds == true ? Colors.red :Colors.white,
                     ),
                     onPressed: () async {
-                      widget.post.like.add(widget.user.username);
-                      bool result = await AppFirestore.updatePost(widget.post);
+                      if(founds_dislike == false)
+                      {
+                        setState(() {
+                          founds = !founds;
+                          founds == true  ? post.like.add(widget.sentBy.username) : post.like.remove(widget.sentBy.username);
+                        });
+
+                      }
+                      else{
+
+                        setState(() {
+                          founds = true ;
+                          founds_dislike = false ;
+                          post.dislike.remove(widget.sentBy.username) ;
+                          post.like.add(widget.sentBy.username) ;
+                        });
+
+                      }
+
+
+                      bool result = await AppFirestore.updatePost(post);
                     },
+                  ),
+                  Text(
+                    '${post.like.length}',
+                    style: AppTextStyle.lighterTextStyle,
                   ),
                   SizedBox(
                     width: 8,
@@ -90,19 +155,49 @@ class _ShowPostState extends State<ShowPost> {
                   IconButton(
                     icon: Icon(
                       Icons.thumb_down_sharp,
-                      color: Colors.white,
+                      color: founds_dislike ? Colors.red :Colors.white,
                     ),
                     onPressed: () async {
-                      widget.post.dislike.add(widget.user.username);
-                      bool result = await AppFirestore.updatePost(widget.post);
+                      if(founds == false)
+                      {
+                        setState(() {
+                          founds_dislike= !founds_dislike;
+                          founds_dislike == true ? post.dislike.add(widget.sentBy.username) : post.dislike.remove(widget.sentBy.username);
+                        });
+                      }
+                      else{
+
+                        setState(() {
+                          founds = false ;
+                          founds_dislike = true ;
+                          post.like.remove(widget.sentBy.username) ;
+                          post.dislike.add(widget.sentBy.username) ;
+                        });
+
+                      }
+
+
+                      bool result = await AppFirestore.updatePost(post);
                     },
+                  ),
+                  Text(
+                    '${post.dislike.length}',
+                    style: AppTextStyle.lighterTextStyle,
                   ),
                   SizedBox(
                     width: 8,
                   ),
                   IconButton(
                     onPressed: () async {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => CommentsView(post: widget.post, username: widget.sentBy != null ? widget.sentBy!.username: widget.user.username,)));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CommentsView(
+                                    post: widget.post,
+                                    username: widget.sentBy != null
+                                        ? widget.sentBy.username
+                                        : widget.user.username,
+                                  )));
                     },
                     icon: Icon(
                       Icons.comment,
@@ -132,8 +227,7 @@ class _ShowPostState extends State<ShowPost> {
                     Text(
                       '@${widget.post.owner}', // post.owner
                       style: TextStyle(
-                          color: AppColors.white,
-                          fontWeight: FontWeight.bold),
+                          color: AppColors.white, fontWeight: FontWeight.bold),
                     ),
                     if (widget.post.description.length < 23)
                       Text(
@@ -171,19 +265,22 @@ class _ShowPostState extends State<ShowPost> {
             Row(
               children: [
                 TextButton(
-                    style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero
-                    ),
+                    style: TextButton.styleFrom(padding: EdgeInsets.zero),
                     onPressed: () async {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => CommentsView(post: widget.post, username: widget.sentBy != null ? widget.sentBy!.username: widget.user.username,)));
-                      },
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CommentsView(
+                                    post: widget.post,
+                                    username: widget.sentBy != null
+                                        ? widget.sentBy.username
+                                        : widget.user.username,
+                                  )));
+                    },
                     child: Text(
                       'View all ${widget.post.comments.length} comments',
-                      style: TextStyle(
-                          color: AppColors.lighterGrey
-                      ),
-                    )
-                ),
+                      style: TextStyle(color: AppColors.lighterGrey),
+                    )),
               ],
             ),
           ],

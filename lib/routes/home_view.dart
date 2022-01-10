@@ -21,6 +21,9 @@ class _HomePage extends State<HomePage> {
   List<Widget> feed = [];
   List<Image> postImages = [];
   List<Post> posts = [];
+  List<bool> likes = [] ;
+  List<bool> founds = [];
+  List<bool> founds_dislike = [];
   late User user = widget.user;
   bool noPosts = false;
 
@@ -54,6 +57,7 @@ class _HomePage extends State<HomePage> {
     List<User> followingUsers = await AppFirestore.getPostsFollowing(user);
     for (User _user in followingUsers) {
       _posts.addAll(_user.posts);
+
     }
     if (_posts.length == 0) {
       setState(() {
@@ -61,10 +65,35 @@ class _HomePage extends State<HomePage> {
       });
     }
     else {
+      for(int a = 0 ; a < _posts.length ; a++)
+      {
+          founds.add(false) ;
+          founds_dislike.add(false) ;
+
+      }
       _posts.sort((a, b) => a.timestamp.compareTo(b.timestamp));
       setState(() {
         posts = List.from(_posts.reversed);
       });
+      for( int x = 0 ; x < posts.length ; x++)
+      {
+          for( int i = 0 ; i < posts[x].like.length ; i++) {
+            if (posts[x].like[i] == user.username){
+                founds[x] = true ;
+            }
+          }
+      }
+
+      for( int x = 0 ; x < posts.length ; x++)
+      {
+        for( int i = 0 ; i < posts[x].dislike.length ; i++) {
+          if (posts[x].dislike[i] == user.username){
+            founds_dislike[x] = true ;
+          }
+        }
+      }
+
+
     }
   }
 
@@ -151,12 +180,35 @@ class _HomePage extends State<HomePage> {
                             IconButton(
                               icon: Icon(
                                 Icons.thumb_up_sharp,
-                                color: Colors.white,
+                                color: founds[idx] == true ? Colors.red :Colors.white,
                               ),
                               onPressed: () async {
-                                posts[idx].like.add(user.username);
+                                if(founds_dislike[idx] == false)
+                                {
+                                  setState(() {
+                                    founds[idx] = !founds[idx];
+                                    founds[idx] == true  ? posts[idx].like.add(user.username) : posts[idx].like.remove(user.username);
+                                  });
+
+                                }
+                                else{
+
+                                  setState(() {
+                                    founds[idx] = true ;
+                                    founds_dislike[idx] = false ;
+                                    posts[idx].dislike.remove(user.username) ;
+                                    posts[idx].like.add(user.username) ;
+                                  });
+
+                                }
+
+
                                 bool result = await AppFirestore.updatePost(posts[idx]);
                               },
+                            ),
+                            Text(
+                              '${posts[idx].like.length}',
+                              style: AppTextStyle.lighterTextStyle,
                             ),
                             SizedBox(
                               width: 8,
@@ -164,12 +216,34 @@ class _HomePage extends State<HomePage> {
                             IconButton(
                               icon: Icon(
                                 Icons.thumb_down_sharp,
-                                color: Colors.white,
+                                color: founds_dislike[idx] ? Colors.red :Colors.white,
                               ),
                               onPressed: () async {
-                                posts[idx].dislike.add(user.username);
+                                if(founds[idx] == false)
+                                {
+                                  setState(() {
+                                    founds_dislike[idx] = !founds_dislike[idx];
+                                    founds_dislike[idx] == true ? posts[idx].dislike.add(user.username) : posts[idx].dislike.remove(user.username);
+                                  });
+                                }
+                                else{
+
+                                  setState(() {
+                                    founds[idx] = false ;
+                                    founds_dislike[idx] = true ;
+                                    posts[idx].like.remove(user.username) ;
+                                    posts[idx].dislike.add(user.username) ;
+                                  });
+
+                                }
+
+
                                 bool result = await AppFirestore.updatePost(posts[idx]);
                               },
+                            ),
+                            Text(
+                              '${posts[idx].dislike.length}',
+                              style: AppTextStyle.lighterTextStyle,
                             ),
                             SizedBox(
                               width: 8,

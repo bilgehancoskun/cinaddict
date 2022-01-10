@@ -324,7 +324,11 @@ class _ProfileViewState extends State<ProfileView> {
               for (int idx = 0; idx < user.posts.length; idx++)
               InkWell(
                 onTap: () async {
-                  await Navigator.push(context, MaterialPageRoute(builder: (context) => ShowPost(sentBy: sentBy, post: user.posts.reversed.elementAt(idx), postImage: postImages[idx], user: user, profilePicture: profilePicture,)));
+                  if(sentBy == null)
+                    {
+                      sentBy = user ;
+                    }
+                  await Navigator.push(context, MaterialPageRoute(builder: (context) => ShowPost(sentBy: sentBy!, post: user.posts.reversed.elementAt(idx), postImage: postImages[idx], user: user, profilePicture: profilePicture,)));
                   await _futureJobs();
                   },
                 child: Container(
