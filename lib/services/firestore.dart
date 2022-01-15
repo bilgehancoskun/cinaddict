@@ -130,11 +130,26 @@ class AppFirestore {
 
   static Future<void> uploadPostImage({
     required String username,
-    required String path,
+    String path = 'None',
     required String imageName
   }) async {
     String imagePath = '$username/posts/$imageName';
     File file = File(path);
+    try {
+      await FirebaseStorage.instance.ref(imagePath).putFile(file);
+    } on FirebaseException catch (e) {
+      print("While uploading file error occurred: $e");
+    }
+  }
+
+  static Future<void> uploadPostImageForReShare({
+    required String reSharedFrom,
+    required String username,
+    required String imageName
+  }) async {
+    String currentImagePath = '$reSharedFrom/posts/$imageName';
+    File file = await FirebaseCacheManager().getSingleFile(currentImagePath);
+    String imagePath = '$username/posts/$imageName';
     try {
       await FirebaseStorage.instance.ref(imagePath).putFile(file);
     } on FirebaseException catch (e) {
@@ -248,6 +263,32 @@ class AppFirestore {
     } catch (e) {
       print("Error occurred while notify operation $user - ${notification.notificationType}\n $e");
     }
+
+    return result;
+  }
+
+  static Future<bool> reportPost({required String reportedBy, required Post post}) async {
+    bool result = false;
+    Map<String, dynamic> reportedPostsJson = {};
+    CollectionReference reportedPosts = FirebaseFirestore.instance.collection('reportedPosts');
+    DocumentSnapshot snapshot = await reportedPosts.doc(post.owner).get();
+    if (snapshot.exists) {
+      reportedPostsJson = snapshot.data() as Map<String, dynamic>;
+    }
+    String postJson = post.toJson().toString();
+    if (reportedPostsJson.keys.contains(postJson)) {
+      if (!reportedPostsJson[postJson].contains(reportedBy))
+        reportedPostsJson[postJson].add(reportedBy);
+    }
+    else {
+      reportedPostsJson[postJson] = [reportedBy];
+    }
+
+    reportedPosts
+        .doc(post.owner)
+        .set({postJson: reportedPostsJson[postJson]}, SetOptions(merge: true))
+        .then((value) => print("Reported Posts Update"))
+        .catchError((error) => print("Failed to update user: $error"));
 
     return result;
   }

@@ -20,6 +20,7 @@ class HomePage extends StatefulWidget {
 class _HomePage extends State<HomePage> {
   List<Widget> feed = [];
   List<Image> postImages = [];
+  List<ImageProvider> profilePicturesOfPosts = [];
   List<Post> posts = [];
   List<bool> likes = [];
 
@@ -34,9 +35,24 @@ class _HomePage extends State<HomePage> {
     _futureJobs();
   }
 
+  Future<void> _getProfilePicturesOfPosts() async {
+    List<ImageProvider> _profilePicturesOfPosts = [];
+    for (Post post in posts) {
+      User user = await AppFirestore.getUser(post.owner);
+      ImageProvider profilePicture =
+          await AppFirestore.getProfilePictureFromName(
+              user.username, user.profilePicture);
+      _profilePicturesOfPosts.add(profilePicture);
+      setState(() {
+        profilePicturesOfPosts = _profilePicturesOfPosts;
+      });
+    }
+  }
+
   Future<void> _futureJobs() async {
     await _getUser();
     await getPosts();
+    _getProfilePicturesOfPosts();
     _getPostImages();
   }
 
@@ -142,10 +158,11 @@ class _HomePage extends State<HomePage> {
                           Padding(
                             padding: const EdgeInsets.all(8),
                             child: CircleAvatar(
-                              child: ClipOval(
-                                  child: Image.asset(
-                                      "lib/assets/cinaddict_logo.png")),
-                              radius: 25,
+                              backgroundColor: AppColors.darkGrey,
+                              backgroundImage:
+                                  idx < profilePicturesOfPosts.length
+                                      ? profilePicturesOfPosts[idx]
+                                      : null,
                             ),
                           ),
                           Text(
@@ -270,6 +287,68 @@ class _HomePage extends State<HomePage> {
                             Text(
                               '${posts[idx].comments.length}',
                               style: AppTextStyle.lighterTextStyle,
+                            ),
+                            IconButton(
+                                onPressed: () async {
+                                  Post _reShareThisPost = posts[idx];
+                                  _reShareThisPost.reSharedFrom =
+                                      posts[idx].owner;
+                                  _reShareThisPost.owner = user.username;
+                                  _reShareThisPost.timestamp = DateTime.now();
+                                  _reShareThisPost.comments = [];
+                                  _reShareThisPost.like = [];
+                                  _reShareThisPost.dislike = [];
+                                  await AppFirestore.uploadPostImageForReShare(
+                                      reSharedFrom:
+                                          _reShareThisPost.reSharedFrom,
+                                      username: _reShareThisPost.owner,
+                                      imageName: _reShareThisPost.image);
+                                  bool result = await AppFirestore.addPost(
+                                      user.username, _reShareThisPost);
+                                  if (result) {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      backgroundColor: AppColors.yellow,
+                                      content: Row(
+                                        children: [
+                                          Text(
+                                            'Post shared successfully!',
+                                            style: TextStyle(
+                                              color: AppColors.black,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ));
+                                  }
+                                },
+                                icon:
+                                    Icon(Icons.repeat, color: AppColors.white)),
+                            Spacer(),
+                            IconButton(
+                              onPressed: () async {
+                                await AppFirestore.reportPost(
+                                    reportedBy: user.username,
+                                    post: posts[idx]);
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                        backgroundColor: AppColors.white,
+                                        content: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              'Successfully reported post.',
+                                              style: TextStyle(
+                                                  color: AppColors.black),
+                                            )
+                                          ],
+                                        )));
+                              },
+                              icon: Icon(
+                                Icons.report,
+                                color: Colors.white,
+                              ),
                             ),
                           ],
                         ),

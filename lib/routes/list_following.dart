@@ -67,12 +67,12 @@ class _ListFollowingState extends State<ListFollowing> {
             builder: (BuildContext context, AsyncSnapshot<List<User>> snapshot){
               if(snapshot.connectionState == ConnectionState.done){
                 List<User> following = snapshot.data!;
-                return Column(
-                  children: [
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
                     for(int idx = 0; idx < user.following.length; idx++)...[
                       SizedBox(height: 16,),
-                      SingleChildScrollView(
-                        child: Row(
+                          Row(
                           children: [
                             Row(
                               children: [
@@ -143,10 +143,10 @@ class _ListFollowingState extends State<ListFollowing> {
                             ),
                           ],
                         ),
-                      ),
+
                     ]
                   ],
-                );
+                ));
               }
 
               return Center(

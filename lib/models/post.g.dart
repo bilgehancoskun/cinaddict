@@ -17,6 +17,7 @@ Post _$PostFromJson(Map<String, dynamic> json) => Post(
           .map((e) => Comment.fromJson(e as Map<String, dynamic>))
           .toList(),
       timestamp: DateTime.parse(json['timestamp'] as String),
+      reSharedFrom: json['reSharedFrom'] as String? ?? "None",
     );
 
 Map<String, dynamic> _$PostToJson(Post instance) => <String, dynamic>{
@@ -26,5 +27,6 @@ Map<String, dynamic> _$PostToJson(Post instance) => <String, dynamic>{
       'like': instance.like,
       'dislike': instance.dislike,
       'comments': instance.comments.map((e) => e.toJson()).toList(),
+      'reSharedFrom': instance.reSharedFrom,
       'timestamp': instance.timestamp.toIso8601String(),
     };

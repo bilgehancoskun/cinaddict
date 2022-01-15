@@ -22,6 +22,8 @@ class _NotificationPage extends State<NotificationPage> {
   int counter = 0;
   late User user = widget.user;
   List<ImageProvider> profilePictures = [];
+  List<CN.Notification> followRequests = [];
+  ImageProvider? lastRequestPicture;
 
   @override
   void initState() {
@@ -42,12 +44,33 @@ class _NotificationPage extends State<NotificationPage> {
     return profilePictures;
   }
 
+  Future<void> _getFollowRequests() async {
+    List<CN.Notification> _followRequests = [];
+    for (CN.Notification notification in user.notifications) {
+      if (notification.notificationType == CN.NotificationType.followRequest) {
+        _followRequests.add(notification);
+        setState(() {
+          followRequests = _followRequests;
+        });
+      }
+    }
+    print(followRequests.last.username);
+    User _lastUser = await AppFirestore.getUser(followRequests.last.username);
+    ImageProvider image = await AppFirestore.getProfilePictureFromName(_lastUser.username, _lastUser.profilePicture);
+    setState(() {
+      lastRequestPicture = image;
+    });
+  }
+
+
+
   Future<void> _futureJobs() async {
     User _user = await AppFirestore.getUser(user.username);
     setState(() {
       user = _user;
     });
     await _getProfilePictures();
+    await _getFollowRequests();
   }
 
   @override
@@ -67,48 +90,33 @@ class _NotificationPage extends State<NotificationPage> {
                 AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
             child: Column(
               children: [
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(12.0, 12.0, 0, 10.0),
-                      child: CircleAvatar(
-                        child: ClipOval(
-                            child:
-                                Image.asset("lib/assets/cinaddict_logo.png")),
-                        radius: 24,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        backgroundColor: AppColors.darkGrey,
+                        backgroundImage: lastRequestPicture,
+                        radius: 30,
                       ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => FollowRequests(notifications: user.notifications, user: user,)));
-                      },
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(7.0, 0.0, 0, 0.0),
-                            child: Text(
-                              "Follow Requests",
-                              style: AppTextStyle.lighterbiggerboldTextStyle,
-                            ),
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(20.0, 0.0, 0, 0.0),
-                            child: Text(
-                              "daily_movies + 308 more",
-                              style: AppTextStyle.lighterTextStyle,
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
+                      if (followRequests.length != 0)
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => FollowRequests(
+                                        notifications: user.notifications,
+                                        user: user,
+                                      )));
+                        },
+                        child: Text(
+                          followRequests.length - 1 != 0 ? "Follow Requests ${followRequests.last.username} + ${followRequests.length - 1}": "Follow Request",
+                          style: AppTextStyle.lighterbiggerboldTextStyle,
+                        ),
+                      )
+                    ],
+                  ),
                 ),
 
                 for (int idx = 0; idx < user.notifications.length; idx++) ...[
@@ -136,8 +144,7 @@ class _NotificationPage extends State<NotificationPage> {
                                 builder: (context) => CommentsView(
                                     post: user.notifications[idx].post!,
                                     username: user.username)));
-                      }
-                      else if (user.notifications[idx].notificationType ==
+                      } else if (user.notifications[idx].notificationType ==
                           CN.NotificationType.acceptedRequest) {
                         User _pushUser = await AppFirestore.getUser(
                             user.notifications[idx].username);
@@ -145,13 +152,24 @@ class _NotificationPage extends State<NotificationPage> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => ProfileView(
-                                  user: _pushUser,
-                                  sentBy: user.username,
-                                  viewOnly: true,
-                                )));
-                      }
-                      else if (user.notifications[idx].notificationType ==
+                                      user: _pushUser,
+                                      sentBy: user.username,
+                                      viewOnly: true,
+                                    )));
+                      } else if (user.notifications[idx].notificationType ==
                           CN.NotificationType.followRequest) {
+                        User _pushUser = await AppFirestore.getUser(
+                            user.notifications[idx].username);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ProfileView(
+                                      user: _pushUser,
+                                      sentBy: user.username,
+                                      viewOnly: true,
+                                    )));
+                      } else if (user.notifications[idx].notificationType ==
+                          CN.NotificationType.acceptedRequest) {
                         User _pushUser = await AppFirestore.getUser(
                             user.notifications[idx].username);
                         Navigator.push(
@@ -203,6 +221,16 @@ class _NotificationPage extends State<NotificationPage> {
                             //flex: 4,
                             child: Text(
                               "${user.notifications[idx].username} requested to follow you.\n${timeago.format(user.notifications[idx].timestamp)}",
+                              style: AppTextStyle.lighterTextStyle,
+                            ),
+                          ),
+                        ],
+                        if (user.notifications[idx].notificationType ==
+                            CN.NotificationType.acceptedRequest) ...[
+                          Expanded(
+                            //flex: 4,
+                            child: Text(
+                              "${user.notifications[idx].username} accepted your follow request.\n${timeago.format(user.notifications[idx].timestamp)}",
                               style: AppTextStyle.lighterTextStyle,
                             ),
                           ),

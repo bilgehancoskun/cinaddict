@@ -1,5 +1,6 @@
 import 'package:cinaddict/models/post.dart';
 import 'package:cinaddict/models/user.dart';
+import 'package:cinaddict/routes/profile_view.dart';
 import 'package:cinaddict/utils/colors.dart';
 import 'package:cinaddict/utils/styles.dart';
 import 'package:flutter/material.dart';
@@ -9,13 +10,12 @@ import 'package:cinaddict/routes/comments_view.dart';
 import 'package:cinaddict/models/notification.dart' as CN;
 
 class ShowPost extends StatefulWidget {
-  const ShowPost(
-      {Key? key,
-      required this.post,
-      required this.postImage,
-      required this.user,
-      required this.profilePicture,
-      required this.sentBy})
+  const ShowPost({Key? key,
+    required this.post,
+    required this.postImage,
+    required this.user,
+    required this.profilePicture,
+    required this.sentBy})
       : super(key: key);
 
   final Post post;
@@ -87,17 +87,32 @@ class _ShowPostState extends State<ShowPost> {
                         backgroundColor: AppColors.lightestGrey,
                       ),
                     ),
-                    Text(
-                      post.owner, // post.owner
-                      style: AppTextStyle.lighterTextStyle,
+                    Row(
+                      children: [
+                        Text(
+                          post.owner,
+                          style: AppTextStyle.lighterTextStyle,
+                        ),
+                        if (post.reSharedFrom != "None")
+                          TextButton(
+                              onPressed: () async {
+                                User reSharedUser = await AppFirestore.getUser(
+                                    post.reSharedFrom);
+                                Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) =>
+                                        ProfileView(user: reSharedUser,
+                                          viewOnly: true,
+                                          sentBy: user.username,)));
+                              },
+                              child: Text('reshared from ${post.reSharedFrom}'))
+                      ],
                     ),
                   ],
                 ),
                 if (widget.sentBy.username == widget.user.username)
                   IconButton(
                       onPressed: () async {
-                        bool result =
-                            await AppFirestore.deletePost(post);
+                        bool result = await AppFirestore.deletePost(post);
                         if (result) {
                           Navigator.pop(context);
                         }
@@ -193,7 +208,8 @@ class _ShowPostState extends State<ShowPost> {
                       Post? _post = await Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => CommentsView(
+                              builder: (context) =>
+                                  CommentsView(
                                     post: post,
                                     username: widget.sentBy != null
                                         ? widget.sentBy.username
@@ -214,9 +230,62 @@ class _ShowPostState extends State<ShowPost> {
                     '${post.comments.length}',
                     style: AppTextStyle.lighterTextStyle,
                   ),
-                  SizedBox(
-                    width: 8,
-                  ),
+                  if (widget.sentBy.username != user.username) ...[
+                    IconButton(
+                        onPressed: () async {
+                          Post _reShareThisPost = post;
+                          _reShareThisPost.reSharedFrom = post.owner;
+                          _reShareThisPost.owner = widget.sentBy.username;
+                          _reShareThisPost.timestamp = DateTime.now();
+                          _reShareThisPost.comments = [];
+                          _reShareThisPost.like = [];
+                          _reShareThisPost.dislike = [];
+                          await AppFirestore.uploadPostImageForReShare(
+                              reSharedFrom: _reShareThisPost.reSharedFrom,
+                              username: _reShareThisPost.owner,
+                              imageName: _reShareThisPost.image);
+                          bool result = await AppFirestore.addPost(
+                              _reShareThisPost.owner, _reShareThisPost);
+                          if (result) {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              backgroundColor: AppColors.yellow,
+                              content: Row(
+                                children: [
+                                  Text(
+                                    'Post shared successfully!',
+                                    style: TextStyle(
+                                      color: AppColors.black,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ));
+                          }
+                        },
+                        icon: Icon(Icons.repeat, color: AppColors.white)),
+                    Spacer(),
+                    IconButton(
+                      onPressed: () async {
+                        await AppFirestore.reportPost(
+                            reportedBy: widget.sentBy.username, post: post);
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            backgroundColor: AppColors.white,
+                            content: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Successfully reported post.',
+                                  style: TextStyle(color: AppColors.black),
+                                )
+                              ],
+                            )));
+                      },
+                      icon: Icon(
+                        Icons.report,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ]
                 ],
               ),
             ),
@@ -256,7 +325,8 @@ class _ShowPostState extends State<ShowPost> {
                             Post? _post = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => CommentsView(
+                                    builder: (context) =>
+                                        CommentsView(
                                           post: post,
                                           username: widget.sentBy != null
                                               ? widget.sentBy.username

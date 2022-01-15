@@ -13,6 +13,7 @@ class Post {
     required this.dislike,
     required this.comments,
     required this.timestamp,
+    this.reSharedFrom = "None",
   });
 
   String owner;
@@ -21,6 +22,7 @@ class Post {
   List<String> like;
   List<String> dislike;
   List<Comment> comments;
+  String reSharedFrom;
   DateTime timestamp;
 
   factory Post.fromJson(Map<String, dynamic> json) => _$PostFromJson(json);

@@ -68,12 +68,12 @@ class _ListFollowersState extends State<ListFollowers> {
         builder: (BuildContext context, AsyncSnapshot<List<User>> snapshot){
           if(snapshot.connectionState == ConnectionState.done){
             List<User> followers = snapshot.data!;
-            return Column(
+            return SingleChildScrollView(
+              child: Column(
               children: [
                 for(int idx = 0; idx < user.followers.length; idx++)...[
                   SizedBox(height: 16,),
-                SingleChildScrollView(
-                  child: Row(
+                  Row(
                     children: [
                         Row(
                           children: [
@@ -185,10 +185,9 @@ class _ListFollowersState extends State<ListFollowers> {
                         ),
                     ],
                   ),
-                ),
                 ]
               ],
-            );
+            ));
           }
 
           return Center(
