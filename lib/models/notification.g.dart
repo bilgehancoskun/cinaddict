@@ -7,14 +7,18 @@ part of 'notification.dart';
 // **************************************************************************
 
 Notification _$NotificationFromJson(Map<String, dynamic> json) => Notification(
-      User.fromJson(json['user'] as Map<String, dynamic>),
+      json['username'] as String,
       json['notificationType'] as String,
+      json['post'] == null
+          ? null
+          : Post.fromJson(json['post'] as Map<String, dynamic>),
       DateTime.parse(json['timestamp'] as String),
     );
 
 Map<String, dynamic> _$NotificationToJson(Notification instance) =>
     <String, dynamic>{
       'notificationType': instance.notificationType,
-      'user': instance.user.toJson(),
+      'username': instance.username,
+      'post': instance.post?.toJson(),
       'timestamp': instance.timestamp.toIso8601String(),
     };

@@ -11,11 +11,17 @@ import 'package:cinaddict/services/firestore.dart';
 import 'package:cinaddict/utils/styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:cinaddict/models/notification.dart' as CN;
 
 import 'edit_profile_view.dart';
 
 class ProfileView extends StatefulWidget {
-  const ProfileView({Key? key, required this.user, this.viewOnly = false, this.sentBy = 'None'}) : super(key: key);
+  const ProfileView(
+      {Key? key,
+      required this.user,
+      this.viewOnly = false,
+      this.sentBy = 'None'})
+      : super(key: key);
 
   final User user;
   final bool viewOnly;
@@ -44,14 +50,45 @@ class _ProfileViewState extends State<ProfileView> {
     });
   }
 
+  bool findFollowRequest() {
+    bool result = false;
+    for (CN.Notification notification in user.notifications) {
+      print("${notification.username} - ${widget.sentBy}");
+      if (notification.notificationType == CN.NotificationType.followRequest &&
+          notification.username == widget.sentBy) {
+        result = true;
+        break;
+      }
+    }
+
+    return result;
+  }
+
+  Future<bool> deleteFollowRequest() async {
+    bool result = false;
+    for (CN.Notification notification in user.notifications) {
+      print("${notification.username} - ${widget.sentBy}");
+      if (notification.notificationType == CN.NotificationType.followRequest &&
+          notification.username == widget.sentBy) {
+        result = await AppFirestore.deleteNotification(user.username, notification);
+        user.notifications.remove(notification);
+        break;
+      }
+    }
+    return result;
+  }
+
   Future<void> _getPostImages() async {
     List<Image> images = [];
-    ImageProvider _profilePicture = await AppFirestore.getProfilePictureFromName(user.username, user.profilePicture);
+    ImageProvider _profilePicture =
+        await AppFirestore.getProfilePictureFromName(
+            user.username, user.profilePicture);
     setState(() {
       profilePicture = _profilePicture;
     });
     for (Post post in user.posts.reversed) {
-      images.add(await AppFirestore.getPostImageFromName(user.username, post.image));
+      images.add(
+          await AppFirestore.getPostImageFromName(user.username, post.image));
       setState(() {
         postImages = images;
       });
@@ -71,25 +108,22 @@ class _ProfileViewState extends State<ProfileView> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(0, 12.0, 0, 12.0),
-               child:GestureDetector(
-                  onTap: () async{
-                    await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                ZoomedImage(profilePicture: profilePicture,)));
-                  },
-                  child: CircleAvatar(
-                  backgroundColor: AppColors.lightGrey,
-                  backgroundImage: profilePicture,
-                  radius: 50,
-
-                ),
-                )
-
-
-              ),
+                  padding: const EdgeInsets.fromLTRB(0, 12.0, 0, 12.0),
+                  child: GestureDetector(
+                    onTap: () async {
+                      await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ZoomedImage(
+                                    profilePicture: profilePicture,
+                                  )));
+                    },
+                    child: CircleAvatar(
+                      backgroundColor: AppColors.lightGrey,
+                      backgroundImage: profilePicture,
+                      radius: 50,
+                    ),
+                  )),
               Column(
                 children: [
                   SizedBox(
@@ -118,14 +152,17 @@ class _ProfileViewState extends State<ProfileView> {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child:TextButton(
+                        child: TextButton(
                           style: TextButton.styleFrom(
                             padding: EdgeInsets.zero,
                           ),
-                          onPressed: (){
+                          onPressed: () {
                             Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => ListFollowers(user: user,)));
+                                MaterialPageRoute(
+                                    builder: (context) => ListFollowers(
+                                          user: user,
+                                        )));
                           },
                           child: Column(
                             children: [
@@ -150,10 +187,12 @@ class _ProfileViewState extends State<ProfileView> {
                           style: TextButton.styleFrom(
                             padding: EdgeInsets.zero,
                           ),
-                          onPressed: (){
+                          onPressed: () {
                             Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => ListFollowing(user: user)));
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        ListFollowing(user: user)));
                           },
                           child: Column(
                             children: [
@@ -176,83 +215,94 @@ class _ProfileViewState extends State<ProfileView> {
                   ),
                   Row(
                     children: [
-                      if (widget.viewOnly)...[
-                      OutlinedButton(
-                        onPressed: () async {
-                          if (!user.followers.contains(widget.sentBy)) {
-                            bool result = await AppFirestore.followUser(widget.sentBy, user.username);
-                            if (result) {
-                              setState(() {
-                                user.followers.add(widget.sentBy);
-                              });
+                      if (widget.viewOnly) ...[
+                        OutlinedButton(
+                          onPressed: () async {
+                            if (!user.followers.contains(widget.sentBy) && !findFollowRequest()) {
+                              bool result = await AppFirestore.followUser(
+                                  user: widget.sentBy, willFollow: user.username);
+                              if (result) {
+                                setState(() {
+                                  user.followers.add(widget.sentBy);
+                                });
+                              }
+                              else {
+                                await _getUser();
+                              }
                             }
-                          }
-                          else {
-                            bool result = await AppFirestore.unfollowUser(widget.sentBy, user.username);
-                            if (result) {
-                              setState(() {
-                                user.followers.remove(widget.sentBy);
-                              });
+                            else if (findFollowRequest()) {
+                              await deleteFollowRequest();
+                              setState(() {});
                             }
-                          }
-                        },
-                        child: Row(
-                          children: [
-                            if (!user.followers.contains(widget.sentBy))
-                            Text(
-                              "Follow",
-                              style: AppTextStyle.darkTextStyle,
-                            )
-                            else
-                              Row(
-                                children: [
-                                  Text(
-                                    "Following",
-                                    style: AppTextStyle.darkTextStyle,
-                                  ),
-                                  Icon(Icons.done),
-                                ],
-                              ),
-                          ],
+                            else {
+                              bool result = await AppFirestore.unfollowUser(
+                                  widget.sentBy, user.username);
+                              if (result) {
+                                setState(() {
+                                  user.followers.remove(widget.sentBy);
+                                });
+                              }
+                            }
+                          },
+                          child: Row(
+                            children: [
+                              if (!user.followers.contains(widget.sentBy) && !findFollowRequest())
+                                Text(
+                                  "Follow",
+                                  style: AppTextStyle.darkTextStyle,
+                                )
+                              else if (findFollowRequest())
+                                Row(
+                                  children: [
+                                    Text(
+                                      "Sent Request",
+                                      style: AppTextStyle.darkTextStyle,
+                                    ),
+                                    Icon(Icons.done),
+                                  ],
+                                )
+                              else
+                                Row(
+                                  children: [
+                                    Text(
+                                      "Following",
+                                      style: AppTextStyle.darkTextStyle,
+                                    ),
+                                    Icon(Icons.done),
+                                  ],
+                                ),
+                            ],
+                          ),
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(AppColors.white),
+                          ),
                         ),
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(AppColors.white),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      OutlinedButton(
-                        onPressed: () {},
-                        child: Text(
-                          "Message",
-                          style: AppTextStyle.darkTextStyle,
-                        ),
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(AppColors.white),
-                        ),
-                      ),
-                      ] else...[
-                        TextButton(onPressed: () async {
-                          Map<String, dynamic>? data = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => EditProfile(user: user)))
-                          as Map<String, dynamic>?;
+                      ] else ...[
+                        TextButton(
+                          onPressed: () async {
+                            Map<String, dynamic>? data = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            EditProfile(user: user)))
+                                as Map<String, dynamic>?;
 
-                          if (data != null) {
-                            for (String key in data.keys) {
-                              await AppFirestore.updateUser(user.username, key, data[key]);
+                            if (data != null) {
+                              for (String key in data.keys) {
+                                await AppFirestore.updateUser(
+                                    user.username, key, data[key]);
+                              }
+                              await _futureJobs();
                             }
-                            await _futureJobs();
-                          }
-                        }, child: Text('Edit Profile', style: TextStyle(
-                          color: AppColors.black
-                        ),), style: TextButton.styleFrom(
-                          backgroundColor: AppColors.white
-                        ),)
+                          },
+                          child: Text(
+                            'Edit Profile',
+                            style: TextStyle(color: AppColors.black),
+                          ),
+                          style: TextButton.styleFrom(
+                              backgroundColor: AppColors.white),
+                        )
                       ]
                     ],
                   ),
@@ -313,51 +363,64 @@ class _ProfileViewState extends State<ProfileView> {
             color: AppColors.white,
             thickness: 2,
           ),
-          if (!widget.viewOnly || !user.isPrivate || user.followers.contains(widget.sentBy)) // add !widget.viewOnly
-          GridView.count(
-            shrinkWrap: true,
-            crossAxisSpacing: 0,
-            mainAxisSpacing: 0,
-            crossAxisCount: 3,
-            physics: NeverScrollableScrollPhysics(),
-            children: [
-              for (int idx = 0; idx < user.posts.length; idx++)
-              InkWell(
-                onTap: () async {
-                  if(sentBy == null)
-                    {
-                      sentBy = user ;
-                    }
-                  await Navigator.push(context, MaterialPageRoute(builder: (context) => ShowPost(sentBy: sentBy!, post: user.posts.reversed.elementAt(idx), postImage: postImages[idx], user: user, profilePicture: profilePicture,)));
-                  await _futureJobs();
-                  },
-                child: Container(
-                  padding: const EdgeInsets.all(0),
-                  child: idx < postImages.length ? postImages[idx]: null,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: AppColors.black,
-                      width: 1,
-                    )
+          if (!widget.viewOnly ||
+              !user.isPrivate ||
+              user.followers.contains(widget.sentBy)) // add !widget.viewOnly
+            GridView.count(
+              shrinkWrap: true,
+              crossAxisSpacing: 0,
+              mainAxisSpacing: 0,
+              crossAxisCount: 3,
+              physics: NeverScrollableScrollPhysics(),
+              children: [
+                for (int idx = 0; idx < user.posts.length; idx++)
+                  InkWell(
+                    onTap: () async {
+                      if (sentBy == null) {
+                        sentBy = user;
+                      }
+                      await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ShowPost(
+                                    sentBy: sentBy!,
+                                    post: user.posts.reversed.elementAt(idx),
+                                    postImage: postImages[idx],
+                                    user: user,
+                                    profilePicture: profilePicture,
+                                  )));
+                      await _futureJobs();
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(0),
+                      child: idx < postImages.length ? postImages[idx] : null,
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                        color: AppColors.black,
+                        width: 1,
+                      )),
+                    ),
                   ),
-                ),
-              ),
-            ],
-          ) else
+              ],
+            )
+          else
             Column(
               children: [
-                Divider(
-                  color: AppColors.white,
-                  thickness: 1,
-                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Icon(Icons.lock, color: AppColors.white, size: 36,),
+                  child: Icon(
+                    Icons.lock,
+                    color: AppColors.white,
+                    size: 36,
+                  ),
                 ),
-                Text('Account is private', style: TextStyle(
-                  color: AppColors.white,
-                  fontSize: 18,
-                ),),
+                Text(
+                  'Account is private',
+                  style: TextStyle(
+                    color: AppColors.white,
+                    fontSize: 18,
+                  ),
+                ),
               ],
             ),
         ]),
@@ -380,20 +443,21 @@ class _ProfileViewState extends State<ProfileView> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-
           automaticallyImplyLeading: false,
           leading: Row(
             children: [
               if (widget.viewOnly)
-              IconButton(onPressed: (){
-                Navigator.pop(context);
-              }, icon: Icon(Icons.arrow_back)),
+                IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(Icons.arrow_back)),
               if (!widget.viewOnly)
-              Image(
-                image: AssetImage(
-                  'lib/assets/cinaddict_logo.png',
+                Image(
+                  image: AssetImage(
+                    'lib/assets/cinaddict_logo.png',
+                  ),
                 ),
-              ),
             ],
           ),
           title: Text(
@@ -403,32 +467,33 @@ class _ProfileViewState extends State<ProfileView> {
           ),
           actions: [
             if (!widget.viewOnly)
-            SizedBox(
-              width: 35,
-              child: IconButton(
-                icon: Icon(Icons.add, color: Colors.orangeAccent[300]),
-                onPressed: () async {
-                  await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              NewPost(username: user.username)));
-                  _futureJobs();
-                },
+              SizedBox(
+                width: 35,
+                child: IconButton(
+                  icon: Icon(Icons.add, color: Colors.orangeAccent[300]),
+                  onPressed: () async {
+                    await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                NewPost(username: user.username)));
+                    _futureJobs();
+                  },
+                ),
               ),
-            ),
             if (!widget.viewOnly)
-            SizedBox(
-              child: IconButton(
-                icon: Icon(Icons.logout, color: Colors.orangeAccent[300]),
-                onPressed: () async {
-                  bool result = await AppSharedPreferences.logout();
-                  if (result) {
-                    Navigator.pushNamedAndRemoveUntil(context, '/login', ModalRoute.withName('/'));
-                  }
-                },
+              SizedBox(
+                child: IconButton(
+                  icon: Icon(Icons.logout, color: Colors.orangeAccent[300]),
+                  onPressed: () async {
+                    bool result = await AppSharedPreferences.logout();
+                    if (result) {
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, '/login', ModalRoute.withName('/'));
+                    }
+                  },
+                ),
               ),
-            ),
           ],
         ),
         body: setBody);

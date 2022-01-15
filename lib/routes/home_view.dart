@@ -21,19 +21,18 @@ class _HomePage extends State<HomePage> {
   List<Widget> feed = [];
   List<Image> postImages = [];
   List<Post> posts = [];
-  List<bool> likes = [] ;
+  List<bool> likes = [];
+
   List<bool> founds = [];
   List<bool> founds_dislike = [];
   late User user = widget.user;
   bool noPosts = false;
-
 
   @override
   void initState() {
     super.initState();
     _futureJobs();
   }
-
 
   Future<void> _futureJobs() async {
     await _getUser();
@@ -44,8 +43,8 @@ class _HomePage extends State<HomePage> {
   Future<void> _getPostImages() async {
     List<Image> _postImages = [];
     for (Post post in posts) {
-      _postImages.add(
-          await AppFirestore.getPostImageFromName(post.owner, post.image));
+      _postImages
+          .add(await AppFirestore.getPostImageFromName(post.owner, post.image));
       setState(() {
         postImages = _postImages;
       });
@@ -57,43 +56,35 @@ class _HomePage extends State<HomePage> {
     List<User> followingUsers = await AppFirestore.getPostsFollowing(user);
     for (User _user in followingUsers) {
       _posts.addAll(_user.posts);
-
     }
     if (_posts.length == 0) {
       setState(() {
         noPosts = true;
       });
-    }
-    else {
-      for(int a = 0 ; a < _posts.length ; a++)
-      {
-          founds.add(false) ;
-          founds_dislike.add(false) ;
-
+    } else {
+      for (int a = 0; a < _posts.length; a++) {
+        founds.add(false);
+        founds_dislike.add(false);
       }
       _posts.sort((a, b) => a.timestamp.compareTo(b.timestamp));
       setState(() {
         posts = List.from(_posts.reversed);
       });
-      for( int x = 0 ; x < posts.length ; x++)
-      {
-          for( int i = 0 ; i < posts[x].like.length ; i++) {
-            if (posts[x].like[i] == user.username){
-                founds[x] = true ;
-            }
-          }
-      }
-
-      for( int x = 0 ; x < posts.length ; x++)
-      {
-        for( int i = 0 ; i < posts[x].dislike.length ; i++) {
-          if (posts[x].dislike[i] == user.username){
-            founds_dislike[x] = true ;
+      for (int x = 0; x < posts.length; x++) {
+        for (int i = 0; i < posts[x].like.length; i++) {
+          if (posts[x].like[i] == user.username) {
+            founds[x] = true;
           }
         }
       }
 
-
+      for (int x = 0; x < posts.length; x++) {
+        for (int i = 0; i < posts[x].dislike.length; i++) {
+          if (posts[x].dislike[i] == user.username) {
+            founds_dislike[x] = true;
+          }
+        }
+      }
     }
   }
 
@@ -117,7 +108,8 @@ class _HomePage extends State<HomePage> {
           await _futureJobs();
         },
         child: SingleChildScrollView(
-          physics: AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+          physics:
+              AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
           child: Padding(
             padding: const EdgeInsets.all(8),
             child: Column(
@@ -126,12 +118,18 @@ class _HomePage extends State<HomePage> {
                   Center(
                     child: Column(
                       children: [
-                        Text('There is no posts to show.', style: TextStyle(
-                          color: AppColors.white, fontSize: 18
-                        ),),
+                        Text(
+                          'There is no posts to show.',
+                          style:
+                              TextStyle(color: AppColors.white, fontSize: 18),
+                        ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Icon(Icons.hide_image_outlined, color: AppColors.white, size: 36,),
+                          child: Icon(
+                            Icons.hide_image_outlined,
+                            color: AppColors.white,
+                            size: 36,
+                          ),
                         )
                       ],
                     ),
@@ -180,30 +178,29 @@ class _HomePage extends State<HomePage> {
                             IconButton(
                               icon: Icon(
                                 Icons.thumb_up_sharp,
-                                color: founds[idx] == true ? Colors.red :Colors.white,
+                                color: founds[idx] == true
+                                    ? Colors.red
+                                    : Colors.white,
                               ),
                               onPressed: () async {
-                                if(founds_dislike[idx] == false)
-                                {
+                                if (founds_dislike[idx] == false) {
                                   setState(() {
                                     founds[idx] = !founds[idx];
-                                    founds[idx] == true  ? posts[idx].like.add(user.username) : posts[idx].like.remove(user.username);
+                                    founds[idx] == true
+                                        ? posts[idx].like.add(user.username)
+                                        : posts[idx].like.remove(user.username);
                                   });
-
-                                }
-                                else{
-
+                                } else {
                                   setState(() {
-                                    founds[idx] = true ;
-                                    founds_dislike[idx] = false ;
-                                    posts[idx].dislike.remove(user.username) ;
-                                    posts[idx].like.add(user.username) ;
+                                    founds[idx] = true;
+                                    founds_dislike[idx] = false;
+                                    posts[idx].dislike.remove(user.username);
+                                    posts[idx].like.add(user.username);
                                   });
-
                                 }
 
-
-                                bool result = await AppFirestore.updatePost(posts[idx]);
+                                bool result =
+                                    await AppFirestore.updatePost(posts[idx]);
                               },
                             ),
                             Text(
@@ -216,29 +213,31 @@ class _HomePage extends State<HomePage> {
                             IconButton(
                               icon: Icon(
                                 Icons.thumb_down_sharp,
-                                color: founds_dislike[idx] ? Colors.red :Colors.white,
+                                color: founds_dislike[idx]
+                                    ? Colors.red
+                                    : Colors.white,
                               ),
                               onPressed: () async {
-                                if(founds[idx] == false)
-                                {
+                                if (founds[idx] == false) {
                                   setState(() {
                                     founds_dislike[idx] = !founds_dislike[idx];
-                                    founds_dislike[idx] == true ? posts[idx].dislike.add(user.username) : posts[idx].dislike.remove(user.username);
+                                    founds_dislike[idx] == true
+                                        ? posts[idx].dislike.add(user.username)
+                                        : posts[idx]
+                                            .dislike
+                                            .remove(user.username);
                                   });
-                                }
-                                else{
-
+                                } else {
                                   setState(() {
-                                    founds[idx] = false ;
-                                    founds_dislike[idx] = true ;
-                                    posts[idx].like.remove(user.username) ;
-                                    posts[idx].dislike.add(user.username) ;
+                                    founds[idx] = false;
+                                    founds_dislike[idx] = true;
+                                    posts[idx].like.remove(user.username);
+                                    posts[idx].dislike.add(user.username);
                                   });
-
                                 }
 
-
-                                bool result = await AppFirestore.updatePost(posts[idx]);
+                                bool result =
+                                    await AppFirestore.updatePost(posts[idx]);
                               },
                             ),
                             Text(
@@ -249,26 +248,29 @@ class _HomePage extends State<HomePage> {
                               width: 8,
                             ),
                             IconButton(
-                              onPressed: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => CommentsView(post: posts[idx], username: user.username,)));
+                              onPressed: () async {
+                                Post? _post = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => CommentsView(
+                                              post: posts[idx],
+                                              username: user.username,
+                                            ))) as Post?;
+                                if (_post != null) {
+                                  setState(() {
+                                    posts[idx] = _post;
+                                  });
+                                }
                               },
                               icon: Icon(
                                 Icons.comment,
                                 color: Colors.white,
                               ),
                             ),
-                            SizedBox(
-                              width: 8,
+                            Text(
+                              '${posts[idx].comments.length}',
+                              style: AppTextStyle.lighterTextStyle,
                             ),
-                            Icon(
-                              Icons.navigation,
-                              color: Colors.white,
-                            ),
-                            Spacer(),
-                            Icon(
-                              Icons.bookmark,
-                              color: Colors.white,
-                            )
                           ],
                         ),
                       ),
@@ -319,19 +321,26 @@ class _HomePage extends State<HomePage> {
                       Row(
                         children: [
                           TextButton(
-                            style: TextButton.styleFrom(
-                              padding: EdgeInsets.zero
-                            ),
-                              onPressed: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => CommentsView(post: posts[idx], username: user.username,)));
+                              style: TextButton.styleFrom(
+                                  padding: EdgeInsets.zero),
+                              onPressed: () async {
+                                Post? _post = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => CommentsView(
+                                              post: posts[idx],
+                                              username: user.username,
+                                            ))) as Post?;
+                                if (_post != null) {
+                                  setState(() {
+                                    posts[idx] = _post;
+                                  });
+                                }
                               },
                               child: Text(
-                                  'View all ${posts[idx].comments.length} comments',
-                                style: TextStyle(
-                                  color: AppColors.lighterGrey
-                                ),
-                              )
-                          ),
+                                'View all ${posts[idx].comments.length} comments',
+                                style: TextStyle(color: AppColors.lighterGrey),
+                              )),
                         ],
                       ),
                       SizedBox(

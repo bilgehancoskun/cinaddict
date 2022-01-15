@@ -171,21 +171,29 @@ class AppFirestore {
     }
   }
 
-  static Future<bool> followUser(String user, String willFollow) async {
+  static Future<bool> followUser({required String user, required String willFollow, String sentFrom = 'None'}) async {
     bool result = false;
     try {
       CollectionReference users = FirebaseFirestore.instance.collection('users');
-      DocumentSnapshot snapshot = await users.doc(user).get();
-      Map<String, dynamic> userJson = snapshot.data() as Map<String, dynamic>;
-      userJson['following'].add(willFollow);
-      await users.doc(user).update(userJson);
 
       DocumentSnapshot willFollowSnapshot = await users.doc(willFollow).get();
       Map<String, dynamic> willFollowSnapshotUserJson = willFollowSnapshot.data() as Map<String, dynamic>;
-      willFollowSnapshotUserJson['followers'].add(user);
-      await users.doc(willFollow).update(willFollowSnapshotUserJson);
-      if (await notify(User.fromJson(userJson), CN.NotificationType.followed, willFollow))
-        result = true;
+      DocumentSnapshot snapshot = await users.doc(user).get();
+      Map<String, dynamic> userJson = snapshot.data() as Map<String, dynamic>;
+
+      if (willFollowSnapshotUserJson['isPrivate'] && sentFrom == 'None') {
+        if (await notify(who: userJson['username'], notificationType: CN.NotificationType.followRequest, user: willFollow))
+          result = false;
+      }
+      else {
+        userJson['following'].add(willFollow);
+        await users.doc(user).update(userJson);
+
+        willFollowSnapshotUserJson['followers'].add(user);
+        await users.doc(willFollow).update(willFollowSnapshotUserJson);
+        if (await notify(who: userJson['username'], notificationType: CN.NotificationType.followed, user: willFollow))
+          result = true;
+      }
 
     } catch (e) {
       print("Error occurred while follow operation $user - $willFollow");
@@ -227,9 +235,9 @@ class AppFirestore {
     return followingUsers;
   }
 
-  static Future<bool> notify(User who, String notificationType, String user) async {
+  static Future<bool> notify({required String who, required String notificationType, Post? post, required String user}) async {
     bool result = false;
-    CN.Notification notification = CN.Notification(who, notificationType, DateTime.now());
+    CN.Notification notification = CN.Notification(who, notificationType, post, DateTime.now());
     try {
       CollectionReference users = FirebaseFirestore.instance.collection('users');
       DocumentSnapshot snapshot = await users.doc(user).get();
@@ -261,6 +269,21 @@ class AppFirestore {
       print("Error Occurred while updating post:\n$e");
     }
     return result;
+  }
+
+  static Future<Post?> getPost(Post post) async {
+    try {
+      User user = await getUser(post.owner);
+      for (int idx = 0; idx < user.posts.length; idx++) {
+        if (user.posts[idx].timestamp == post.timestamp) {
+          return user.posts[idx];
+        }
+      }
+    } catch (e) {
+      print("Error Occurred while updating post:\n$e");
+      return null;
+    }
+    return null;
   }
 
   static Future<bool> deletePost(Post post) async {
@@ -299,6 +322,25 @@ class AppFirestore {
       user = User.fromJson(userJson);
     }
     return user;
+  }
+
+  static Future<bool> deleteNotification(String fromWho, CN.Notification notification) async {
+    bool result = false;
+    try {
+      User user = await getUser(fromWho);
+      for (int idx = 0; idx < user.notifications.length; idx++) {
+        if (user.notifications[idx].timestamp == notification.timestamp) {
+          user.notifications.removeAt(idx);
+        }
+      }
+
+      Map<String, dynamic> jsonUser = user.toJson();
+      await updateUser(jsonUser['username'], 'notifications', jsonUser['notifications']);
+      result = true;
+    } catch (e) {
+      print("Error Occurred while deleting notification:\n$e");
+    }
+    return result;
   }
 
 }

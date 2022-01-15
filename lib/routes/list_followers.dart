@@ -117,7 +117,7 @@ class _ListFollowersState extends State<ListFollowers> {
                         OutlinedButton(
                           onPressed: () async {
                             if (!followers[idx].followers.contains(user.username)) {
-                              bool result = await AppFirestore.followUser(user.username,followers[idx].username);
+                              bool result = await AppFirestore.followUser(user: user.username, willFollow: followers[idx].username);
                               if (result) {
                                 setState(() {
                                   followers[idx].followers.add(user.username);

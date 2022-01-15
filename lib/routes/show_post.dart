@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:cinaddict/services/firestore.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:cinaddict/routes/comments_view.dart';
+import 'package:cinaddict/models/notification.dart' as CN;
 
 class ShowPost extends StatefulWidget {
   const ShowPost(
@@ -36,21 +37,22 @@ class _ShowPostState extends State<ShowPost> {
   bool founds = false;
   bool founds_dislike = false;
 
-  void getPosts()  {
+  Future<void> getPosts() async {
+    Post? _post = await AppFirestore.getPost(post);
+    if (_post != null)
+      setState(() {
+        post = _post;
+      });
     for (int i = 0; i < post.like.length; i++) {
-
       if (post.like[i] == widget.sentBy.username) {
-
         setState(() {
           founds = true;
         });
-
       }
     }
 
     for (int i = 0; i < post.dislike.length; i++) {
       if (post.dislike[i] == widget.sentBy.username) {
-
         setState(() {
           founds_dislike = true;
         });
@@ -60,7 +62,7 @@ class _ShowPostState extends State<ShowPost> {
 
   @override
   void initState() {
-    getPosts() ;
+    getPosts();
     super.initState();
   }
 
@@ -86,22 +88,24 @@ class _ShowPostState extends State<ShowPost> {
                       ),
                     ),
                     Text(
-                      widget.post.owner, // post.owner
+                      post.owner, // post.owner
                       style: AppTextStyle.lighterTextStyle,
                     ),
                   ],
                 ),
-                IconButton(
-                    onPressed: () async {
-                      bool result = await AppFirestore.deletePost(widget.post);
-                      if (result) {
-                        Navigator.pop(context);
-                      }
-                    },
-                    icon: Icon(
-                      Icons.delete,
-                      color: AppColors.white,
-                    ))
+                if (widget.sentBy.username == widget.user.username)
+                  IconButton(
+                      onPressed: () async {
+                        bool result =
+                            await AppFirestore.deletePost(post);
+                        if (result) {
+                          Navigator.pop(context);
+                        }
+                      },
+                      icon: Icon(
+                        Icons.delete,
+                        color: AppColors.white,
+                      ))
               ],
             ),
             SizedBox(
@@ -119,30 +123,30 @@ class _ShowPostState extends State<ShowPost> {
                   IconButton(
                     icon: Icon(
                       Icons.thumb_up_sharp,
-                      color: founds == true ? Colors.red :Colors.white,
+                      color: founds == true ? Colors.red : Colors.white,
                     ),
                     onPressed: () async {
-                      if(founds_dislike == false)
-                      {
+                      if (founds_dislike == false) {
                         setState(() {
                           founds = !founds;
-                          founds == true  ? post.like.add(widget.sentBy.username) : post.like.remove(widget.sentBy.username);
+                          founds == true
+                              ? post.like.add(widget.sentBy.username)
+                              : post.like.remove(widget.sentBy.username);
                         });
-
-                      }
-                      else{
-
+                      } else {
                         setState(() {
-                          founds = true ;
-                          founds_dislike = false ;
-                          post.dislike.remove(widget.sentBy.username) ;
-                          post.like.add(widget.sentBy.username) ;
+                          founds = true;
+                          founds_dislike = false;
+                          post.dislike.remove(widget.sentBy.username);
+                          post.like.add(widget.sentBy.username);
                         });
-
                       }
-
 
                       bool result = await AppFirestore.updatePost(post);
+                      result = await AppFirestore.notify(
+                          who: widget.sentBy.username,
+                          notificationType: CN.NotificationType.likedPost,
+                          user: post.owner);
                     },
                   ),
                   Text(
@@ -155,27 +159,24 @@ class _ShowPostState extends State<ShowPost> {
                   IconButton(
                     icon: Icon(
                       Icons.thumb_down_sharp,
-                      color: founds_dislike ? Colors.red :Colors.white,
+                      color: founds_dislike ? Colors.red : Colors.white,
                     ),
                     onPressed: () async {
-                      if(founds == false)
-                      {
+                      if (founds == false) {
                         setState(() {
-                          founds_dislike= !founds_dislike;
-                          founds_dislike == true ? post.dislike.add(widget.sentBy.username) : post.dislike.remove(widget.sentBy.username);
+                          founds_dislike = !founds_dislike;
+                          founds_dislike == true
+                              ? post.dislike.add(widget.sentBy.username)
+                              : post.dislike.remove(widget.sentBy.username);
+                        });
+                      } else {
+                        setState(() {
+                          founds = false;
+                          founds_dislike = true;
+                          post.like.remove(widget.sentBy.username);
+                          post.dislike.add(widget.sentBy.username);
                         });
                       }
-                      else{
-
-                        setState(() {
-                          founds = false ;
-                          founds_dislike = true ;
-                          post.like.remove(widget.sentBy.username) ;
-                          post.dislike.add(widget.sentBy.username) ;
-                        });
-
-                      }
-
 
                       bool result = await AppFirestore.updatePost(post);
                     },
@@ -189,99 +190,92 @@ class _ShowPostState extends State<ShowPost> {
                   ),
                   IconButton(
                     onPressed: () async {
-                      Navigator.push(
+                      Post? _post = await Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => CommentsView(
-                                    post: widget.post,
+                                    post: post,
                                     username: widget.sentBy != null
                                         ? widget.sentBy.username
                                         : widget.user.username,
-                                  )));
+                                  ))) as Post?;
+                      if (_post != null) {
+                        setState(() {
+                          post = _post;
+                        });
+                      }
                     },
                     icon: Icon(
                       Icons.comment,
                       color: Colors.white,
                     ),
                   ),
+                  Text(
+                    '${post.comments.length}',
+                    style: AppTextStyle.lighterTextStyle,
+                  ),
                   SizedBox(
                     width: 8,
                   ),
-                  Icon(
-                    Icons.navigation,
-                    color: Colors.white,
-                  ),
-                  Spacer(),
-                  Icon(
-                    Icons.bookmark,
-                    color: Colors.white,
-                  )
                 ],
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      '@${widget.post.owner}', // post.owner
+            Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Text(
+                      '@${post.owner}', // post.owner
                       style: TextStyle(
                           color: AppColors.white, fontWeight: FontWeight.bold),
                     ),
-                    if (widget.post.description.length < 23)
-                      Text(
-                        '  ${widget.post.description}',
-                        style: TextStyle(
-                          color: AppColors.white,
-                        ),
-                      )
-                    else
-                      Row(
-                        children: [
-                          TextButton(
-                            onPressed: () {},
-                            child: Text(
-                              '${widget.post.description.substring(0, 23)}...',
-                              style: TextStyle(
-                                color: AppColors.white,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Text(
-                      timeago.format(widget.post.timestamp),
-                      style: TextStyle(color: AppColors.white),
+                  ),
+                  Text(
+                    '${post.description}',
+                    style: TextStyle(
+                      color: AppColors.white,
                     ),
-                  ],
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                TextButton(
-                    style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                    onPressed: () async {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CommentsView(
-                                    post: widget.post,
-                                    username: widget.sentBy != null
-                                        ? widget.sentBy.username
-                                        : widget.user.username,
-                                  )));
-                    },
+                    textAlign: TextAlign.left,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
                     child: Text(
-                      'View all ${widget.post.comments.length} comments',
-                      style: TextStyle(color: AppColors.lighterGrey),
-                    )),
-              ],
+                      timeago.format(post.timestamp),
+                      style: TextStyle(color: AppColors.white),
+                      textAlign: TextAlign.right,
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      TextButton(
+                          style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                          onPressed: () async {
+                            Post? _post = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => CommentsView(
+                                          post: post,
+                                          username: widget.sentBy != null
+                                              ? widget.sentBy.username
+                                              : widget.user.username,
+                                        ))) as Post?;
+                            if (_post != null) {
+                              setState(() {
+                                post = _post;
+                              });
+                            }
+                          },
+                          child: Text(
+                            'View all ${post.comments.length} comments',
+                            style: TextStyle(color: AppColors.lighterGrey),
+                          )),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ],
         ),
