@@ -96,12 +96,15 @@ class _ShowPostState extends State<ShowPost> {
                         if (post.reSharedFrom != "None")
                           TextButton(
                               onPressed: () async {
+                                bool viewOnly = true;
+                                if (post.reSharedFrom == user.username)
+                                  viewOnly = false;
                                 User reSharedUser = await AppFirestore.getUser(
                                     post.reSharedFrom);
                                 Navigator.push(context, MaterialPageRoute(
                                     builder: (context) =>
                                         ProfileView(user: reSharedUser,
-                                          viewOnly: true,
+                                          viewOnly: viewOnly,
                                           sentBy: user.username,)));
                               },
                               child: Text('reshared from ${post.reSharedFrom}'))
