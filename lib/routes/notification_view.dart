@@ -55,13 +55,14 @@ class _NotificationPage extends State<NotificationPage> {
         });
       }
     }
-    print(followRequests.last.username);
-    User _lastUser = await AppFirestore.getUser(followRequests.last.username);
-    ImageProvider image = await AppFirestore.getProfilePictureFromName(
-        _lastUser.username, _lastUser.profilePicture);
-    setState(() {
-      lastRequestPicture = image;
-    });
+    if (followRequests.isNotEmpty) {
+      User _lastUser = await AppFirestore.getUser(followRequests.last.username);
+      ImageProvider image = await AppFirestore.getProfilePictureFromName(
+          _lastUser.username, _lastUser.profilePicture);
+      setState(() {
+        lastRequestPicture = image;
+      });
+    }
   }
 
   Future<void> _futureJobs() async {
@@ -91,36 +92,36 @@ class _NotificationPage extends State<NotificationPage> {
             child: Column(
               children: [
                 if (followRequests.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: AppColors.darkGrey,
-                        backgroundImage: lastRequestPicture,
-                        radius: 30,
-                      ),
-                      if (followRequests.length != 0)
-                        TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => FollowRequests(
-                                          notifications: user.notifications,
-                                          user: user,
-                                        )));
-                          },
-                          child: Text(
-                            followRequests.length - 1 != 0
-                                ? "Follow Requests ${followRequests.last.username} + ${followRequests.length - 1}"
-                                : "Follow Request",
-                            style: AppTextStyle.lighterbiggerboldTextStyle,
-                          ),
-                        )
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          backgroundColor: AppColors.darkGrey,
+                          backgroundImage: lastRequestPicture,
+                          radius: 30,
+                        ),
+                        if (followRequests.length != 0)
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => FollowRequests(
+                                            notifications: user.notifications,
+                                            user: user,
+                                          )));
+                            },
+                            child: Text(
+                              followRequests.length - 1 != 0
+                                  ? "Follow Requests ${followRequests.last.username} + ${followRequests.length - 1}"
+                                  : "Follow Request",
+                              style: AppTextStyle.lighterbiggerboldTextStyle,
+                            ),
+                          )
+                      ],
+                    ),
                   ),
-                ),
 
                 for (int idx = 0; idx < user.notifications.length; idx++) ...[
                   TextButton(
@@ -191,8 +192,8 @@ class _NotificationPage extends State<NotificationPage> {
                             await AppFirestore.getPostImageFromName(
                                 user.notifications[idx].post!.owner,
                                 user.notifications[idx].post!.image);
-                        User targetUser = await AppFirestore.getUser(
-                            user.username);
+                        User targetUser =
+                            await AppFirestore.getUser(user.username);
                         ImageProvider profilePictureOfTarget =
                             await AppFirestore.getProfilePictureFromName(
                                 targetUser.username, targetUser.profilePicture);
