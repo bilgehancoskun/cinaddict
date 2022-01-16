@@ -192,7 +192,7 @@ class _NotificationPage extends State<NotificationPage> {
                                 user.notifications[idx].post!.owner,
                                 user.notifications[idx].post!.image);
                         User targetUser = await AppFirestore.getUser(
-                            user.notifications[idx].username);
+                            user.username);
                         ImageProvider profilePictureOfTarget =
                             await AppFirestore.getProfilePictureFromName(
                                 targetUser.username, targetUser.profilePicture);
