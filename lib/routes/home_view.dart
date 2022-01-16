@@ -1,6 +1,7 @@
 import 'package:cinaddict/models/post.dart';
 import 'package:cinaddict/models/user.dart';
 import 'package:cinaddict/routes/comments_view.dart';
+import 'package:cinaddict/routes/profile_view.dart';
 import 'package:cinaddict/services/firestore.dart';
 import 'package:cinaddict/utils/colors.dart';
 import 'package:cinaddict/utils/styles.dart';
@@ -165,9 +166,28 @@ class _HomePage extends State<HomePage> {
                                       : null,
                             ),
                           ),
-                          Text(
-                            posts[idx].owner, // post.owner
-                            style: AppTextStyle.lighterTextStyle,
+                          Row(
+                            children: [
+                              Text(
+                                posts[idx].owner, // post.owner
+                                style: AppTextStyle.lighterTextStyle,
+                              ),
+                              if (posts[idx].reSharedFrom != "None")
+                                TextButton(
+                                    onPressed: () async {
+                                      bool viewOnly = true;
+                                      if (posts[idx].reSharedFrom == user.username)
+                                        viewOnly = false;
+                                      User reSharedUser = await AppFirestore.getUser(
+                                          posts[idx].reSharedFrom);
+                                      Navigator.push(context, MaterialPageRoute(
+                                          builder: (context) =>
+                                              ProfileView(user: reSharedUser,
+                                                viewOnly: viewOnly,
+                                                sentBy: user.username,)));
+                                    },
+                                    child: Text('reshared from ${posts[idx].reSharedFrom}'))
+                            ],
                           ),
                         ],
                       ),
