@@ -8,6 +8,7 @@ import 'package:cinaddict/utils/styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:cinaddict/models/notification.dart' as CN;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, required this.user}) : super(key: key);
@@ -238,6 +239,11 @@ class _HomePage extends State<HomePage> {
 
                                 bool result =
                                     await AppFirestore.updatePost(posts[idx]);
+                                result = await AppFirestore.notify(
+                                    who: user.username,
+                                    notificationType: CN.NotificationType.likedPost,
+                                    post: posts[idx],
+                                    user: posts[idx].owner);
                               },
                             ),
                             Text(

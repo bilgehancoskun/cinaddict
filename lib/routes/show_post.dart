@@ -164,6 +164,7 @@ class _ShowPostState extends State<ShowPost> {
                       result = await AppFirestore.notify(
                           who: widget.sentBy.username,
                           notificationType: CN.NotificationType.likedPost,
+                          post: post,
                           user: post.owner);
                     },
                   ),

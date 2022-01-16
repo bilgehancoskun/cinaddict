@@ -2,6 +2,7 @@ import 'package:cinaddict/models/user.dart';
 import 'package:cinaddict/routes/comments_view.dart';
 import 'package:cinaddict/routes/follow_requests.view.dart';
 import 'package:cinaddict/routes/profile_view.dart';
+import 'package:cinaddict/routes/show_post.dart';
 import 'package:cinaddict/services/firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:cinaddict/utils/styles.dart';
@@ -56,13 +57,12 @@ class _NotificationPage extends State<NotificationPage> {
     }
     print(followRequests.last.username);
     User _lastUser = await AppFirestore.getUser(followRequests.last.username);
-    ImageProvider image = await AppFirestore.getProfilePictureFromName(_lastUser.username, _lastUser.profilePicture);
+    ImageProvider image = await AppFirestore.getProfilePictureFromName(
+        _lastUser.username, _lastUser.profilePicture);
     setState(() {
       lastRequestPicture = image;
     });
   }
-
-
 
   Future<void> _futureJobs() async {
     User _user = await AppFirestore.getUser(user.username);
@@ -90,6 +90,7 @@ class _NotificationPage extends State<NotificationPage> {
                 AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
             child: Column(
               children: [
+                if (followRequests.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
@@ -100,21 +101,23 @@ class _NotificationPage extends State<NotificationPage> {
                         radius: 30,
                       ),
                       if (followRequests.length != 0)
-                      TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => FollowRequests(
-                                        notifications: user.notifications,
-                                        user: user,
-                                      )));
-                        },
-                        child: Text(
-                          followRequests.length - 1 != 0 ? "Follow Requests ${followRequests.last.username} + ${followRequests.length - 1}": "Follow Request",
-                          style: AppTextStyle.lighterbiggerboldTextStyle,
-                        ),
-                      )
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => FollowRequests(
+                                          notifications: user.notifications,
+                                          user: user,
+                                        )));
+                          },
+                          child: Text(
+                            followRequests.length - 1 != 0
+                                ? "Follow Requests ${followRequests.last.username} + ${followRequests.length - 1}"
+                                : "Follow Request",
+                            style: AppTextStyle.lighterbiggerboldTextStyle,
+                          ),
+                        )
                     ],
                   ),
                 ),
@@ -176,10 +179,33 @@ class _NotificationPage extends State<NotificationPage> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => ProfileView(
-                                  user: _pushUser,
-                                  sentBy: user.username,
-                                  viewOnly: true,
-                                )));
+                                      user: _pushUser,
+                                      sentBy: user.username,
+                                      viewOnly: true,
+                                    )));
+                      } else if (user.notifications[idx].notificationType ==
+                          CN.NotificationType.likedPost) {
+                        User _pushUser = await AppFirestore.getUser(
+                            user.notifications[idx].username);
+                        Image postImage =
+                            await AppFirestore.getPostImageFromName(
+                                user.notifications[idx].post!.owner,
+                                user.notifications[idx].post!.image);
+                        User targetUser = await AppFirestore.getUser(
+                            user.notifications[idx].username);
+                        ImageProvider profilePictureOfTarget =
+                            await AppFirestore.getProfilePictureFromName(
+                                targetUser.username, targetUser.profilePicture);
+                        if (user.notifications[idx].post != null)
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ShowPost(
+                                      post: user.notifications[idx].post!,
+                                      postImage: postImage,
+                                      user: user,
+                                      profilePicture: profilePictureOfTarget,
+                                      sentBy: user)));
                       }
                     },
                     child: Row(
@@ -231,6 +257,16 @@ class _NotificationPage extends State<NotificationPage> {
                             //flex: 4,
                             child: Text(
                               "${user.notifications[idx].username} accepted your follow request.\n${timeago.format(user.notifications[idx].timestamp)}",
+                              style: AppTextStyle.lighterTextStyle,
+                            ),
+                          ),
+                        ],
+                        if (user.notifications[idx].notificationType ==
+                            CN.NotificationType.likedPost) ...[
+                          Expanded(
+                            //flex: 4,
+                            child: Text(
+                              "${user.notifications[idx].username} liked your post.\n${timeago.format(user.notifications[idx].timestamp)}",
                               style: AppTextStyle.lighterTextStyle,
                             ),
                           ),
