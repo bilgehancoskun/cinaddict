@@ -111,12 +111,6 @@ class _NavigationPage extends State<NavigationPage> {
                               SizedBox(
                                 width: 90,
                               ),
-                              SizedBox(
-                                child: Image.network(
-                                  'https://picsum.photos/250?image=9',
-                                  width: 30,
-                                ),
-                              ),
                             ],
                           ),
                         ),
