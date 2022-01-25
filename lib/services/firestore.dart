@@ -382,6 +382,7 @@ class AppFirestore {
       print("Error Occurred while deleting notification:\n$e");
     }
     return result;
+
   }
 
 }

@@ -67,6 +67,7 @@ class _NotificationPage extends State<NotificationPage> {
 
   Future<void> _futureJobs() async {
     User _user = await AppFirestore.getUser(user.username);
+    _user.notifications = List.of(_user.notifications.reversed);
     setState(() {
       user = _user;
     });

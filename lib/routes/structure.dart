@@ -5,7 +5,6 @@ import 'package:cinaddict/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:cinaddict/routes/home_view.dart';
 import 'package:cinaddict/routes/navigation_view.dart';
-import 'package:cinaddict/routes/movies_view.dart';
 import 'package:cinaddict/routes/profile_view.dart';
 import 'package:cinaddict/routes/notification_view.dart';
 import 'package:firebase_analytics/observer.dart';
@@ -28,7 +27,6 @@ class _StructureState extends State<Structure> {
   late List<Widget> pages = [
     HomePage(user:user),
     NavigationPage(user:user),
-    MoviePage(),
     NotificationPage(user:user),
     ProfileView(user:user),
   ];
@@ -69,11 +67,6 @@ class _StructureState extends State<Structure> {
                   BottomNavigationBarItem(
                     icon: Icon(Icons.near_me_outlined),
                     label:'Navigation',
-
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.local_movies_rounded),
-                    label:'Movies',
 
                   ),
                   BottomNavigationBarItem(
